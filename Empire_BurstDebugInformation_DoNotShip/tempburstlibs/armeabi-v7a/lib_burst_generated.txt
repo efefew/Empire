@@ -1,0 +1,15 @@
+Library: W:\Users\prodi\Documents\GitHub\Empire\Empire\Temp\BurstOutput\tempburstlibs\armeabi-v7a\lib_burst_generated
+--platform=Android
+--backend=burst-llvm-14
+--target=ARMV7A_NEON32
+--global-safety-checks-setting=Off
+--meta-data-generation=False
+--dump=Function
+--float-precision=Standard
+--generate-link-xml=Temp\burst.link.xml
+--temp-folder=W:\Users\prodi\Documents\GitHub\Empire\Empire\Temp\Burst
+--output=W:\Users\prodi\Documents\GitHub\Empire\Empire\Temp\BurstOutput\tempburstlibs\armeabi-v7a\lib_burst_generated
+--pdb-search-paths=Temp/ManagedSymbols/
+--pdb-search-paths=Temp/ManagedSymbols/
+
+

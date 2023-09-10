@@ -1,5 +1,7 @@
-﻿using NavMeshPlus.Components;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
+using NavMeshPlus.Components;
+
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Tilemaps;
@@ -8,22 +10,22 @@ namespace NavMeshPlus.Extensions
 {
     [ExecuteAlways]
     [AddComponentMenu("Navigation/NavMesh CollectSources2d", 30)]
-    public class CollectSources2d: NavMeshExtension
+    public class CollectSources2d : NavMeshExtension
     {
         [SerializeField]
-        bool m_OverrideByGrid;
+        private bool m_OverrideByGrid;
         public bool overrideByGrid { get { return m_OverrideByGrid; } set { m_OverrideByGrid = value; } }
 
         [SerializeField]
-        GameObject m_UseMeshPrefab;
+        private GameObject m_UseMeshPrefab;
         public GameObject useMeshPrefab { get { return m_UseMeshPrefab; } set { m_UseMeshPrefab = value; } }
 
         [SerializeField]
-        bool m_CompressBounds;
+        private bool m_CompressBounds;
         public bool compressBounds { get { return m_CompressBounds; } set { m_CompressBounds = value; } }
 
         [SerializeField]
-        Vector3 m_OverrideVector = Vector3.one;
+        private Vector3 m_OverrideVector = Vector3.one;
         public Vector3 overrideVector { get { return m_OverrideVector; } set { m_OverrideVector = value; } }
 
         public override void CalculateWorldBounds(NavMeshSurface surface, List<NavMeshBuildSource> sources, NavMeshBuilderState navNeshState)

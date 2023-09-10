@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 817ab82d5a18de54988da6b011a2b22e
+timeCreated: 1540810916
+licenseType: Store
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 132638
+  packageName: Lite FPS Counter - Probably the world's fastest FPS counter
+  packageVersion: 1.0.0
+  assetPath: Assets/OmniSARTechnologies/Common/Helper/GUI/ColorHelper.cs
+  uploadId: 281675

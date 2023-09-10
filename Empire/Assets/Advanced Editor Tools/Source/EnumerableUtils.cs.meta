@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 8980b2a1ec67e8448b03bdf5c655f188
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254203
+  packageName: Advanced Editor Tools
+  packageVersion: 1.0
+  assetPath: Assets/Advanced Editor Tools/Source/EnumerableUtils.cs
+  uploadId: 582147

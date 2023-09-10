@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: ac13497f3f6603147a1538f9825c4cad
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254203
+  packageName: Advanced Editor Tools
+  packageVersion: 1.0
+  assetPath: Assets/Advanced Editor Tools/Source/AETManager.cs
+  uploadId: 582147

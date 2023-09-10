@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 70481212e82c831419958f45a8725d4d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254203
+  packageName: Advanced Editor Tools
+  packageVersion: 1.0
+  assetPath: Assets/Advanced Editor Tools/Demo Source/ColumnsExample.cs
+  uploadId: 582147

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 95354847711d363408aebd57a0dc92ae
+timeCreated: 1543760498
+licenseType: Store
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 132638
+  packageName: Lite FPS Counter - Probably the world's fastest FPS counter
+  packageVersion: 1.0.0
+  assetPath: Assets/OmniSARTechnologies/LiteFPSCounter/Prefabs/LiteFPSCounter.prefab
+  uploadId: 281675

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: c2722ee35728af94e9296e93b032730b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254203
+  packageName: Advanced Editor Tools
+  packageVersion: 1.0
+  assetPath: Assets/Advanced Editor Tools/Source/Data Storage/Value Wrappers/GradientValueWrapper.cs
+  uploadId: 582147

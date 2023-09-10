@@ -1,0 +1,25 @@
+                    Executable : W:\Program Files\Unity\Hub\Editor\2023.1.0b4\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.22.1\bin\cmake.exe
+arguments : 
+-HW:\Users\prodi\Documents\GitHub\Empire\Empire\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary\src\main\cpp
+-DCMAKE_SYSTEM_NAME=Android
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_SYSTEM_VERSION=22
+-DANDROID_PLATFORM=android-22
+-DANDROID_ABI=armeabi-v7a
+-DCMAKE_ANDROID_ARCH_ABI=armeabi-v7a
+-DANDROID_NDK=W:\Program Files\Unity\Hub\Editor\2023.1.0b4\Editor\Data\PlaybackEngines\AndroidPlayer\NDK
+-DCMAKE_ANDROID_NDK=W:\Program Files\Unity\Hub\Editor\2023.1.0b4\Editor\Data\PlaybackEngines\AndroidPlayer\NDK
+-DCMAKE_TOOLCHAIN_FILE=W:\Program Files\Unity\Hub\Editor\2023.1.0b4\Editor\Data\PlaybackEngines\AndroidPlayer\NDK\build\cmake\android.toolchain.cmake
+-DCMAKE_MAKE_PROGRAM=W:\Program Files\Unity\Hub\Editor\2023.1.0b4\Editor\Data\PlaybackEngines\AndroidPlayer\SDK\cmake\3.22.1\bin\ninja.exe
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=W:\Users\prodi\Documents\GitHub\Empire\Empire\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\2m34672t\obj\armeabi-v7a
+-DCMAKE_RUNTIME_OUTPUT_DIRECTORY=W:\Users\prodi\Documents\GitHub\Empire\Empire\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\2m34672t\obj\armeabi-v7a
+-DCMAKE_BUILD_TYPE=RelWithDebInfo
+-DCMAKE_FIND_ROOT_PATH=W:\Users\prodi\Documents\GitHub\Empire\Empire\.utmp\RelWithDebInfo\2m34672t\prefab\armeabi-v7a\prefab
+-BW:\Users\prodi\Documents\GitHub\Empire\Empire\.utmp\RelWithDebInfo\2m34672t\armeabi-v7a
+-GNinja
+-DBUILD_GRADLE_DIRECTORY=W:\Users\prodi\Documents\GitHub\Empire\Empire\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary
+jvmArgs : 
+
+
+                    Build command args: []
+                    Version: 2

@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CS0219: Переменная назначена, но ее значение не используется
+dotnet_diagnostic.CS0219.severity = none
+
+# IDE0059: Ненужное присваивание значения
+csharp_style_unused_value_assignment_preference = unused_local_variable

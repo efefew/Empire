@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 078f6fd1e8f7e6646b6e0d4badef7f18
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254203
+  packageName: Advanced Editor Tools
+  packageVersion: 1.0
+  assetPath: Assets/Advanced Editor Tools/Source/Data Storage/Value Wrappers/EnumValueWrapper.cs
+  uploadId: 582147

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3a853163ec6195447a9795f4410a0f34
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 254203
+  packageName: Advanced Editor Tools
+  packageVersion: 1.0
+  assetPath: Assets/Advanced Editor Tools/Source/Data Storage/Value Wrappers/Vector3ValueWrapper.cs
+  uploadId: 582147
