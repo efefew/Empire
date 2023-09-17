@@ -49,6 +49,7 @@ public class Battlefield : MonoBehaviour
     private void SetActiveArmy(Army army, bool on)
     {
         army.buttonArmy.interactable = on;
+
         // Если это наша фракция, скрываем глобальный UI армии
         // (только в нашей фракции есть глобальный UI для выбора армии)
         if (playerFraction == army.status.fraction)
@@ -90,7 +91,7 @@ public class Battlefield : MonoBehaviour
     public void SetTargetArmy(ICombatUnit target)
     {
         OnSetTarget?.Invoke(target);
-        //targetButtonSkill.OnArmySkillRun();
+        //xtargetButtonSkill.Reload();
 
         DeactiveAllArmies();
     }

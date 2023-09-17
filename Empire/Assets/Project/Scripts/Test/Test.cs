@@ -7,13 +7,19 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
+    public Transform tr1;
+    public Rigidbody2D rb2d;
+    public float speed = 1.0f;
+    [Min(1)]
+    public int minCoun = 1;
+    [Min(0)]
+    public long minMilliseconds = 100;
     #region Methods
-    public void Test1() => _ = string.Format("{0:0.##}", 15.3521324);
-    public void Test2() => _ = Math.Round(15.3521324, 2).ToString();
-    public void Test3() => _ = $"{Math.Round(15.3521324, 2)}";
+    public void Test1() => tr1.position += tr1.right * speed;
+    public void Test2() => rb2d.AddForce(tr1.right * speed);
 
     [Button("Test", 15)]
-    public void TestTime() => TimeCheck(new Action[] { Test1, Test2, Test3 });
+    public void TestTime() => TimeCheck(new Action[] { Test1, Test2 }, minCoun, minMilliseconds);
 
     public void TimeCheck(Action[] actions, int minCount = 1, long minMilliseconds = 100)
     {

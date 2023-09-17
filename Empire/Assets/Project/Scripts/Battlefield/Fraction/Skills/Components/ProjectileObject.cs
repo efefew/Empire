@@ -65,9 +65,7 @@ public class ProjectileObject : MonoBehaviour
                     return;
             }
 
-            int countCatch = 0;
-            skill.SetEffectsAndBuffs(initiator, target, ref countCatch);
-
+            skill.SetEffectsAndBuffs(initiator, target);
             if (skill.maxCountCatch > 0)
                 countCatch--;
             if (countCatch <= 0)

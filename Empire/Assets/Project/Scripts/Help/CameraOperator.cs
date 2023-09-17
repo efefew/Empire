@@ -20,8 +20,8 @@ public class CameraOperator : MonoBehaviour
 
     #region Fields
 
-    private const float distanceForChangeTypeLimit = 0.1f;
-    private const int Z = -10;
+    private const float DISTANCE_FOR_CHANGE_TYPE_LIMIT = 0.1f;
+    private const int HEIGHT = -10;
     public float SpeedScale, SpeedMove, MaxRadius, MinZoom, MaxZoom;
     public Transform CamTr, TargetTr;
     public Camera MyCam;
@@ -35,12 +35,12 @@ public class CameraOperator : MonoBehaviour
     private void OnEnable()
     {
         if (TargetTr != null)
-            CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, Z);
+            CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, HEIGHT);
     }
 
     private void Update() => CameraControler();
 
-    private void NormalizePos(Transform trNorm, float height = Z) => trNorm.position = new Vector3(trNorm.position.x, trNorm.position.y, height);
+    private void NormalizePos(Transform trNorm, float height = HEIGHT) => trNorm.position = new Vector3(trNorm.position.x, trNorm.position.y, height);
 
     private void SquareLimit()
     {
@@ -183,7 +183,7 @@ public class CameraOperator : MonoBehaviour
     {
         if (TargetTr == null)
             return;
-        CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, Z);
+        CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, HEIGHT);
         limit = Limits.circle;
     }
 
@@ -193,7 +193,7 @@ public class CameraOperator : MonoBehaviour
             return;
         TargetTr = tr;
         if (!changeTarget)
-            CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, Z);
+            CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, HEIGHT);
     }
 
     /// <summary>

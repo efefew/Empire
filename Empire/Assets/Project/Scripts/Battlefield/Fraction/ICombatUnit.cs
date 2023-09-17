@@ -4,9 +4,13 @@
 public interface ICombatUnit
 {
     /// <summary>
-    /// Стоять на месте
+    /// Повторять использование навыка
     /// </summary>
-    bool StandStill { get; set; }
+    bool Repeat { get; set; }
+    /// <summary>
+    /// Стоять на месте при использовании навыка
+    /// </summary>
+    bool Stand { get; set; }
 
     /// <summary>
     /// Запускает навык

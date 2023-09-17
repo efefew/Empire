@@ -4,7 +4,7 @@ using UnityEngine;
 
 using static Attack;
 
-[AddComponentMenu("Skill Effect/Attack")]
+[AddComponentMenu("Effect/Attack")]
 public class Attack : Effect
 {
     #region Enums

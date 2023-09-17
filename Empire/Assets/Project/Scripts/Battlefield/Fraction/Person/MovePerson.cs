@@ -2,17 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using AdvancedEditorTools.Attributes;
+
 using UnityEngine;
 
 [RequireComponent(typeof(AgentMove))]
 public partial class Person : MonoBehaviour// Мобильность существа
 {
-    #region Delegates
-
-    public delegate bool EndStunHandler();
-
-    #endregion Delegates
-
     #region Enums
 
     /// <summary>
@@ -48,11 +44,11 @@ public partial class Person : MonoBehaviour// Мобильность существа
     #region Fields
 
     private const float CAMERA_VISIBLE_DISTANCE = 1230f;
-    private const float UPDATE_MOVE_SECONDS = 0.5f;
+    private const float UPDATE_MOVE = 1f, UPDATE_STOP_STATUS = 0.5f;
     private bool isStoped, rightDirection;
     private Vector3 scaleDefault;
     public Dictionary<Transform, TargetType> targets = new();
-
+    public Coroutine armyPursuit;
     public AgentMove agentMove;
 
     #endregion Fields
@@ -85,7 +81,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
         if (target == null)
             yield break;
         LastPursuitTarget = target;
-        agentMove.tempTarget = target.transform;
+        SetTarget(target.transform);
         yield return new WaitUntil(funcTarget);
         agentMove.tempTarget = null;
     }
@@ -96,34 +92,44 @@ public partial class Person : MonoBehaviour// Мобильность существа
             yield break;
 
         LastPursuitTarget = target;
-        agentMove.tempTarget = target.transform;
+        SetTarget(target.transform);
         yield return StartCoroutine(coroutineTarget);
         agentMove.tempTarget = null;
     }
+    [Button("MoveUpdate")]
+    public void MoveUpdate() => StartCoroutine(IMoveUpdate());
 
-    private IEnumerator IMoveUpdate()
+    public void SetTarget(Transform target)
+    {
+        agentMove.tempTarget = target;
+        MoveUpdate();
+    }
+    private IEnumerator IStopStatusUpdate()
     {
         while (true)
         {
-            if (health <= 0)
-                yield break;
-            yield return new WaitForSeconds(UPDATE_MOVE_SECONDS);
-            if (speedScale < 1)
+            yield return new WaitForSeconds(UPDATE_STOP_STATUS);
+
+            isStoped = (!agentMove.agent.isOnNavMesh || agentMove.agent.remainingDistance <= AgentMove.MIN_DISTANCE) && stunCount == 0;
+            ChangeStateAnimation(isStoped ? idleState : walkState);
+
+            if (!isStoped)
             {
-
+                if (agentMove.agent.path.corners.Length >= 2)
+                    rightDirection = agentMove.agent.path.corners[1].x - transform.position.x > 0;
+                transform.localScale = scaleDefault.X(scaleDefault.x * (rightDirection ? 1 : -1));
+                animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y, -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
             }
-
-            if (isStoped != agentMove.UpdateAgent(ref rightDirection, stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina)))
-            {
-                isStoped = !isStoped;
-                ChangeStateAnimation(isStoped ? idleState : walkState);
-            }
-
-            if (isStoped)
-                continue;
-            transform.localScale = scaleDefault.X(scaleDefault.x * (rightDirection ? 1 : -1));
-            animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y, -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
         }
+    }
+    private IEnumerator IMoveUpdate()
+    {
+        do
+        {
+            agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
+            yield return new WaitForSeconds(UPDATE_MOVE);
+            agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
+        } while (agentMove.tempTarget != null);
     }
 
     /// <summary>
@@ -161,6 +167,12 @@ public partial class Person : MonoBehaviour// Мобильность существа
     /// </summary>
     /// <param name="endStun">время</param>
     public Coroutine Pursuit(Person target, float time) => StartCoroutine(IPursuit(target, Timer(time)));
+    public void StopPursuit()
+    {
+        if (armyPursuit == null)
+            return;
+        StopCoroutine(armyPursuit);
+    }
 
     #endregion Methods
 }

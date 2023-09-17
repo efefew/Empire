@@ -58,8 +58,8 @@ public abstract class Skill : MonoBehaviour
     [Min(0)]
     [Tooltip("время заряда навыка")]
     public float timeCast;
-    [EndColumnArea]
 
+    [EndColumnArea]
     [Header("Условия для использования навыка")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelGreen)]
     [Min(0)]
@@ -73,49 +73,39 @@ public abstract class Skill : MonoBehaviour
 
     [Min(0)]
     public float amountSkill;
-    public TriggerType triggerTarget;
-    [EndColumnArea]
 
+    public TriggerType triggerTarget;
+
+    [EndColumnArea]
     [Header("Основные параметры навыка")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelBlue)]
-    /// <summary>
-    /// Расходник
-    /// </summary>
     public bool consumable;
+
     /// <summary>
     /// Преследовать припопадании
     /// </summary>
     public bool targetMove;
+
     /// <summary>
     /// Коллективный навык
     /// </summary>
     public bool collective;
+
     [Min(1)]
     public int maxCountCatch;
+
     [SerializeField]
     public TriggerType triggerDanger;
+
     public Buff[] buffs;
     public Effect[] effects;
+
     [EndColumnArea]
     public string nameAnimation;
-
+    public const float LIMIT_CLOSE_RANGE = 0.7f;
     #endregion Fields
 
     #region Methods
-
-    public void SetEffectsAndBuffs(Person initiator, Person target, ref int countCatch)
-    {
-        countCatch++;
-        foreach (Effect effect in effects)
-        {
-            effect.Run(initiator, target, this);
-        }
-
-        foreach (Buff buff in buffs)
-        {
-            Instantiate(buff).AddBuff(initiator, target);
-        }
-    }
 
     public static bool OnTrigger(TriggerType trigger, Person initiator, Person target)
     {
@@ -204,6 +194,19 @@ public abstract class Skill : MonoBehaviour
         return (enemy, self, friend);
     }
 
+    public void SetEffectsAndBuffs(Person initiator, Person target)
+    {
+        foreach (Effect effect in effects)
+        {
+            effect.Run(initiator, target, this);
+        }
+
+        foreach (Buff buff in buffs)
+        {
+            buff.Run(initiator, target);
+        }
+    }
+
     /// <summary>
     /// Реализация навыка
     /// </summary>
@@ -218,7 +221,7 @@ public abstract class Skill : MonoBehaviour
     /// <param name="target">цель навыка</param>
     public virtual bool LimitRun(Person initiator, Person target = null)
     {
-        if (initiator == null /*|| target == null*/)
+        if (initiator == null /*x || target == null*/)
             return false;
         // Проверяем, может ли персонаж использовать это умение
         if ((consumable && (amountSkill - 1) < 0) || !initiator.CanUseSkill(this))
@@ -229,15 +232,16 @@ public abstract class Skill : MonoBehaviour
 
         return LimitRangeRun(initiator, target);
     }
+
     /// <summary>
     /// Проверяем, может ли персонаж дотянуться до врага этим умением
     /// </summary>
     /// <param name="initiator">персонаж</param>
     /// <param name="target">врага</param>
     /// <returns></returns>
-    public virtual bool LimitRangeRun(Person initiator, Person target)
+    public virtual bool LimitRangeRun(Person initiator, Person target, bool close = false)
     {
-        if (target == null || (Vector2.Distance(initiator.transform.position, target.transform.position) > range && range != 0))
+        if (target == null || (Vector2.Distance(initiator.transform.position, target.transform.position) > range * (close ? LIMIT_CLOSE_RANGE : 1) && range != 0))
         {
             initiator.RemoveStateAnimation(nameAnimation);
             return false;
@@ -245,5 +249,6 @@ public abstract class Skill : MonoBehaviour
 
         return true;
     }
+
     #endregion Methods
 }

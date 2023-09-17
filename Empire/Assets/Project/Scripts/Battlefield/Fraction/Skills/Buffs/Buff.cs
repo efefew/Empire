@@ -1,52 +1,114 @@
+using System.Linq;
+
+using AdvancedEditorTools.Attributes;
+
 using UnityEngine;
 
 /// <summary>
-/// Наложенный временный эффект
+/// Усиление или ослабление
 /// </summary>
 public abstract class Buff : MonoBehaviour
 {
     #region Enums
 
     /// <summary>
-    /// Ограничение суммирования эффектов
+    /// Ограничение суммирования эффектов по специфике
     /// </summary>
-    public enum BuffStackType
+    public enum SpecificityStackType
     {
+        /// <summary>
+        /// Этот класс усиления или ослабления
+        /// </summary>
+        OneBuff,
+        /// <summary>
+        /// Конкркетно это усиление или ослабление
+        /// </summary>
+        OneThisBuff,
+        None
+    }
+    /// <summary>
+    /// Ограничение суммирования эффектов по инициаторам
+    /// </summary>
+    public enum InitiatorStackType
+    {
+        OneSide,
         OneFraction,
         OneArmy,
         OneCaster,
         None
     }
-
     #endregion Enums
 
     #region Fields
+    [Header("Ограничения")]
+    [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelOrange)]
 
-    private Person caster, target;
-
+    [SerializeField]
+    public SpecificityStackType specificityStack = SpecificityStackType.None;
+    [SerializeField]
+    public InitiatorStackType initiatorStack = InitiatorStackType.None;
+    [EndColumnArea]
     /// <summary>
     /// условие действия эффекта
     /// </summary>
-    public Condition conditionOfAction;
-    [SerializeField]
-    public BuffStackType buffStack = BuffStackType.None;
-
+    public Condition condition;
     #endregion Fields
 
     #region Methods
 
-    public virtual void AddBuff(Person caster, Person target)
+    protected virtual void StartBuff(object[] parameters)
     {
-        this.caster = caster;
-        this.target = target;
+        Person target = parameters[1] as Person;
         target.buffs.Add(this);
     }
 
-    public virtual void RemoveBuff()
+    protected virtual void EndBuff(object[] parameters)
     {
+        Person target = parameters[1] as Person;
         _ = target.buffs.Remove(this);
-        Destroy(this);
     }
 
+    public virtual void Run(Person caster, Person target)
+    {
+        if (!LimitRun(caster, target))
+            return;
+        caster.temporaryBuff.Do(condition, StartBuff, EndBuff, new object[2] { caster, target });
+    }
+    protected virtual bool LimitRun(Person initiator, Person target)
+    {
+        switch (specificityStack)
+        {
+            case SpecificityStackType.OneBuff:
+                if (target.buffs.Any((Buff buff) => buff.GetType() == GetType()))
+                    return false;
+                break;
+            case SpecificityStackType.OneThisBuff:
+                if (target.buffs.Contains(this))
+                    return false;
+                break;
+            case SpecificityStackType.None:
+                break;
+            default:
+                break;
+        }
+
+        switch (initiatorStack)
+        {
+            case InitiatorStackType.OneSide:
+                break;
+            case InitiatorStackType.OneFraction:
+                break;
+            case InitiatorStackType.OneArmy:
+                break;
+            case InitiatorStackType.OneCaster:
+                break;
+            case InitiatorStackType.None:
+                break;
+            default:
+                break;
+        }
+
+        return true;
+    }
     #endregion Methods
 }

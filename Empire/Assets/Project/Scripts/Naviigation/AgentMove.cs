@@ -1,3 +1,5 @@
+using AdvancedEditorTools.Attributes;
+
 using NavMeshPlus.Extensions;
 
 using UnityEngine;
@@ -9,11 +11,11 @@ public class AgentMove : MonoBehaviour
 {
     #region Fields
 
-    private const float MIN_DISTANCE = 0.1f;
+    public const float MIN_DISTANCE = 0.2f;
 
     [SerializeField]
     private Transform target;
-    [HideInInspector]
+    [ReadOnly]
     public Transform tempTarget;
     [HideInInspector]
     public NavMeshAgent agent;
@@ -22,35 +24,32 @@ public class AgentMove : MonoBehaviour
 
     #region Methods
     private void Awake() => agent = GetComponent<NavMeshAgent>();
+
     /// <summary>
     /// Обновление пути существа
     /// </summary>
-    /// <returns>существо стоит?</returns>
-    public bool UpdateAgent(ref bool rightDirection, bool stun, float speed)
+    public void UpdateAgent(bool stun, float speed)
     {
         agent.speed = speed;
         if (!agent.isOnNavMesh)
         {
             transform.position = target.position;
-            return rightDirection;
+            return;
         }
 
         if (stun)
         {
             agent.isStopped = true;
-            return rightDirection;
+            return;
         }
 
-        return tempTarget ? Move(tempTarget, ref rightDirection) : Move(target, ref rightDirection);
+        Move(tempTarget ? tempTarget : target);
     }
 
-    private bool Move(Transform target, ref bool rightDirection)
+    private void Move(Transform target)
     {
         _ = agent.SetDestination(target.position);
         agent.isStopped = agent.remainingDistance < MIN_DISTANCE;
-        if (agent.path.corners.Length >= 2)
-            rightDirection = agent.path.corners[1].x - transform.position.x > 0;
-        return agent.isStopped;
     }
 
     #endregion Methods

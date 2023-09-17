@@ -16,21 +16,6 @@ public class ButtonSkill : MonoBehaviour
     internal Button button { get; private set; }
     internal int prefabID { get; private set; }
 
-    #endregion Properties
-
-    #region Fields
-
-    private Battlefield battlefield;
-    private float timerSkillReload;
-    public bool waitCastSkill;
-    [SerializeField]
-    private Image imageLoad;
-    [SerializeField]
-    private TMP_Text textLoad;
-
-    public Dictionary<Army, UnityAction> initiatorArmies = new();
-    private bool silence;
-
     public bool Silence
     {
         get => silence;
@@ -40,6 +25,23 @@ public class ButtonSkill : MonoBehaviour
             silence = value;
         }
     }
+
+    #endregion Properties
+
+    #region Fields
+
+    private Battlefield battlefield;
+    private float timerSkillReload;
+
+    [SerializeField]
+    private Image imageLoad;
+
+    [SerializeField]
+    private TMP_Text textLoad;
+
+    private bool silence;
+    public bool waitCastSkill;
+    public Dictionary<Army, UnityAction> initiatorArmies = new();
 
     #endregion Fields
 
@@ -51,34 +53,38 @@ public class ButtonSkill : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (waitCastSkill)//ПОМЕНЯТЬ НА СОБЫТИЯ!!!
-        {
-            waitCastSkill = false;
-            foreach (KeyValuePair<Army, UnityAction> initiatorArmy in initiatorArmies)
-                CheckWaitCastSkill(initiatorArmy.Key);
-            button.enabled = !waitCastSkill;
-            imageLoad.fillAmount = waitCastSkill ? 1 : 0;
-            textLoad.text = waitCastSkill ? "∞" : "";
-            return;
-        }
+        UpdateWaitCastSkill();
 
-        if (timerSkillReload.Timer())
+        if (waitCastSkill || timerSkillReload.Timer())
             return;
 
         UpdateColdownSkill();
     }
 
-    private void UpdateColdownSkill()
+    private void UpdateWaitCastSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
+    {
+        waitCastSkill = false;
+        foreach (KeyValuePair<Army, UnityAction> initiatorArmy in initiatorArmies)
+            CheckWaitCastSkill(initiatorArmy.Key);
+
+        button.enabled = !waitCastSkill;
+        imageLoad.fillAmount = waitCastSkill ? 1 : 0;
+        textLoad.text = waitCastSkill ? "∞" : "";
+    }
+
+    private void UpdateColdownSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
     {
         button.enabled = !Silence && timerSkillReload == 0;
         imageLoad.fillAmount = skillTarget.timeCooldown == 0 ? 0 : timerSkillReload / skillTarget.timeCooldown;
         textLoad.text = timerSkillReload == 0 ? "" : System.Math.Round(timerSkillReload, 1).ToString();
     }
+
     private void CheckWaitCastSkill(Army army)
     {
         if (army.status.waitCastSkill == skillTarget)
             waitCastSkill = true;
     }
+
     private void AddTimerSkillReload(Army army)
     {
         if (army.status.timersSkillReload.ContainsKey(skillTarget))
@@ -92,11 +98,11 @@ public class ButtonSkill : MonoBehaviour
         CheckWaitCastSkill(army);
         prefabID = skillTarget.buttonSkillPrefab.GetInstanceID();
     }
+
     /// <summary>
-    /// Вызывается при выборе цели для реализации навыка
+    /// Перезарядка
     /// </summary>
-    /// <param name="army">Армия - цель</param>
-    public void OnArmySkillRun() => timerSkillReload = skillTarget.timeCooldown;
+    public void Reload() => timerSkillReload = skillTarget.timeCooldown;
 
     public void Add(Army army)
     {
@@ -134,5 +140,4 @@ public class ButtonSkill : MonoBehaviour
     }
 
     #endregion Methods
-
 }

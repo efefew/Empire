@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonSkillPrefab: {fileID: 7895945918228188534, guid: d4a36bf4dfb5953489dec1b5db7cdbc9, type: 3}
-  timeCooldown: 0
+  timeCooldown: 2
   timeTargetMove: 10
   timeCast: 0
   mana: 0
@@ -59,6 +59,7 @@ MonoBehaviour:
   collective: 0
   maxCountCatch: 1
   triggerDanger: 0
+  buffs: []
   effects:
   - {fileID: 8028587140731590295}
   nameAnimation: attack

@@ -9,7 +9,7 @@ public class PointsAB : MonoBehaviour
 {
     #region Events
 
-    public event Action<Transform, Transform> SetPositionsHandler;
+    public event Action<Transform, Transform> OnSetPositions;
 
     #endregion Events
 
@@ -63,7 +63,7 @@ public class PointsAB : MonoBehaviour
             SetPositionA(worldPosition);
         }
 
-        if (Input.GetKey/*Up*/(KeyCode.Mouse0) && !MyExtentions.IsPointerOverUI())
+        if (Input.GetKey(KeyCode.Mouse0) && !MyExtentions.IsPointerOverUI())
         {
             SetPositionB(worldPosition);
         }
@@ -100,12 +100,12 @@ public class PointsAB : MonoBehaviour
     {
         b.position = vector;
         a.LookAt2D(b.position);
-        SetPositionsHandler?.Invoke(a, b);
+        OnSetPositions?.Invoke(a, b);
 
         SetGroupPoints();
     }
 
-    public void SwitchGroup(bool on)
+    public void Group(bool on)
     {
         groupAB = on;
         conteinerToggle.enabled = !on;

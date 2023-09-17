@@ -7,18 +7,20 @@ using UnityEngine.Events;
 
 public class ConteinerButtonSkills : MonoBehaviour
 {
-    public Action OnClickAnyButtonSkills;
     #region Fields
 
     private Transform tr;
-    public List<ButtonSkill> buttonSkills = new();
     private float timerSkillCast;
     private Coroutine coroutine;
+    public Action OnClickAnyButtonSkills;
+    public List<ButtonSkill> buttonSkills = new();
+
     #endregion Fields
 
     #region Methods
 
     private void Awake() => tr = transform;
+
     private IEnumerator ITimerSkillCast()
     {
         while (timerSkillCast > 0)
@@ -31,12 +33,53 @@ public class ConteinerButtonSkills : MonoBehaviour
         coroutine = null;
         timerSkillCast = 0;
     }
+
+    private void ClickAnyButtonSkills() => OnClickAnyButtonSkills?.Invoke();
+
+    private void AddTimerSkillCast(Army army) => Silence(army, army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
+
+    /// <summary>
+    /// Блокировка использования способностей
+    /// </summary>
+    /// <param name="on">блокировать?</param>
+    private void Silence(bool on)
+    {
+        for (int id = 0; id < buttonSkills.Count; id++)
+            buttonSkills[id].Silence = on;
+    }
+
+    private bool Silence(Army initiator, float time)
+    {
+        bool exist = false;
+        for (int id = 0; id < buttonSkills.Count; id++)
+        {
+            if (buttonSkills[id].initiatorArmies.ContainsKey(initiator))
+            {
+                exist = true;
+                break;
+            }
+        }
+
+        if (!exist)
+            return false;
+        if (time > 0)
+        {
+            Silence(true);
+            timerSkillCast = time;
+        }
+
+        if (coroutine != null || time <= 0)
+            return true;
+        coroutine = StartCoroutine(ITimerSkillCast());
+        return true;
+    }
+
     public void Clear()
     {
         buttonSkills.Clear();
         tr.Clear();
     }
-    private void ClickAnyButtonSkills() => OnClickAnyButtonSkills?.Invoke();
+
     public void Add(Army army, Skill skill)
     {
         int id = IndexOf(skill.buttonSkillPrefab);
@@ -54,7 +97,7 @@ public class ConteinerButtonSkills : MonoBehaviour
         buttonSkills[id].Add(army);
         AddTimerSkillCast(army);
     }
-    private void AddTimerSkillCast(Army army) => Silence(army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
+
     /// <summary>
     /// Удаляет навык из армии и интерфейса.
     /// </summary>
@@ -91,6 +134,37 @@ public class ConteinerButtonSkills : MonoBehaviour
         }
     }
 
+    public bool Reload(Army army, Skill skill)
+    {
+        if (Contains(army, skill, out ButtonSkill buttonSkill))
+        {
+            buttonSkill.Reload();
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool Contains(Army army, Skill skill, out ButtonSkill buttonSkill)
+    {
+        buttonSkill = null;
+        for (int id = 0; id < buttonSkills.Count; id++)
+        {
+            if (buttonSkills[id].skillTarget == skill)
+            {
+                if (buttonSkills[id].initiatorArmies.ContainsKey(army))
+                {
+                    buttonSkill = buttonSkills[id];
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
+        return false;
+    }
+
     public int IndexOf(ButtonSkill buttonSkill)
     {
         for (int id = 0; id < buttonSkills.Count; id++)
@@ -101,26 +175,23 @@ public class ConteinerButtonSkills : MonoBehaviour
 
         return -1;
     }
-    /// <summary>
-    /// Блокировка использования способностей
-    /// </summary>
-    /// <param name="on">блокировать?</param>
-    private void Silence(bool on)
+
+    public bool Silence(Army army, Skill skill)
     {
-        for (int id = 0; id < buttonSkills.Count; id++)
-            buttonSkills[id].Silence = on;
-    }
-    public void Silence(float time)
-    {
-        if (time > 0)
+        if (Contains(army, skill, out ButtonSkill buttonSkill))
         {
-            Silence(true);
-            timerSkillCast = time;
+            if (skill.timeCast > 0)
+            {
+                Silence(true);
+                timerSkillCast = skill.timeCast;
+                coroutine ??= StartCoroutine(ITimerSkillCast());
+            }
+
+            return true;
         }
 
-        if (coroutine != null || time <= 0)
-            return;
-        coroutine = StartCoroutine(ITimerSkillCast());
+        return false;
     }
+
     #endregion Methods
 }

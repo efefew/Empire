@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 1352228010085165694}
   - component: {fileID: -3860243037903577101}
   - component: {fileID: 8028587140731590295}
+  - component: {fileID: -988362365530849532}
+  - component: {fileID: -2049457404225114225}
   m_Layer: 0
   m_Name: fast spell
   m_TagString: Untagged
@@ -46,26 +48,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonSkillPrefab: {fileID: -7748445493791581925, guid: 270b46b8776a95c4990ddf58ee4ce880, type: 3}
-  timeCooldown: 4
+  timeCooldown: 2
   timeTargetMove: 0
   timeCast: 0
   mana: 6
   stamina: 3
   range: 100
   amountSkill: 0
-  triggerTarget: 4
+  triggerTarget: 6
   consumable: 0
   targetMove: 0
   collective: 0
   maxCountCatch: 1
   triggerDanger: 4
   buffs:
-  - {fileID: 6966114960540982810, guid: 7ca19ed12fe287d4a9a2b8b171959400, type: 3}
+  - {fileID: -988362365530849532}
   effects:
   - {fileID: 8028587140731590295}
   nameAnimation: ss
-  minCountProjectile: 4
-  maxCountProjectile: 41
+  minCountProjectile: 1
+  maxCountProjectile: 1
   projectile: {fileID: 2530829529707909989, guid: 9aaaf81d09ce92b4d83c13598260e85f, type: 3}
   timeDanger: 0
   timeDead: 10
@@ -89,3 +91,32 @@ MonoBehaviour:
     m_keys: 06000000
     m_values:
     - 1
+--- !u!114 &-988362365530849532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5324385500174024622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca1e943e4513f0e45bc377fbb6d37667, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  specificityStack: 1
+  initiatorStack: 4
+  condition: {fileID: -2049457404225114225}
+  scaleSlowdown: 0.25
+--- !u!114 &-2049457404225114225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5324385500174024622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6b8fc352de296441a0cf38c0b5b6837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  time: 5

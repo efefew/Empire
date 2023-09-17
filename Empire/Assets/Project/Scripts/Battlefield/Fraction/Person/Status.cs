@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using AdvancedEditorTools.Attributes;
 
 using UnityEngine;
+
 /// <summary>
 /// Характеристики  боевой единицы
 /// </summary>
 public class Status : MonoBehaviour
 {
+    public Action<Skill, Person[]> OnRepeat;
     #region Fields
 
     public FractionBattlefield fraction;
@@ -57,7 +59,7 @@ public class Status : MonoBehaviour
     [Header("Навыки")]
     [BeginColumnArea(columnWidth: 1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.Bevel)]
     public Skill[] skills;
-    public Skill[] permanentSkills;
+    public Melee melee;
     [EndColumnArea]
 
     [Min(0)]
@@ -71,7 +73,7 @@ public class Status : MonoBehaviour
 
     #region Methods
 
-    public void TimerSkillReload(Skill skill)
+    public void TimerSkillReload(Skill skill, Person target)
     {
         if (timersSkillReload.ContainsKey(skill))
         {
@@ -81,7 +83,7 @@ public class Status : MonoBehaviour
 
         if (skill.timeCast > 0)
             _ = StartCoroutine(ITimerSkillCast(skill));
-        _ = StartCoroutine(ITimerSkillReload(skill));
+        _ = StartCoroutine(ITimerSkillReload(skill, target));
     }
     public void WaitCastSkill(Skill skill, Func<bool> expirationCondition) => _ = StartCoroutine(IWaitCastSkill(skill, expirationCondition));
     private IEnumerator IWaitCastSkill(Skill skill, Func<bool> expirationCondition)
@@ -101,7 +103,7 @@ public class Status : MonoBehaviour
 
         timerSkillCast = 0;
     }
-    private IEnumerator ITimerSkillReload(Skill skill)
+    private IEnumerator ITimerSkillReload(Skill skill, Person target)
     {
         timersSkillReload.Add(skill, skill.timeCooldown);
         while (timersSkillReload[skill] > 0)
@@ -111,6 +113,9 @@ public class Status : MonoBehaviour
         }
 
         _ = timersSkillReload.Remove(skill);
+
+        if (target != null)
+            OnRepeat?.Invoke(skill, target.army ? target.army.persons.ToArray() : new Person[1] { target });
     }
 
     #endregion Methods

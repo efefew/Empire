@@ -2,9 +2,7 @@ using System.Collections;
 
 using UnityEngine;
 
-/// <summary>
-/// Существо
-/// </summary>
+[RequireComponent(typeof(TemporaryAction))]
 public partial class Person : MonoBehaviour, ICombatUnit
 {
     #region Properties
@@ -12,11 +10,17 @@ public partial class Person : MonoBehaviour, ICombatUnit
     public Army army { get; private set; }
 
     public Status status { get; private set; }
-    public bool StandStill { get; set; }
+    public bool Repeat { get; set; }
+    public bool Stand { get; set; }
+
     /// <summary>
     /// готов ли испольлзовать навык
     /// </summary>
     public bool Ready { get; set; }
+
+    public TemporaryAction temporaryBuff { get; set; }
+
+    private const int WAIT_MELEE = 1;
 
     #endregion Properties
 
@@ -29,7 +33,11 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
     #region Methods
 
-    private void Awake() => scaleDefault = transform.localScale;
+    private void Awake()
+    {
+        temporaryBuff = GetComponent<TemporaryAction>();
+        scaleDefault = transform.localScale;
+    }
 
     private void Start() => battlefield = Battlefield.singleton;
 
@@ -52,19 +60,24 @@ public partial class Person : MonoBehaviour, ICombatUnit
         Destroy(target.gameObject);
         Destroy(gameObject);
 
-        //gameObject.SetActive(false);
     }
 
-    private IEnumerator SkillUpdate(Skill skill)
+    private IEnumerator MeleeUpdate()
     {
         while (true)
         {
-            yield return new WaitForSeconds(skill.timeCooldown);
+            if (status.melee == null)
+            {
+                yield return new WaitForSeconds(WAIT_MELEE);
+                continue;
+            }
+
+            yield return new WaitForSeconds(status.melee.timeCooldown);
             if (health == 0)
                 yield break;
             // Проверяем, не оглушены ли мы
             if (stunCount == 0)
-                skill.Run(this);
+                status.melee.Run(this);
         }
     }
 
@@ -79,13 +92,13 @@ public partial class Person : MonoBehaviour, ICombatUnit
         if (CastRun(skill, target))
         {
             //conteinerSkill.Silence(skill.timeCast);
-            status.TimerSkillReload(skill);
+            status.TimerSkillReload(skill, target);
         }
     }
 
     private IEnumerator ICastRun(Skill skill, Person target = null)
     {
-        Stun(skill.timeCast);
+        _ = Stun(skill.timeCast);
         yield return new WaitForSeconds(skill.timeCast);
         skill.Run(this, target);
     }
@@ -94,7 +107,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
     {
         this.army = army;
         Build(army.status);
-        OnDeadPerson += DeadPerson;
     }
 
     public void Build(Status status)
@@ -105,14 +117,9 @@ public partial class Person : MonoBehaviour, ICombatUnit
         stamina = status.maxStamina;
         mana = status.maxMana;
         morality = status.maxMorality;
-        if (status.permanentSkills.Length > 0)
-        {
-            for (int id = 0; id < status.permanentSkills.Length; id++)
-                _ = StartCoroutine(SkillUpdate(status.permanentSkills[id]));
-        }
-
-        _ = StartCoroutine(IMoveUpdate());
-        _ = StartCoroutine(RegenUpdate());
+        _ = StartCoroutine(MeleeUpdate());
+        _ = StartCoroutine(IRegenUpdate());
+        _ = StartCoroutine(IStopStatusUpdate());
         OnDeadPerson += DeadPerson;
     }
 
@@ -128,15 +135,22 @@ public partial class Person : MonoBehaviour, ICombatUnit
         if (target.TryGetValueOtherType(out Army army))
             UseSkill(battlefield.targetButtonSkill.skillTarget, army.persons[0]);
     }
+
     public bool CastRun(Skill skill, Person target)
     {
-        if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
-            ChangeStateAnimation(skill.nameAnimation, 1);
-        else
-            ChangeStateAnimation(skill.nameAnimation, 1);
-
         if (skill.LimitRun(this, target))
         {
+            if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
+            {
+                status.melee = melee;
+                if (!melee.canMiss)
+                    ChangeStateAnimation(skill.nameAnimation, 1);
+            }
+            else
+            {
+                ChangeStateAnimation(skill.nameAnimation, 1);
+            }
+
             _ = StartCoroutine(ICastRun(skill, target));
             return true;
         }

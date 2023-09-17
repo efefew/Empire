@@ -517,6 +517,7 @@ GameObject:
   - component: {fileID: 9212120045274464097}
   - component: {fileID: 8717977397557301878}
   - component: {fileID: 7706376628840291530}
+  - component: {fileID: 4250498529368611496}
   m_Layer: 6
   m_Name: IceWizard
   m_TagString: Untagged
@@ -570,7 +571,9 @@ MonoBehaviour:
   repeat: 0
   needTarget: 1
   collective: 0
+  distracted: 0
   buffs: []
+  tempMelee: {fileID: 0}
 --- !u!114 &5818222585719674614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -691,6 +694,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &4250498529368611496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567483951165592782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ff04ed4f634154f892de58cd1ac2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1619085469183908775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1414,7 +1429,7 @@ MonoBehaviour:
   maxMana: 150
   maxStamina: 100
   maxMorality: 100
-  regenHealth: 1
+  regenHealth: 0.01
   regenMana: 2
   regenStamina: 7
   regenMorality: 1
@@ -1432,8 +1447,8 @@ MonoBehaviour:
   skills:
   - {fileID: -3860243037903577101, guid: 2d85b2149dbe4954eb8d4f6e2bab20d3, type: 3}
   - {fileID: -3860243037903577101, guid: 9f6b158b99d26f14d80ca1e27a69a64f, type: 3}
-  permanentSkills:
-  - {fileID: 666667436706664360, guid: 954b99b76a742e24bab3ff62ba55513e, type: 3}
+  - {fileID: 1893778628882883706, guid: 7a798177915a27d4b8447dd3bcf37a37, type: 3}
+  melee: {fileID: 666667436706664360, guid: 954b99b76a742e24bab3ff62ba55513e, type: 3}
   maxSpeed: 3.5
   waitCastSkill: {fileID: 0}
   timerSkillCast: 0

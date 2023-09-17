@@ -185,7 +185,7 @@ MonoBehaviour:
   offsetX: 1.5
   offsetY: 1.5
   status: {fileID: 6398175788483333073}
-  countWarriors: 100
+  countWarriors: 80
 --- !u!114 &6398175788483333073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +204,7 @@ MonoBehaviour:
   maxMana: 0
   maxStamina: 100
   maxMorality: 100
-  regenHealth: 1
+  regenHealth: 0.01
   regenMana: 1
   regenStamina: 7
   regenMorality: 1
@@ -219,9 +219,9 @@ MonoBehaviour:
   shield:
     m_keys: 
     m_values: []
-  skills: []
-  permanentSkills:
+  skills:
   - {fileID: 666667436706664360, guid: 7946a456572b54d42a578a5f46e61005, type: 3}
+  melee: {fileID: 666667436706664360, guid: 7946a456572b54d42a578a5f46e61005, type: 3}
   maxSpeed: 3.5
   waitCastSkill: {fileID: 0}
   timerSkillCast: 0
@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 4629993507427932164}
   - component: {fileID: 895695574249237185}
   - component: {fileID: 2817779910589471330}
+  - component: {fileID: 3130998832189509851}
   m_Layer: 6
   m_Name: warrior
   m_TagString: Untagged
@@ -294,7 +295,9 @@ MonoBehaviour:
   repeat: 0
   needTarget: 1
   collective: 0
+  distracted: 0
   buffs: []
+  tempMelee: {fileID: 0}
 --- !u!222 &274735537375082142
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -415,6 +418,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &3130998832189509851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 237079701827102233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ff04ed4f634154f892de58cd1ac2c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &702676684732754821
 GameObject:
   m_ObjectHideFlags: 0

@@ -51,14 +51,15 @@ MonoBehaviour:
   timeCast: 2
   mana: 6
   stamina: 3
-  range: 20
+  range: 40
   amountSkill: 0
   triggerTarget: 0
   consumable: 0
   targetMove: 0
   collective: 0
   maxCountCatch: 1
-  triggerDanger: 4
+  triggerDanger: 0
+  buffs: []
   effects:
   - {fileID: 8028587140731590295}
   nameAnimation: cast cold
@@ -86,4 +87,4 @@ MonoBehaviour:
   attacks:
     m_keys: 06000000
     m_values:
-    - 300
+    - 100

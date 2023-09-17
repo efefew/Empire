@@ -1,3 +1,5 @@
+using System.Collections;
+
 using UnityEngine;
 
 [AddComponentMenu("Skill/Melee")]
@@ -14,12 +16,10 @@ public class Melee : Skill
 
     #region Methods
 
-    public override bool LimitRangeRun(Person initiator, Person target = null) => Physics2D.OverlapCircleAll(initiator.transform.position, range, LayerMask.GetMask("Person")).Length > 0;
-
     public override void Run(Person initiator, Person target = null)
     {
-        if (!LimitRun(initiator, target))
-            return;
+        //if (target != null && !LimitRun(initiator, target))
+        //    return;
         // Ќаходим все коллайдеры в радиусе действи€ умени€
         Collider2D[] colliders2D = Physics2D.OverlapCircleAll(initiator.transform.position, range, LayerMask.GetMask("Person"));
 
@@ -35,12 +35,14 @@ public class Melee : Skill
                 continue;
             // Ќаносим урон и примен€ем эффекты умени€
             if (OnTrigger(triggerTarget, initiator, target))
-                SetEffectsAndBuffs(initiator, target, ref countCatch);
+            {
+                countCatch++;
+                SetEffectsAndBuffs(initiator, target);
+            }
             // ≈сли умение может заставить цель двигатьс€ и цель была поражена, персонаж игрока начинает следовать за этой целью на некоторое врем€
             if (targetMove && countCatch > 0)
             {
-
-                initiator.Pursuit(target, timeTargetMove);
+                _ = initiator.Pursuit(target, ITargetMove(initiator, timeTargetMove));
             }
             // ≈сли количество пораженных целей достигло максимального значени€ и это значение не равно 0, то оставшиес€ цели не поражаютс€
             if (countCatch >= maxCountCatch && maxCountCatch != 0)
@@ -60,6 +62,13 @@ public class Melee : Skill
                 initiator.ChangeStateAnimation(nameAnimation, 1);
         }
     }
-
+    private IEnumerator ITargetMove(Person initiator, float time)
+    {
+        if (time <= 0)
+            yield break;
+        initiator.distracted = true;
+        yield return new WaitForSeconds(time);
+        initiator.distracted = false;
+    }
     #endregion Methods
 }

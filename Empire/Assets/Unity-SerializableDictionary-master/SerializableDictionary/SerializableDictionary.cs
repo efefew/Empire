@@ -57,7 +57,7 @@ public abstract class SerializableDictionaryBase<TKey, TValue, TValueStorage> : 
                 }
                 catch (Exception)
                 {
-
+                    return;
                     //throw;
                 }
             }

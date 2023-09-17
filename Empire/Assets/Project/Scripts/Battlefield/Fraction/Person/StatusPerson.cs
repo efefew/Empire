@@ -39,27 +39,28 @@ public partial class Person : MonoBehaviour // Характеристики существа
     public bool repeat = false;
     public bool needTarget = true;
     public bool collective = false;
+    public bool distracted = false;
     #endregion Properties
 
     #region Fields
 
-    private const float MIN_PRECENT_WALK_STAMINA = 10f;
-    private const float UPDATE_REGEN_SECONDS = 1.5f;
+    private const float MIN_PRECENT_WALK_STAMINA = 80f;
+    private const float UPDATE_REGEN = 1.5f;
 
     /// <summary>
     /// Наложенные эффекты
     /// </summary>
     public List<Buff> buffs;
-
+    [ReadOnly]
+    public Melee tempMelee;
     #endregion Fields
 
     #region Methods
-
-    private IEnumerator RegenUpdate()
+    private IEnumerator IRegenUpdate()
     {
         while (true)
         {
-            yield return new WaitForSeconds(UPDATE_REGEN_SECONDS);
+            yield return new WaitForSeconds(UPDATE_REGEN);
 
             // Если здоровье персоны стало равным 0, вызываем событие OnDeadArmy
             if (health == 0)
@@ -73,8 +74,7 @@ public partial class Person : MonoBehaviour // Характеристики существа
 
             mana += status.regenMana;
             mana = Mathf.Clamp(mana, 0, status.maxMana);
-
-            if (!agentMove.agent.isStopped && stamina >= status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f)
+            if (!isStoped && stamina >= status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f)
             {
                 stamina -= status.regenStamina / 10;
                 stamina = Mathf.Clamp(stamina, status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f, stamina + (status.regenStamina / 10));

@@ -30,7 +30,7 @@ public class FractionBattlefield : MonoBehaviour
     private ToggleGroup conteinerToggle;
 
     [SerializeField]
-    private Toggle toggleSwitchGroup;
+    private Toggle toggleArmyGroup, toggleStand, toggleRepeat;
 
     private Battlefield battlefield;
 
@@ -70,12 +70,14 @@ public class FractionBattlefield : MonoBehaviour
         if (!bot)
         {
             mainAB.conteinerToggle = conteinerToggle;
-            toggleSwitchGroup.onValueChanged.AddListener((bool on) => mainAB.SwitchGroup(on));
+            toggleArmyGroup.onValueChanged.AddListener((bool on) => mainAB.Group(on));
+            //toggleStand.onValueChanged.AddListener((bool on) =>  );
         }
 
         for (int id = 0; id < armiesInfo.Count; id++)
         {
             Army army = Instantiate(armiesInfo[id].armyPack.army, conteinerArmy);
+            army.name += $" {id}";
             armies.Add(army);
             mainAB.childrensAB.Add(army.anchors);
             army.anchors.parentAB = mainAB;
@@ -97,11 +99,20 @@ public class FractionBattlefield : MonoBehaviour
                 toggle.group = conteinerToggle;
                 toggle.onValueChanged.AddListener((bool on) =>
                 {
-                    army.SetActive(on);
                     if (on == true)
+                    {
                         army.AddSkillsUI();
+                        toggleRepeat.onValueChanged.AddListener(army.SetRepeat);
+                        toggleStand.onValueChanged.AddListener(army.SetStand);
+                        army.SetActive(true);
+                    }
                     else
+                    {
                         army.RemoveSkillsUI();
+                        toggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
+                        toggleStand.onValueChanged.RemoveListener(army.SetStand);
+                        army.SetActive(false);
+                    }
                 });
                 armyGlobalUI.toggle.onValueChanged.AddListener((bool on) => toggle.isOn = !toggle.isOn);
 
