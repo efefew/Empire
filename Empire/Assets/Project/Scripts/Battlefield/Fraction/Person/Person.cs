@@ -102,7 +102,12 @@ public partial class Person : MonoBehaviour, ICombatUnit
         yield return new WaitForSeconds(skill.timeCast);
         skill.Run(this, target);
     }
-
+    private IEnumerator ICastRun(Skill skill, Vector3 target)
+    {
+        _ = Stun(skill.timeCast);
+        yield return new WaitForSeconds(skill.timeCast);
+        skill.Run(this, target);
+    }
     public void Build(Army army)
     {
         this.army = army;
@@ -112,6 +117,9 @@ public partial class Person : MonoBehaviour, ICombatUnit
     public void Build(Status status)
     {
         this.status = status;
+        for (int i = 0; i < status.skills.Length; i++)
+            amountSkill.Add(status.skills[i], status.skills[i].maxAmountSkill);
+
         target.SetParent(transform.parent, true);
         health = status.maxHealth;
         stamina = status.maxStamina;
@@ -129,14 +137,45 @@ public partial class Person : MonoBehaviour, ICombatUnit
     /// <param name="target">цель</param>
     public void TargetForUseSkill(ICombatUnit target)
     {
-        battlefield.OnSetTarget -= TargetForUseSkill;
+        battlefield.OnSetTargetArmy -= TargetForUseSkill;
+        battlefield.OnSetTargetPoint -= TargetForUseSkill;
         if (target.TryGetValueOtherType(out Person person))
-            UseSkill(battlefield.targetButtonSkill.skillTarget, person);
+            UseSkill(battlefield.targetSkill, person);
         if (target.TryGetValueOtherType(out Army army))
-            UseSkill(battlefield.targetButtonSkill.skillTarget, army.persons[0]);
+            UseSkill(battlefield.targetSkill, army.persons[0]);
     }
-
+    /// <summary>
+    /// Запускает навык
+    /// </summary>
+    /// <param name="target">цель</param>
+    public void TargetForUseSkill(Vector3 target)
+    {
+        battlefield.OnSetTargetArmy -= TargetForUseSkill;
+        battlefield.OnSetTargetPoint -= TargetForUseSkill;
+        //.реализовать UseSkill(battlefield.targetSkill, target);
+    }
     public bool CastRun(Skill skill, Person target)
+    {
+        if (skill.LimitRun(this, target.transform.position))
+        {
+            if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
+            {
+                status.melee = melee;
+                if (!melee.canMiss)
+                    ChangeStateAnimation(skill.nameAnimation, 1);
+            }
+            else
+            {
+                ChangeStateAnimation(skill.nameAnimation, 1);
+            }
+
+            _ = StartCoroutine(ICastRun(skill, target));
+            return true;
+        }
+
+        return false;
+    }
+    public bool CastRun(Skill skill, Vector3 target)
     {
         if (skill.LimitRun(this, target))
         {
@@ -157,6 +196,5 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
         return false;
     }
-
     #endregion Methods
 }

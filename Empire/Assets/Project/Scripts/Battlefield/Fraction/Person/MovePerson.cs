@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 using AdvancedEditorTools.Attributes;
 
@@ -47,7 +46,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
     private const float UPDATE_MOVE = 1f, UPDATE_STOP_STATUS = 0.5f;
     private bool isStoped, rightDirection;
     private Vector3 scaleDefault;
-    public Dictionary<Transform, TargetType> targets = new();
+    //public Dictionary<Transform, TargetType> targets = new();
     public Coroutine armyPursuit;
     public AgentMove agentMove;
 
@@ -75,7 +74,24 @@ public partial class Person : MonoBehaviour// Мобильность существа
         yield return StartCoroutine(coroutineStun);
         stunCount--;
     }
+    private IEnumerator IPursuit(Vector3 target, Func<bool> funcTarget)
+    {
+        if (target == null)
+            yield break;
+        SetTarget(target);
+        yield return new WaitUntil(funcTarget);
+        agentMove.tempPointTarget = null;
+    }
 
+    private IEnumerator IPursuit(Vector3 target, IEnumerator coroutineTarget)
+    {
+        if (target == null)
+            yield break;
+
+        SetTarget(target);
+        yield return StartCoroutine(coroutineTarget);
+        agentMove.tempPointTarget = null;
+    }
     private IEnumerator IPursuit(Person target, Func<bool> funcTarget)
     {
         if (target == null)
@@ -102,6 +118,11 @@ public partial class Person : MonoBehaviour// Мобильность существа
     public void SetTarget(Transform target)
     {
         agentMove.tempTarget = target;
+        MoveUpdate();
+    }
+    public void SetTarget(Vector3 target)
+    {
+        agentMove.tempPointTarget = target;
         MoveUpdate();
     }
     private IEnumerator IStopStatusUpdate()
@@ -161,6 +182,17 @@ public partial class Person : MonoBehaviour// Мобильность существа
     /// </summary>
     /// <param name="coroutineTarget">определённый момент</param>
     public Coroutine Pursuit(Person target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
+    /// <summary>
+    /// Преследует до определённого момента
+    /// </summary>
+    /// <param name="funcTarget">определённый момент</param>
+    public Coroutine Pursuit(Vector3 target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
+
+    /// <summary>
+    /// Преследует до определённого момента
+    /// </summary>
+    /// <param name="coroutineTarget">определённый момент</param>
+    public Coroutine Pursuit(Vector3 target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
 
     /// <summary>
     /// Преследует на время

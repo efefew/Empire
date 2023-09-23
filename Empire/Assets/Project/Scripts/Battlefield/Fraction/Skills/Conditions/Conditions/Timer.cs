@@ -2,7 +2,7 @@ using System.Collections;
 
 using UnityEngine;
 
-[AddComponentMenu("Condition/ITargetMove")]
+[AddComponentMenu("Condition/Timer")]
 public class Timer : Condition
 {
     #region Fields

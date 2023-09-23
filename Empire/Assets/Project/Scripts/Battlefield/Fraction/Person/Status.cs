@@ -11,7 +11,8 @@ using UnityEngine;
 /// </summary>
 public class Status : MonoBehaviour
 {
-    public Action<Skill, Person[]> OnRepeat;
+    public Action<Skill, Person[]> OnRepeatUseSkillOnPersons;
+    public Action<Skill, Vector3> OnRepeatUseSkillOnPoint;
     #region Fields
 
     public FractionBattlefield fraction;
@@ -85,6 +86,18 @@ public class Status : MonoBehaviour
             _ = StartCoroutine(ITimerSkillCast(skill));
         _ = StartCoroutine(ITimerSkillReload(skill, target));
     }
+    public void TimerSkillReload(Skill skill, Vector3 target)
+    {
+        if (timersSkillReload.ContainsKey(skill))
+        {
+            timersSkillReload[skill] = skill.timeCooldown;
+            return;
+        }
+
+        if (skill.timeCast > 0)
+            _ = StartCoroutine(ITimerSkillCast(skill));
+        _ = StartCoroutine(ITimerSkillReload(skill, target));
+    }
     public void WaitCastSkill(Skill skill, Func<bool> expirationCondition) => _ = StartCoroutine(IWaitCastSkill(skill, expirationCondition));
     private IEnumerator IWaitCastSkill(Skill skill, Func<bool> expirationCondition)
     {
@@ -115,8 +128,21 @@ public class Status : MonoBehaviour
         _ = timersSkillReload.Remove(skill);
 
         if (target != null)
-            OnRepeat?.Invoke(skill, target.army ? target.army.persons.ToArray() : new Person[1] { target });
+            OnRepeatUseSkillOnPersons?.Invoke(skill, target.army ? target.army.persons.ToArray() : new Person[1] { target });
     }
+    private IEnumerator ITimerSkillReload(Skill skill, Vector3 target)
+    {
+        timersSkillReload.Add(skill, skill.timeCooldown);
+        while (timersSkillReload[skill] > 0)
+        {
+            yield return new WaitForFixedUpdate();
+            timersSkillReload[skill] -= Time.fixedDeltaTime;
+        }
 
+        _ = timersSkillReload.Remove(skill);
+
+        if (target != null)
+            OnRepeatUseSkillOnPoint?.Invoke(skill, target);
+    }
     #endregion Methods
 }

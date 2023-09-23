@@ -57,11 +57,12 @@ public class Melee : Skill
         else
         {
             if (consumable)
-                amountSkill--;
+                initiator.amountSkill[this]--;
             if (countCatch != 0)
                 initiator.ChangeStateAnimation(nameAnimation, 1);
         }
     }
+    public override void Run(Person initiator, Vector3 target) => Debug.LogError("Эта способность не может быть направлена на точку");
     private IEnumerator ITargetMove(Person initiator, float time)
     {
         if (time <= 0)

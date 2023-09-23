@@ -111,8 +111,9 @@ public class ButtonSkill : MonoBehaviour
 
         UnityAction skillRunner = () =>
         {
-            battlefield.OnSetTarget += army.TargetForUseSkill;
-            battlefield.targetButtonSkill = this;
+            battlefield.OnSetTargetArmy += army.TargetForUseSkill;
+            battlefield.OnSetTargetPoint += army.TargetForUseSkill;
+            battlefield.targetSkill = skillTarget;
             battlefield.SetActiveArmies(skillTarget.triggerTarget, army);
         };
         initiatorArmies.Add(army, skillRunner);
@@ -121,7 +122,8 @@ public class ButtonSkill : MonoBehaviour
 
     public void Remove(Army army)
     {
-        battlefield.OnSetTarget -= army.TargetForUseSkill;
+        battlefield.OnSetTargetArmy -= army.TargetForUseSkill;
+        battlefield.OnSetTargetPoint -= army.TargetForUseSkill;
         UnityAction skillRunner = initiatorArmies.First((KeyValuePair<Army, UnityAction> initiatorArmy) => army == initiatorArmy.Key).Value;
 
         _ = initiatorArmies.Remove(army);

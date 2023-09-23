@@ -72,8 +72,8 @@ public abstract class Skill : MonoBehaviour
     public float range;
 
     [Min(0)]
-    public float amountSkill;
-
+    public float maxAmountSkill;
+    public bool pointCanBeTarget;
     public TriggerType triggerTarget;
 
     [EndColumnArea]
@@ -213,18 +213,23 @@ public abstract class Skill : MonoBehaviour
     /// <param name="initiator">реализующий навык</param>
     /// <param name="target">цель навыка</param>
     public abstract void Run(Person initiator, Person target = null);
-
+    /// <summary>
+    /// Реализация навыка
+    /// </summary>
+    /// <param name="initiator">реализующий навык</param>
+    /// <param name="target">цель навыка</param>
+    public abstract void Run(Person initiator, Vector3 target);
     /// <summary>
     /// Проверяет возможность реализации навыка
     /// </summary>
     /// <param name="initiator">реализующий навык</param>
     /// <param name="target">цель навыка</param>
-    public virtual bool LimitRun(Person initiator, Person target = null)
+    public virtual bool LimitRun(Person initiator, Vector3 target)
     {
-        if (initiator == null /*x || target == null*/)
+        if (initiator == null)
             return false;
         // Проверяем, может ли персонаж использовать это умение
-        if ((consumable && (amountSkill - 1) < 0) || !initiator.CanUseSkill(this))
+        if ((consumable && (initiator.amountSkill[this] - 1) < 0) || !initiator.CanUseSkill(this))
         {
             initiator.RemoveStateAnimation(nameAnimation);
             return false;
@@ -239,9 +244,9 @@ public abstract class Skill : MonoBehaviour
     /// <param name="initiator">персонаж</param>
     /// <param name="target">врага</param>
     /// <returns></returns>
-    public virtual bool LimitRangeRun(Person initiator, Person target, bool close = false)
+    public virtual bool LimitRangeRun(Person initiator, Vector3 target, bool close = false)
     {
-        if (target == null || (Vector2.Distance(initiator.transform.position, target.transform.position) > range * (close ? LIMIT_CLOSE_RANGE : 1) && range != 0))
+        if (target == null || (Vector2.Distance(initiator.transform.position, target) > range * (close ? LIMIT_CLOSE_RANGE : 1) && range != 0))
         {
             initiator.RemoveStateAnimation(nameAnimation);
             return false;

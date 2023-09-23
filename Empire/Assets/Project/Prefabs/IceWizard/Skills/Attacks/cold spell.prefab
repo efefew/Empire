@@ -51,8 +51,9 @@ MonoBehaviour:
   timeCast: 2
   mana: 6
   stamina: 3
-  range: 40
+  range: 400
   amountSkill: 0
+  pointCanBeTarget: 1
   triggerTarget: 0
   consumable: 0
   targetMove: 0

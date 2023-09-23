@@ -1,71 +1,79 @@
-using System.Collections;
-
 using UnityEngine;
+
+using Zelude;
 
 [AddComponentMenu("Skill/Area")]
 public class Area : Skill
 {
     #region Fields
 
-    public Person auraTarget;
+    public AreaObject area;
+    [MinMaxSlider(1, 100, "maxCountAura", "Count Area")]
+    [SerializeField]
+    public int minCountArea;
 
+    [HideInInspector]
+    public int maxCountArea;
     /// <summary>
     /// Промежуток
     /// </summary>
     [Min(0.001f)]
     public float gap;
-
+    [Min(0)]
+    public float radius;
+    [Min(0)]
+    public float scatter;
     /// <summary>
     /// Частота
     /// </summary>
     public uint frequency;
 
-    /// <summary>
-    /// Стоять при использовании навыка?
-    /// </summary>
-    public bool stun;
+    ///// <summary>
+    ///// Стоять при использовании навыка?
+    ///// </summary>
+    //public bool stun;
 
     #endregion Fields
 
     #region Methods
 
-    public override void Run(Person initiator, Person target = null) => _ = stun ? initiator.Stun(IRun(initiator, target, target.transform.position)) : StartCoroutine(IRun(initiator, target, target.transform.position));
-
-    public IEnumerator IRun(Person initiator, Person target, Vector3 point)
+    public override void Run(Person initiator, Person target = null)
     {
-        for (int ID = 0; ID < frequency; ID++)
+        if (!LimitRun(initiator, target.transform.position))
+            return;
+
+        if (consumable)
+            initiator.amountSkill[this]--;
+
+        for (int i = 0; i < Random.Range(minCountArea, maxCountArea); i++)
         {
-            if (!LimitRun(initiator, target))
-                yield break;
-
-            if (consumable)
-                amountSkill--;
-            // Находим все коллайдеры в радиусе действия умения
-            Collider2D[] colliders2D = Physics2D.OverlapCircleAll(point, range, LayerMask.GetMask("Person"));
-            // Счетчик целей, пораженных умением
-            int countCatch = 0;
-            for (int i = 0; i < colliders2D.Length; i++)
-            {
-                if (!colliders2D[i].GetComponent<Person>())
-                    continue;
-                target = colliders2D[i].GetComponent<Person>();
-                // Если у цели нет здоровья, переходим к следующей цели
-                if (target.health <= 0)
-                    continue;
-                // Наносим урон и применяем эффекты умения
-                if (OnTrigger(triggerTarget, initiator, target))
-                {
-                    countCatch++;
-                    SetEffectsAndBuffs(initiator, target);
-                }
-                // Если количество пораженных целей достигло максимального значения и это значение не равно 0, то оставшиеся цели не поражаются
-                if (countCatch >= maxCountCatch && maxCountCatch != 0)
-                    break;
-            }
-
-            yield return new WaitForSeconds(gap);
+            AreaObject area = Instantiate(
+                this.area,
+                new Vector2(target.transform.position.x + Random.Range(0f, scatter), target.transform.position.y + Random.Range(0f, scatter)),
+                Quaternion.Euler(0, 0, Random.Range(0f, 360f)),
+                initiator.transform.parent);
+            area.Build(initiator, this);
         }
     }
+    public override void Run(Person initiator, Vector3 target)
+    {
+        if (!pointCanBeTarget)
+            return;
+        if (!LimitRun(initiator, target))
+            return;
 
+        if (consumable)
+            initiator.amountSkill[this]--;
+
+        for (int i = 0; i < Random.Range(minCountArea, maxCountArea); i++)
+        {
+            AreaObject area = Instantiate(
+                this.area,
+                new Vector2(target.x + Random.Range(0f, scatter), target.y + Random.Range(0f, scatter)),
+                Quaternion.Euler(0, 0, Random.Range(0f, 360f)),
+                initiator.transform.parent);
+            area.Build(initiator, this);
+        }
+    }
     #endregion Methods
 }

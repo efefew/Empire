@@ -1,14 +1,19 @@
-using System.Collections;
-
 using UnityEngine;
+
+using Zelude;
 
 [AddComponentMenu("Skill/Aura")]
 public class Aura : Skill
 {
     #region Fields
 
-    public Person auraTarget;
+    public AuraObject aura;
+    [MinMaxSlider(1, 100, "maxCountAura", "Count Aura")]
+    [SerializeField]
+    public int minCountAura;
 
+    [HideInInspector]
+    public int maxCountAura;
     /// <summary>
     /// Промежуток
     /// </summary>
@@ -19,53 +24,33 @@ public class Aura : Skill
     /// Частота
     /// </summary>
     public uint frequency;
-
-    /// <summary>
-    /// Стоять при использовании навыка?
-    /// </summary>
-    public bool stun;
+    [Min(0)]
+    public float radius;
+    [Min(0)]
+    public float scatter;
+    ///// <summary>
+    ///// Стоять при использовании навыка?
+    ///// </summary>
+    //public bool stun;
 
     #endregion Fields
 
     #region Methods
 
-    public override void Run(Person initiator, Person target = null) => _ = stun ? initiator.Stun(IRun(initiator, target)) : StartCoroutine(IRun(initiator, target));
-
-    public IEnumerator IRun(Person initiator, Person target)
+    public override void Run(Person initiator, Person target = null)
     {
-        for (int ID = 0; ID < frequency; ID++)
+        if (!LimitRun(initiator, target.transform.position) || target == null)
+            return;
+
+        if (consumable)
+            initiator.amountSkill[this]--;
+
+        for (int i = 0; i < Random.Range(minCountAura, maxCountAura); i++)
         {
-            if (!LimitRun(initiator, target))
-                yield break;
-
-            if (consumable)
-                amountSkill--;
-            // Находим все коллайдеры в радиусе действия умения
-            Collider2D[] colliders2D = Physics2D.OverlapCircleAll(initiator.transform.position, range, LayerMask.GetMask("Person"));
-            // Счетчик целей, пораженных умением
-            int countCatch = 0;
-            for (int i = 0; i < colliders2D.Length; i++)
-            {
-                if (!colliders2D[i].GetComponent<Person>())
-                    continue;
-                target = colliders2D[i].GetComponent<Person>();
-                // Если у цели нет здоровья, переходим к следующей цели
-                if (target.health <= 0)
-                    continue;
-                // Наносим урон и применяем эффекты умения
-                if (OnTrigger(triggerTarget, initiator, target))
-                {
-                    countCatch++;
-                    SetEffectsAndBuffs(initiator, target);
-                }
-                // Если количество пораженных целей достигло максимального значения и это значение не равно 0, то оставшиеся цели не поражаются
-                if (countCatch >= maxCountCatch && maxCountCatch != 0)
-                    break;
-            }
-
-            yield return new WaitForSeconds(gap);
+            AuraObject aura = Instantiate(this.aura, new Vector2(transform.position.x + Random.Range(0f, scatter), transform.position.y + Random.Range(0f, scatter)), Quaternion.Euler(0, 0, Random.Range(0f, 360f)), initiator.transform.parent);
+            aura.Build(initiator, this, target);
         }
     }
-
+    public override void Run(Person initiator, Vector3 target) => Debug.LogError("Эта способность не может быть направлена на точку");
     #endregion Methods
 }

@@ -9,7 +9,7 @@ public class PointsAB : MonoBehaviour
 {
     #region Events
 
-    public event Action<Transform, Transform> OnSetPositions;
+    public event Action<Transform, Transform> OnChangePositions, OnChangedPositions;
 
     #endregion Events
 
@@ -24,48 +24,37 @@ public class PointsAB : MonoBehaviour
 
     #region Fields
 
-    private Vector3 screenPosition, worldPosition;
+    public Battlefield battlefield;
     public Transform a, b;
 
     #endregion Fields
 
     #region Methods
-
-    private void OnGUI()
+    private void Start()
     {
-        // Получаем основную камеру
-        Camera c = Camera.main;
-
-        // Получаем текущее событие мыши
-        Event e = Event.current;
-
-        // Получаем позицию мыши на экране
-        Vector2 mousePos = new()
-        {
-            x = e.mousePosition.x,
-            y = c.pixelHeight - e.mousePosition.y
-        };
-
-        // Создаем вектор 3D-позиции на экране
-        // с учетом ближней плоскости отсечения
-        screenPosition = new Vector3(mousePos.x, mousePos.y, c.nearClipPlane);
-
-        // Преобразуем 2D-координаты на экране в 3D-координаты в мировом пространстве
-        worldPosition = c.ScreenToWorldPoint(screenPosition);
+        if (Battlefield.singleton != null)
+            battlefield = Battlefield.singleton;
     }
 
     private void Update()
     {
-        if (parentAB && parentAB.groupAB)
+        if ((parentAB && parentAB.groupAB) || MyExtentions.IsPointerOverUI())
             return;
-        if (Input.GetKeyDown(KeyCode.Mouse0) && !MyExtentions.IsPointerOverUI())
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            SetPositionA(worldPosition);
+            ChangePositionA(battlefield.worldPosition);
         }
 
-        if (Input.GetKey(KeyCode.Mouse0) && !MyExtentions.IsPointerOverUI())
+        if (Input.GetKey(KeyCode.Mouse0))
         {
-            SetPositionB(worldPosition);
+            ChangePositionB(battlefield.worldPosition);
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            battlefield.DeactiveAllArmies();
+            ChangedPositions();
         }
     }
 
@@ -80,9 +69,9 @@ public class PointsAB : MonoBehaviour
         {
             if (!childrensAB[id].enabled)
                 continue;
-            childrensAB[id].SetPositionA(position);
+            childrensAB[id].ChangePositionA(position);
             position += a.right * distance;
-            childrensAB[id].SetPositionB(position);
+            childrensAB[id].ChangePositionB(position);
             position += a.right * Army.OFFSET_BETWEEN_ARMIES;
         }
     }
@@ -94,15 +83,26 @@ public class PointsAB : MonoBehaviour
         enabled = on;
     }
 
-    public void SetPositionA(Vector2 vector) => a.position = vector;
+    public void ChangePositionA(Vector2 vector) => a.position = vector;
 
-    public void SetPositionB(Vector2 vector)
+    public void ChangePositionB(Vector2 vector, bool firstCall = false)
     {
         b.position = vector;
         a.LookAt2D(b.position);
-        OnSetPositions?.Invoke(a, b);
+        if (firstCall)
+            OnChangedPositions?.Invoke(a, b);
+        OnChangePositions?.Invoke(a, b);
 
         SetGroupPoints();
+    }
+
+    public void ChangedPositions()
+    {
+        OnChangedPositions?.Invoke(a, b);
+        if (!groupAB)
+            return;
+        for (int id = 0; id < childrensAB.Count; id++)
+            childrensAB[id].ChangedPositions();
     }
 
     public void Group(bool on)

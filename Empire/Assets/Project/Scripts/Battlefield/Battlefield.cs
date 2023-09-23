@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 using static Skill;
 
@@ -9,7 +10,8 @@ public class Battlefield : MonoBehaviour
 {
     #region Events
 
-    public event Action<ICombatUnit> OnSetTarget;
+    public event Action<ICombatUnit> OnSetTargetArmy;
+    public event Action<Vector3> OnSetTargetPoint;
 
     #endregion Events
 
@@ -27,20 +29,59 @@ public class Battlefield : MonoBehaviour
     [SerializeField]
     private FractionBattlefield[] fractions;
 
-    internal ButtonSkill targetButtonSkill;
+    private bool pointTargetclicked;
+    internal Skill targetSkill;
 
+    public Vector3 screenPosition { get; private set; }
+    public Vector3 worldPosition { get; private set; }
     public FractionBattlefield playerFraction;
-
+    public Button pointTarget;
     #endregion Fields
 
     #region Methods
+    private void OnGUI()
+    {
+        // Получаем основную камеру
+        Camera c = Camera.main;
 
+        // Получаем текущее событие мыши
+        Event e = Event.current;
+
+        // Получаем позицию мыши на экране
+        Vector2 mousePos = new()
+        {
+            x = e.mousePosition.x,
+            y = c.pixelHeight - e.mousePosition.y
+        };
+
+        // Создаем вектор 3D-позиции на экране
+        // с учетом ближней плоскости отсечения
+        screenPosition = new Vector3(mousePos.x, mousePos.y, c.nearClipPlane);
+
+        // Преобразуем 2D-координаты на экране в 3D-координаты в мировом пространстве
+        worldPosition = c.ScreenToWorldPoint(screenPosition);
+    }
     private void Awake()
     {
         InitializeSingleton();
         DeactiveAllArmies();
+        pointTarget.onClick.AddListener(() =>
+        {
+            SetTargetPoint(pointTarget.transform.position);
+            pointTarget.gameObject.SetActive(false);
+            // pointTargetclicked = true;
+            targetSkill = null;
+        });
+        pointTarget.gameObject.SetActive(false);
     }
-
+    private void Update()
+    {
+        if (targetSkill == null || !targetSkill.pointCanBeTarget)
+            return;
+        if (!Input.GetKeyUp(KeyCode.Mouse0) || MyExtentions.IsPointerOverUI())
+            return;
+        CreatePointTarget(worldPosition);
+    }
     /// <summary>
     /// Активировать армию для нажатия
     /// </summary>
@@ -62,7 +103,7 @@ public class Battlefield : MonoBehaviour
     /// <summary>
     /// Деактивировать все армии для нажатия
     /// </summary>
-    private void DeactiveAllArmies()
+    public void DeactiveAllArmies()
     {
         List<Army> armies;
         for (int idFraction = 0; idFraction < fractions.Length; idFraction++)
@@ -90,12 +131,14 @@ public class Battlefield : MonoBehaviour
     /// <param name="target">цель</param>
     public void SetTargetArmy(ICombatUnit target)
     {
-        OnSetTarget?.Invoke(target);
-        //xtargetButtonSkill.Reload();
-
+        OnSetTargetArmy?.Invoke(target);
         DeactiveAllArmies();
     }
-
+    public void SetTargetPoint(Vector3 target)
+    {
+        OnSetTargetPoint?.Invoke(target);
+        DeactiveAllArmies();
+    }
     /// <summary>
     /// Активировать армии для нажатия с ограничением в виде триггера
     /// </summary>
@@ -115,7 +158,17 @@ public class Battlefield : MonoBehaviour
             }
         }
     }
+    public void CreatePointTarget(Vector3 point)
+    {
+        if (pointTargetclicked)
+        {
+            pointTargetclicked = false;
+            return;
+        }
 
+        pointTarget.gameObject.SetActive(true);
+        pointTarget.transform.position = point;
+    }
     public Color GetColorFraction(FractionBattlefield fraction) => fraction.sideID != playerFraction.sideID ? enemyColor : playerFraction == fraction ? selfColor : friendColor;
 
     #endregion Methods

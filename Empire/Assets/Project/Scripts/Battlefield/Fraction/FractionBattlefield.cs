@@ -34,8 +34,8 @@ public class FractionBattlefield : MonoBehaviour
 
     private Battlefield battlefield;
 
-    [SerializeField]
-    public bool bot;
+    [ReadOnly]
+    public Bot bot;
 
     public ulong sideID;
 
@@ -54,6 +54,7 @@ public class FractionBattlefield : MonoBehaviour
     private void Awake()
     {
         mainAB = GetComponent<PointsAB>();
+        bot ??= GetComponent<Bot>();
         conteinerArmy = transform;
         battlefield = Battlefield.singleton;
         BuildFraction(start.position, end.position);
@@ -89,42 +90,49 @@ public class FractionBattlefield : MonoBehaviour
             a = point.position;
             point.position += point.right * distance;
             b = point.position;
-            if (!bot)
-            {
-                StatusUI armyUI = Instantiate(armiesInfo[id].armyPack.armyUI, conteinerToggle.transform);
-                StatusUI armyGlobalUI = Instantiate(armiesInfo[id].armyPack.armyGlobalUI, conteinerGlobal);
-                armyGlobalUI.background.color = battlefield.GetColorFraction(this);
-
-                Toggle toggle = armyUI.toggle;
-                toggle.group = conteinerToggle;
-                toggle.onValueChanged.AddListener((bool on) =>
-                {
-                    if (on == true)
-                    {
-                        army.AddSkillsUI();
-                        toggleRepeat.onValueChanged.AddListener(army.SetRepeat);
-                        toggleStand.onValueChanged.AddListener(army.SetStand);
-                        army.SetActive(true);
-                    }
-                    else
-                    {
-                        army.RemoveSkillsUI();
-                        toggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
-                        toggleStand.onValueChanged.RemoveListener(army.SetStand);
-                        army.SetActive(false);
-                    }
-                });
-                armyGlobalUI.toggle.onValueChanged.AddListener((bool on) => toggle.isOn = !toggle.isOn);
-
-                army.BuildArmy(a, b, this, buttonArmy, armyUI, armyGlobalUI, conteinerSkill);
-            }
-            else
-            {
-                army.BuildArmy(a, b, this, buttonArmy);
-            }
+            BuildArmy(a, b, armiesInfo[id], army, buttonArmy);
 
             point.position += point.right * Army.OFFSET_BETWEEN_ARMIES;
         }
+    }
+
+    private void BuildArmy(Vector2 a, Vector2 b, ArmyInformation armyInfo, Army army, Button buttonArmy)
+    {
+        if (bot)
+        {
+            army.BuildArmy(a, b, this, buttonArmy);
+            return;
+        }
+
+        StatusUI armyUI = Instantiate(armyInfo.armyPack.armyUI, conteinerToggle.transform);
+        StatusUI armyGlobalUI = Instantiate(armyInfo.armyPack.armyGlobalUI, conteinerGlobal);
+        armyGlobalUI.background.color = battlefield.GetColorFraction(this);
+
+        Toggle toggle = armyUI.toggle;
+        toggle.group = conteinerToggle;
+        toggle.onValueChanged.AddListener((bool on) =>
+        {
+            if (on == true)
+            {
+                army.AddSkillsUI();
+                toggleRepeat.SetIsOnWithoutNotify(army.Repeat);
+                toggleStand.SetIsOnWithoutNotify(army.Stand);
+                battlefield.DeactiveAllArmies();
+                toggleRepeat.onValueChanged.AddListener(army.SetRepeat);
+                toggleStand.onValueChanged.AddListener(army.SetStand);
+                army.SetActive(true);
+            }
+            else
+            {
+                army.RemoveSkillsUI();
+                toggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
+                toggleStand.onValueChanged.RemoveListener(army.SetStand);
+                army.SetActive(false);
+            }
+        });
+        armyGlobalUI.toggle.onValueChanged.AddListener((bool on) => toggle.isOn = !toggle.isOn);
+
+        army.BuildArmy(a, b, this, buttonArmy, armyUI, armyGlobalUI, conteinerSkill);
     }
 
     private void DeadArmy(Army army)

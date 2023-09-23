@@ -7,15 +7,16 @@ public class Target : Skill
 
     public override void Run(Person initiator, Person target = null)
     {
-        if (!LimitRun(initiator, target))
+        if (!LimitRun(initiator, target.transform.position))
             return;
 
         if (consumable)
-            amountSkill--;
+            initiator.amountSkill[this]--;
 
         if (OnTrigger(triggerTarget, initiator, target))
             SetEffectsAndBuffs(initiator, target);
     }
+    public override void Run(Person initiator, Vector3 target) => Debug.LogError("Эта способность не может быть направлена на точку");
 
     #endregion Methods
 }

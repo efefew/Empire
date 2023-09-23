@@ -17,13 +17,19 @@ public class AgentMove : MonoBehaviour
     private Transform target;
     [ReadOnly]
     public Transform tempTarget;
+    [ReadOnly]
+    public Vector3? tempPointTarget;
     [HideInInspector]
     public NavMeshAgent agent;
 
     #endregion Fields
 
     #region Methods
-    private void Awake() => agent = GetComponent<NavMeshAgent>();
+    private void Awake()
+    {
+        tempPointTarget = null;
+        agent = GetComponent<NavMeshAgent>();
+    }
 
     /// <summary>
     /// Обновление пути существа
@@ -43,12 +49,14 @@ public class AgentMove : MonoBehaviour
             return;
         }
 
-        Move(tempTarget ? tempTarget : target);
+        Vector3 point = tempPointTarget == null ? target.position : (Vector3)tempPointTarget;
+        point = tempTarget ? tempTarget.position : point;
+        Move(point);
     }
 
-    private void Move(Transform target)
+    private void Move(Vector3 point)
     {
-        _ = agent.SetDestination(target.position);
+        _ = agent.SetDestination(point);
         agent.isStopped = agent.remainingDistance < MIN_DISTANCE;
     }
 

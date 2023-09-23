@@ -23,7 +23,9 @@ public class Projectile : Skill
     public float speed;
 
     public float offset;
-
+    /// <summary>
+    /// разброс
+    /// </summary>
     [Range(0f, 360f)]
     public float scatter;
 
@@ -40,19 +42,38 @@ public class Projectile : Skill
         projectile.transform.position = initiator.transform.position + (initiator.transform.up * offset);
         projectile.transform.LookAt2D(target.transform.position);
         projectile.transform.eulerAngles = projectile.transform.eulerAngles.Z(projectile.transform.eulerAngles.z + Random.Range(-scatter, scatter));
-        if (targetPerson)
-            projectile.Build(initiator, this, target);
-        else
-            projectile.Build(initiator, this);
+        projectile.Build(initiator, this, target);
     }
+    private void SpawnPrjectile(Person initiator, Vector3 target)
+    {
+        ProjectileObject projectile = Instantiate(this.projectile, initiator.transform.parent);
 
+        projectile.transform.position = initiator.transform.position + (initiator.transform.up * offset);
+        projectile.transform.LookAt2D(target);
+        projectile.transform.eulerAngles = projectile.transform.eulerAngles.Z(projectile.transform.eulerAngles.z + Random.Range(-scatter, scatter));
+        projectile.Build(initiator, this);
+    }
     public override void Run(Person initiator, Person target = null)
     {
+        if (!LimitRun(initiator, target.transform.position))
+            return;
+
+        if (consumable)
+            initiator.amountSkill[this]--;
+
+        for (int i = 0; i < Random.Range(minCountProjectile, maxCountProjectile); i++)
+            SpawnPrjectile(initiator, target);
+    }
+
+    public override void Run(Person initiator, Vector3 target)
+    {
+        if (targetPerson || !pointCanBeTarget)
+            return;
         if (!LimitRun(initiator, target))
             return;
 
         if (consumable)
-            amountSkill--;
+            initiator.amountSkill[this]--;
 
         for (int i = 0; i < Random.Range(minCountProjectile, maxCountProjectile); i++)
             SpawnPrjectile(initiator, target);

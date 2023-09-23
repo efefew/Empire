@@ -51,6 +51,8 @@ public partial class Person : MonoBehaviour // Характеристики существа
     /// Наложенные эффекты
     /// </summary>
     public List<Buff> buffs;
+    public Dictionary<Skill, float> amountSkill = new();
+
     [ReadOnly]
     public Melee tempMelee;
     #endregion Fields

@@ -11,8 +11,8 @@ public class ProjectileObject : MonoBehaviour
     [SerializeField]
     private ProjectileObject nextProjectile;
 
-    private Person targetPerson;
-    private Person initiator;
+    private Vector3 targetPoint;
+    private Person targetPerson, initiator;
 
     [SerializeField]
     private float timeAnimationDead;
@@ -85,6 +85,5 @@ public class ProjectileObject : MonoBehaviour
         this.skill = skill;
         countCatch = skill.maxCountCatch;
     }
-
     #endregion Methods
 }
