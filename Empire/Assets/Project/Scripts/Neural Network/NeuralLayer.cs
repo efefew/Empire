@@ -1,13 +1,27 @@
 using UnityEngine;
 
-public class NeuralLayer
+public class NeuralLayer : MonoBehaviour
 {
-    public double[] neurons;
-    /// <summary>
-    /// Весы между предыдущим слоем и этим слоем [предыдущий слой, этот слой]
-    /// </summary>
-    public double[,] weight;
+
+    #region Delegates
+
+    public delegate double ActivationFunctionHandler(double x);
+
+    #endregion Delegates
+
+    #region Fields
+
     private NeuralLayer previosLayer;
+    /// <summary>
+    /// смещение
+    /// </summary>
+    public double bias;
+
+    public Neuron[] neurons;
+    #endregion Fields
+
+    #region Methods
+
     /// <summary>
     /// Создать весы
     /// </summary>
@@ -15,42 +29,79 @@ public class NeuralLayer
     public void CreateNeuralLayer(int countNeurons, NeuralLayer previosLayer = null)
     {
         this.previosLayer = previosLayer;
-        neurons = new double[countNeurons];
+        neurons = new Neuron[countNeurons];
         if (previosLayer == null)
             return;
-        weight = new double[previosLayer.neurons.Length, countNeurons];
-        SetRandomWeight();
+
+        for (int id = 0; id < neurons.Length; id++)
+            neurons[id] = new Neuron(previosLayer.neurons.Length);
     }
-    public void LoadNeurons(double[] neurons) => this.neurons = (double[])neurons.Clone();
-    public void LoadWeight(double[,] weight) => this.weight = (double[,])weight.Clone();
-    public void ActivationNeurons()
+    /// <summary>
+    /// Создать весы
+    /// </summary>
+    /// <param name="previosLayer">предыдущий слой</param>
+    public void CreateNeuralLayer(int countNeurons, double[][] wight, NeuralLayer previosLayer = null)
     {
+        this.previosLayer = previosLayer;
+        neurons = new Neuron[countNeurons];
+        if (previosLayer == null)
+            return;
+
+        for (int id = 0; id < neurons.Length; id++)
+            neurons[id] = new Neuron(wight[id]);
+    }
+    public void LoadNeuralLayer(double[,] weight, NeuralLayer previosLayer)
+    {
+        neurons = new Neuron[weight.GetLength(1)];
+        for (int id = 0; id < neurons.Length; id++)
+            neurons[id] = new Neuron(weight, id);
+
+        this.previosLayer = previosLayer;
+    }
+
+    public void LoadNeurons(double[] neuronsValue)
+    {
+        neurons = new Neuron[neuronsValue.Length];
+        for (int id = 0; id < neurons.Length; id++)
+            neurons[id] = new Neuron(neuronsValue[id]);
+    }
+
+    public void ActivationNeurons(ActivationFunctionHandler function)
+    {
+        double summ;
         for (int id = 0; id < neurons.Length; id++)
         {
+            summ = 0;
             for (int idPrevios = 0; idPrevios < neurons.Length; idPrevios++)
+                summ += previosLayer.neurons[idPrevios].value * neurons[id].weight[idPrevios];
+            neurons[id].value = function(summ + bias);
+            if (double.IsNaN(neurons[id].value) || double.IsInfinity(neurons[id].value))
             {
-                neurons[id] = ActivationFunction(previosLayer.neurons[idPrevios] * weight[idPrevios, id]);
+                Debug.Log($"<color=#F13939> нейрон = NaN или Infinity </color>");
             }
         }
     }
-    /// <summary>
-    /// Функция активации
-    /// </summary>
-    /// <param name="x">параметр</param>
-    /// <returns>результат</returns>
-    private double ActivationFunction(double x) => 1 / (1 + System.Math.Pow(System.Math.E, -x));
-    /// <summary>
-    /// Производная функции
-    /// </summary>
-    /// <param name="x">параметр</param>
-    /// <returns>результат</returns>
-    private double DerivativeFunction(double x) => ActivationFunction(x) * (1 - ActivationFunction(x));
-    public void SetRandomWeight()
+    public double[] GetNeuronsValue()
     {
-        for (int x = 0; x < weight.GetLength(0); x++)
+        double[] array = new double[neurons.Length];
+        for (int id = 0; id < neurons.Length; id++)
         {
-            for (int y = 0; y < weight.GetLength(1); y++)
-                weight[x, y] = Random.value + 0.001;
+            array[id] = neurons[id].value;
         }
+
+        return array;
     }
+    public double[,] GetWeight2D()
+    {
+        double[,] weight2D = new double[neurons.Length, neurons[0].weight.Length];
+        for (int x = 0; x < weight2D.GetLength(0); x++)
+        {
+            for (int y = 0; y < weight2D.GetLength(1); y++)
+                weight2D[x, y] = neurons[x].weight[y];
+        }
+
+        return weight2D;
+    }
+    #endregion Methods
+
 }

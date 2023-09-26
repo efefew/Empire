@@ -5,24 +5,56 @@ using AdvancedEditorTools.Attributes;
 
 using UnityEngine;
 
+public class TestClass
+{
+    #region Fields
+
+    public double value;
+
+    #endregion Fields
+}
+
 public class Test : MonoBehaviour
 {
-    public Transform tr1;
-    public Rigidbody2D rb2d;
-    public float speed = 1.0f;
+    #region Fields
+
+    private TestClass[] array = new TestClass[1000];
+
     [Min(1)]
-    public int minCoun = 1;
+    public int minCount = 1;
+
     [Min(0)]
     public long minMilliseconds = 100;
+
+    #endregion Fields
+
     #region Methods
-    public void Test1() => tr1.position += tr1.right * speed;
-    public void Test2() => rb2d.AddForce(tr1.right * speed);
+
+    public void Test1()
+    {
+        for (int i = 0; i < array.Length; i++)
+            array[i].value = 1;
+    }
+
+    public void Test2()
+    {
+        foreach (TestClass element in array)
+            element.value = 1;
+    }
+
+    [Button("JustTest", 15)]
+    public void JustTest()
+    {
+    }
 
     [Button("Test", 15)]
-    public void TestTime() => TimeCheck(new Action[] { Test1, Test2 }, minCoun, minMilliseconds);
+    public void TestTime() => TimeCheck(new Action[] { Test1, Test2 }, minCount, minMilliseconds);
 
     public void TimeCheck(Action[] actions, int minCount = 1, long minMilliseconds = 100)
     {
+        for (int id = 0; id < array.Length; id++)
+            array[id] = new TestClass();
+
         Stopwatch stopWatch = new();
         for (int id = 0; id < actions.Length; id++)
         {
@@ -38,7 +70,7 @@ public class Test : MonoBehaviour
 
             TimeSpan ts = stopWatch.Elapsed;
             string time = string.Format("{0:00}:{1:00}:{2:00}.{3:000}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
-            UnityEngine.Debug.Log($"<color=#22AA22> Тест {id + 1}: время = {time}, количество {countID} </color>");
+            UnityEngine.Debug.Log($"<color=#1CDE6F> Тест {id + 1}: время = {time}, количество {countID} </color>");
 
             stopWatch.Reset();
         }

@@ -130,8 +130,9 @@ GameObject:
   m_Component:
   - component: {fileID: 42620123}
   - component: {fileID: 42620124}
+  - component: {fileID: 42620125}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: NN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -164,6 +165,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ee1c60d8f731164fbefbd4bda087c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  learningRate: 0.30000001192092896
+  prefabNeuralLayer: {fileID: 2456771297521785759, guid: 321adf43914182b43b59b9012a36254d, type: 3}
+  inputLayer: {fileID: 0}
+  hiddenLayers: []
+  outputLayer: {fileID: 0}
+  evaluationOfResults: 0
+  lossFunction: 1
+  activationFunction: 0
+  countEra: 0
+  countPhoto: 0
+  error: 0
+  E: 0.01
+--- !u!114 &42620125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42620122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39952268014679b4b8243393699ee6b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  countEllipse: 0
+  countRectangle: 0
+  countTriangle: 0
+--- !u!114 &92227880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91035bcb2ca13824395c1c51b162bf3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseInspectorFoldout: 0
+  layoutInfos: []
+  buttonMethods: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &347270671
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,7 +220,6 @@ GameObject:
   m_Component:
   - component: {fileID: 347270674}
   - component: {fileID: 347270673}
-  - component: {fileID: 347270672}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -182,14 +227,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &347270672
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 347270671}
-  m_Enabled: 1
 --- !u!20 &347270673
 Camera:
   m_ObjectHideFlags: 0
@@ -200,7 +237,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -270,10 +307,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseInspectorFoldout: 0
   layoutInfos: []
-  buttonMethods: []
+  buttonMethods:
+  - rid: 3234911146208133317
+  - rid: 3234911146208133318
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 3234911146208133317
+      type: {class: ButtonInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
+      data:
+        methodName: Next
+        buttonName: Next
+        foldout: 1
+        buttonSize: 15
+        parameters: []
+    - rid: 3234911146208133318
+      type: {class: ButtonInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
+      data:
+        methodName: StopOrResume
+        buttonName: Stop or Resume
+        foldout: 1
+        buttonSize: 15
+        parameters: []
 --- !u!1 &1679430281
 GameObject:
   m_ObjectHideFlags: 1
@@ -306,8 +361,10 @@ MonoBehaviour:
   dataDict:
     m_keys:
     - {fileID: 42620124}
+    - {fileID: 42620125}
     m_values:
     - {fileID: 1361545841}
+    - {fileID: 92227880}
   extensionEnabled: 1
   debugMode: 0
 --- !u!4 &1679430283
