@@ -1,17 +1,17 @@
 using UnityEngine;
 
 /// <summary>
-/// Моментальный эффект
+/// РњРѕРјРµРЅС‚Р°Р»СЊРЅС‹Р№ СЌС„С„РµРєС‚
 /// </summary>
 public abstract class Effect : MonoBehaviour
 {
     #region Methods
 
     /// <summary>
-    /// Запустить эффект
+    /// Р—Р°РїСѓСЃС‚РёС‚СЊ СЌС„С„РµРєС‚
     /// </summary>
-    /// <param name="initiator">инициатор</param>
-    /// <param name="target">цель</param>
+    /// <param name="initiator">РёРЅРёС†РёР°С‚РѕСЂ</param>
+    /// <param name="target">С†РµР»СЊ</param>
     public abstract void Run(Person initiator, Person target, Skill skill);
 
     #endregion Methods

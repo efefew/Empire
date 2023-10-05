@@ -6,27 +6,27 @@ using AdvancedEditorTools.Attributes;
 using UnityEngine;
 
 [RequireComponent(typeof(AgentMove))]
-public partial class Person : MonoBehaviour// Мобильность существа
+public partial class Person : MonoBehaviour// РњРѕР±РёР»СЊРЅРѕСЃС‚СЊ СЃСѓС‰РµСЃС‚РІР°
 {
     #region Enums
 
     /// <summary>
-    /// Тип преследования цели
+    /// РўРёРї РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ С†РµР»Рё
     /// </summary>
     public enum TargetType
     {
         /// <summary>
-        /// Вынужденая
+        /// Р’С‹РЅСѓР¶РґРµРЅР°СЏ
         /// </summary>
         forced,
 
         /// <summary>
-        /// Приказ
+        /// РџСЂРёРєР°Р·
         /// </summary>
         command,
 
         /// <summary>
-        /// Закончить то, что начал
+        /// Р—Р°РєРѕРЅС‡РёС‚СЊ С‚Рѕ, С‡С‚Рѕ РЅР°С‡Р°Р»
         /// </summary>
         finish
     }
@@ -154,50 +154,50 @@ public partial class Person : MonoBehaviour// Мобильность существа
     }
 
     /// <summary>
-    /// Оглушает до определённого момента
+    /// РћРіР»СѓС€Р°РµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
     /// </summary>
-    /// <param name="funcStun">определённый момент</param>
+    /// <param name="funcStun">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
     public Coroutine Stun(Func<bool> funcStun) => StartCoroutine(IStun(funcStun));
 
     /// <summary>
-    /// Оглушает до определённого момента
+    /// РћРіР»СѓС€Р°РµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
     /// </summary>
-    /// <param name="coroutineStun">определённый момент</param>
+    /// <param name="coroutineStun">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
     public Coroutine Stun(IEnumerator coroutineStun) => StartCoroutine(IStun(coroutineStun));
 
     /// <summary>
-    /// Оглушает на время
+    /// РћРіР»СѓС€Р°РµС‚ РЅР° РІСЂРµРјСЏ
     /// </summary>
-    /// <param name="endStun">время</param>
+    /// <param name="endStun">РІСЂРµРјСЏ</param>
     public Coroutine Stun(float time) => StartCoroutine(IStun(Timer(time)));
 
     /// <summary>
-    /// Преследует до определённого момента
+    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
     /// </summary>
-    /// <param name="funcTarget">определённый момент</param>
+    /// <param name="funcTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
     public Coroutine Pursuit(Person target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
 
     /// <summary>
-    /// Преследует до определённого момента
+    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
     /// </summary>
-    /// <param name="coroutineTarget">определённый момент</param>
+    /// <param name="coroutineTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
     public Coroutine Pursuit(Person target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
     /// <summary>
-    /// Преследует до определённого момента
+    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
     /// </summary>
-    /// <param name="funcTarget">определённый момент</param>
+    /// <param name="funcTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
     public Coroutine Pursuit(Vector3 target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
 
     /// <summary>
-    /// Преследует до определённого момента
+    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
     /// </summary>
-    /// <param name="coroutineTarget">определённый момент</param>
+    /// <param name="coroutineTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
     public Coroutine Pursuit(Vector3 target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
 
     /// <summary>
-    /// Преследует на время
+    /// РџСЂРµСЃР»РµРґСѓРµС‚ РЅР° РІСЂРµРјСЏ
     /// </summary>
-    /// <param name="endStun">время</param>
+    /// <param name="endStun">РІСЂРµРјСЏ</param>
     public Coroutine Pursuit(Person target, float time) => StartCoroutine(IPursuit(target, Timer(time)));
     public void StopPursuit()
     {

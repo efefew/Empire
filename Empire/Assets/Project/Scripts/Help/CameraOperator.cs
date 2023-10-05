@@ -1,9 +1,9 @@
-﻿using System.Collections;
+п»їusing System.Collections;
 
 using UnityEngine;
 
 /// <summary>
-/// Оператор камеры
+/// РћРїРµСЂР°С‚РѕСЂ РєР°РјРµСЂС‹
 /// </summary>
 public class CameraOperator : MonoBehaviour
 {
@@ -146,35 +146,35 @@ public class CameraOperator : MonoBehaviour
     }
 
     /// <summary>
-    /// Куротин тряски камеры
+    /// РљСѓСЂРѕС‚РёРЅ С‚СЂСЏСЃРєРё РєР°РјРµСЂС‹
     /// </summary>
-    /// <param name="duration">длительность тряски</param>
-    /// <param name="magnitude">расстояние от состояния покоя</param>
-    /// <param name="noize">сила тряски</param>
+    /// <param name="duration">РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ С‚СЂСЏСЃРєРё</param>
+    /// <param name="magnitude">СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕРєРѕСЏ</param>
+    /// <param name="noize">СЃРёР»Р° С‚СЂСЏСЃРєРё</param>
     private IEnumerator ShakeCameraCoroutine(float duration, float magnitude, float noize)
     {
-        //Инициализируем счётчиков прошедшего времени
+        //Р�РЅРёС†РёР°Р»РёР·РёСЂСѓРµРј СЃС‡С‘С‚С‡РёРєРѕРІ РїСЂРѕС€РµРґС€РµРіРѕ РІСЂРµРјРµРЅРё
         float elapsed = 0f;
-        //Генерируем две точки на "текстуре" шума Перлина
+        //Р“РµРЅРµСЂРёСЂСѓРµРј РґРІРµ С‚РѕС‡РєРё РЅР° "С‚РµРєСЃС‚СѓСЂРµ" С€СѓРјР° РџРµСЂР»РёРЅР°
         Vector2 noizeStartPoint0 = UnityEngine.Random.insideUnitCircle * noize;
         Vector2 noizeStartPoint1 = UnityEngine.Random.insideUnitCircle * noize;
 
-        //Выполняем код до тех пор пока не иссякнет время
+        //Р’С‹РїРѕР»РЅСЏРµРј РєРѕРґ РґРѕ С‚РµС… РїРѕСЂ РїРѕРєР° РЅРµ РёСЃСЃСЏРєРЅРµС‚ РІСЂРµРјСЏ
         while (elapsed < duration)
         {
-            //Генерируем две очередные координаты на текстуре Перлина в зависимости от прошедшего времени
+            //Р“РµРЅРµСЂРёСЂСѓРµРј РґРІРµ РѕС‡РµСЂРµРґРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РЅР° С‚РµРєСЃС‚СѓСЂРµ РџРµСЂР»РёРЅР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїСЂРѕС€РµРґС€РµРіРѕ РІСЂРµРјРµРЅРё
             Vector2 currentNoizePoint0 = Vector2.Lerp(noizeStartPoint0, Vector2.zero, elapsed / duration);
             Vector2 currentNoizePoint1 = Vector2.Lerp(noizeStartPoint1, Vector2.zero, elapsed / duration);
-            //Создаём новую дельту для камеры и умножаем её на длину дабы учесть желаемый разброс
+            //РЎРѕР·РґР°С‘Рј РЅРѕРІСѓСЋ РґРµР»СЊС‚Сѓ РґР»СЏ РєР°РјРµСЂС‹ Рё СѓРјРЅРѕР¶Р°РµРј РµС‘ РЅР° РґР»РёРЅСѓ РґР°Р±С‹ СѓС‡РµСЃС‚СЊ Р¶РµР»Р°РµРјС‹Р№ СЂР°Р·Р±СЂРѕСЃ
             Vector2 cameraPostionDelta = new(Mathf.PerlinNoise(currentNoizePoint0.x, currentNoizePoint0.y), Mathf.PerlinNoise(currentNoizePoint1.x, currentNoizePoint1.y));
             cameraPostionDelta *= magnitude * (duration - elapsed);
 
-            //Перемещаем камеру в нувую координату
+            //РџРµСЂРµРјРµС‰Р°РµРј РєР°РјРµСЂСѓ РІ РЅСѓРІСѓСЋ РєРѕРѕСЂРґРёРЅР°С‚Сѓ
             CamTr.localPosition += (Vector3)cameraPostionDelta;
 
-            //Увеличиваем счётчик прошедшего времени
+            //РЈРІРµР»РёС‡РёРІР°РµРј СЃС‡С‘С‚С‡РёРє РїСЂРѕС€РµРґС€РµРіРѕ РІСЂРµРјРµРЅРё
             elapsed += Time.deltaTime;
-            //Приостанавливаем выполнение корутины, в следующем кадре она продолжит выполнение с данной точки
+            //РџСЂРёРѕСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІС‹РїРѕР»РЅРµРЅРёРµ РєРѕСЂСѓС‚РёРЅС‹, РІ СЃР»РµРґСѓСЋС‰РµРј РєР°РґСЂРµ РѕРЅР° РїСЂРѕРґРѕР»Р¶РёС‚ РІС‹РїРѕР»РЅРµРЅРёРµ СЃ РґР°РЅРЅРѕР№ С‚РѕС‡РєРё
             yield return null;
         }
     }
@@ -197,21 +197,21 @@ public class CameraOperator : MonoBehaviour
     }
 
     /// <summary>
-    /// Тряска камеры
+    /// РўСЂСЏСЃРєР° РєР°РјРµСЂС‹
     /// </summary>
-    /// <param name="duration">длительность тряски</param>
-    /// <param name="magnitude">расстояние от состояния покоя</param>
-    /// <param name="noize">сила тряски</param>
+    /// <param name="duration">РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ С‚СЂСЏСЃРєРё</param>
+    /// <param name="magnitude">СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕРєРѕСЏ</param>
+    /// <param name="noize">СЃРёР»Р° С‚СЂСЏСЃРєРё</param>
     public void ShakeCamera(float duration, float magnitude, float noize) => StartCoroutine(ShakeCameraCoroutine(duration, magnitude * 5, noize * 800));
 
     /// <summary>
-    /// Тряска камеры
+    /// РўСЂСЏСЃРєР° РєР°РјРµСЂС‹
     /// </summary>
-    /// <param name="duration">длительность тряски</param>
-    /// <param name="magnitude">расстояние от состояния покоя</param>
-    /// <param name="noize">сила тряски</param>
-    /// <param name="point">иточник тряски</param>
-    /// <param name="maxForce">максимально возможная тряска</param>
+    /// <param name="duration">РґР»РёС‚РµР»СЊРЅРѕСЃС‚СЊ С‚СЂСЏСЃРєРё</param>
+    /// <param name="magnitude">СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРѕРєРѕСЏ</param>
+    /// <param name="noize">СЃРёР»Р° С‚СЂСЏСЃРєРё</param>
+    /// <param name="point">РёС‚РѕС‡РЅРёРє С‚СЂСЏСЃРєРё</param>
+    /// <param name="maxForce">РјР°РєСЃРёРјР°Р»СЊРЅРѕ РІРѕР·РјРѕР¶РЅР°СЏ С‚СЂСЏСЃРєР°</param>
     public void ShakeCamera(float duration, float magnitude, float noize, Vector2 point, float maxForce = 3)
     {
         float distance = Vector2.Distance(CamTr.position, point);

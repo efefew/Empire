@@ -77,3 +77,6 @@ crashlytics-build.properties
 
 #large files
 /Empire/Library
+
+#custom types
+*.cs~

@@ -130,6 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 42620123}
   - component: {fileID: 42620124}
+  - component: {fileID: 42620126}
   - component: {fileID: 42620125}
   m_Layer: 0
   m_Name: NN
@@ -172,11 +173,10 @@ MonoBehaviour:
   outputLayer: {fileID: 0}
   evaluationOfResults: 0
   lossFunction: 1
-  activationFunction: 0
   countEra: 0
-  countPhoto: 0
+  exampleCount: 0
   error: 0
-  E: 0.01
+  E: 0.00001
 --- !u!114 &42620125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,6 +192,21 @@ MonoBehaviour:
   countEllipse: 0
   countRectangle: 0
   countTriangle: 0
+--- !u!114 &42620126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42620122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25bacd00320f6154a998565382921a21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  convolutionalLayerPrefab: {fileID: 1922962698833011495, guid: 36788abd3f1c72b4bb0850a118ec4402, type: 3}
+  poolingLayerPrefab: {fileID: 8894499341987885571, guid: 9d686e336f4695143b37d4bfe274edcf, type: 3}
+  layers: []
 --- !u!114 &92227880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -308,12 +323,12 @@ MonoBehaviour:
   baseInspectorFoldout: 0
   layoutInfos: []
   buttonMethods:
-  - rid: 3234911146208133317
-  - rid: 3234911146208133318
+  - rid: 1348005204411285723
+  - rid: 1348005204411285724
   references:
     version: 2
     RefIds:
-    - rid: 3234911146208133317
+    - rid: 1348005204411285723
       type: {class: ButtonInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         methodName: Next
@@ -321,7 +336,7 @@ MonoBehaviour:
         foldout: 1
         buttonSize: 15
         parameters: []
-    - rid: 3234911146208133318
+    - rid: 1348005204411285724
       type: {class: ButtonInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         methodName: StopOrResume
@@ -362,9 +377,11 @@ MonoBehaviour:
     m_keys:
     - {fileID: 42620124}
     - {fileID: 42620125}
+    - {fileID: 42620126}
     m_values:
     - {fileID: 1361545841}
     - {fileID: 92227880}
+    - {fileID: 2097007839}
   extensionEnabled: 1
   debugMode: 0
 --- !u!4 &1679430283
@@ -382,3 +399,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2097007839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91035bcb2ca13824395c1c51b162bf3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseInspectorFoldout: 0
+  layoutInfos: []
+  buttonMethods: []
+  references:
+    version: 2
+    RefIds: []

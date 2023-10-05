@@ -8,7 +8,7 @@ using UnityEngine;
 
 using static Attack;
 
-public partial class Person : MonoBehaviour // Характеристики существа
+public partial class Person : MonoBehaviour // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё СЃСѓС‰РµСЃС‚РІР°
 {
     #region Events
 
@@ -48,7 +48,7 @@ public partial class Person : MonoBehaviour // Характеристики существа
     private const float UPDATE_REGEN = 1.5f;
 
     /// <summary>
-    /// Наложенные эффекты
+    /// РќР°Р»РѕР¶РµРЅРЅС‹Рµ СЌС„С„РµРєС‚С‹
     /// </summary>
     public List<Buff> buffs;
     public Dictionary<Skill, float> amountSkill = new();
@@ -64,7 +64,7 @@ public partial class Person : MonoBehaviour // Характеристики существа
         {
             yield return new WaitForSeconds(UPDATE_REGEN);
 
-            // Если здоровье персоны стало равным 0, вызываем событие OnDeadArmy
+            // Р•СЃР»Рё Р·РґРѕСЂРѕРІСЊРµ РїРµСЂСЃРѕРЅС‹ СЃС‚Р°Р»Рѕ СЂР°РІРЅС‹Рј 0, РІС‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ OnDeadArmy
             if (health == 0)
             {
                 OnDeadPerson?.Invoke(this);
@@ -93,70 +93,70 @@ public partial class Person : MonoBehaviour // Характеристики существа
     }
 
     /// <summary>
-    /// Получение урона
+    /// РџРѕР»СѓС‡РµРЅРёРµ СѓСЂРѕРЅР°
     /// </summary>
-    /// <param name="enemy">тот, кто наносит урон</param>
-    /// <param name="type">тип урона</param>
-    /// <param name="damage">урон</param>
+    /// <param name="enemy">С‚РѕС‚, РєС‚Рѕ РЅР°РЅРѕСЃРёС‚ СѓСЂРѕРЅ</param>
+    /// <param name="type">С‚РёРї СѓСЂРѕРЅР°</param>
+    /// <param name="damage">СѓСЂРѕРЅ</param>
     public void TakeDamage(Person enemy, DamageType type, Skill attackType, float damage)
     {
-        // Проверяем, есть ли у армии масштабирование урона для данного типа урона
+        // РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё Сѓ Р°СЂРјРёРё РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ СѓСЂРѕРЅР° РґР»СЏ РґР°РЅРЅРѕРіРѕ С‚РёРїР° СѓСЂРѕРЅР°
         if (status.scaleTakeDamage.ContainsKey(type))
             damage *= status.scaleTakeDamage[type];
 
-        // Проверяем, есть ли у армии щит для данного типа урона
+        // РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё Сѓ Р°СЂРјРёРё С‰РёС‚ РґР»СЏ РґР°РЅРЅРѕРіРѕ С‚РёРїР° СѓСЂРѕРЅР°
         if (status.shield.ContainsKey(type) && status.shield[type] + damage != 0)
             damage = damage * damage / (status.shield[type] + damage);
 
-        // Вызываем событие OnDamageTaken, чтобы уведомить о полученном уроне
+        // Р’С‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ OnDamageTaken, С‡С‚РѕР±С‹ СѓРІРµРґРѕРјРёС‚СЊ Рѕ РїРѕР»СѓС‡РµРЅРЅРѕРј СѓСЂРѕРЅРµ
         OnDamageTaken?.Invoke(this, enemy, type, attackType, damage);
 
-        // Изменяем здоровье персоны на основе типа урона
+        // РР·РјРµРЅСЏРµРј Р·РґРѕСЂРѕРІСЊРµ РїРµСЂСЃРѕРЅС‹ РЅР° РѕСЃРЅРѕРІРµ С‚РёРїР° СѓСЂРѕРЅР°
         health += type == DamageType.Healing ? damage : -damage;
 
-        // Ограничиваем здоровье персоны максимальным значением
+        // РћРіСЂР°РЅРёС‡РёРІР°РµРј Р·РґРѕСЂРѕРІСЊРµ РїРµСЂСЃРѕРЅС‹ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј Р·РЅР°С‡РµРЅРёРµРј
         health = Mathf.Clamp(health, 0, status.maxHealth);
 
-        // Если здоровье персоны стало равным 0, вызываем событие OnDeadArmy
+        // Р•СЃР»Рё Р·РґРѕСЂРѕРІСЊРµ РїРµСЂСЃРѕРЅС‹ СЃС‚Р°Р»Рѕ СЂР°РІРЅС‹Рј 0, РІС‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ OnDeadArmy
         if (health == 0)
             OnDeadPerson?.Invoke(this);
     }
 
     /// <summary>
-    /// Нанесение урона
+    /// РќР°РЅРµСЃРµРЅРёРµ СѓСЂРѕРЅР°
     /// </summary>
-    /// <param name="enemy">тот, кому наносят урон</param>
-    /// <param name="attacks">атаки</param>
-    /// <param name="skill">навык атаки</param>
+    /// <param name="enemy">С‚РѕС‚, РєРѕРјСѓ РЅР°РЅРѕСЃСЏС‚ СѓСЂРѕРЅ</param>
+    /// <param name="attacks">Р°С‚Р°РєРё</param>
+    /// <param name="skill">РЅР°РІС‹Рє Р°С‚Р°РєРё</param>
     public void GiveDamage(Person enemy, DamageTypeDictionary attacks, Skill skill)
     {
         foreach (KeyValuePair<DamageType, float> attack in attacks)
         {
-            // Гарантируем, что урон является положительным значением
+            // Р“Р°СЂР°РЅС‚РёСЂСѓРµРј, С‡С‚Рѕ СѓСЂРѕРЅ СЏРІР»СЏРµС‚СЃСЏ РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Рј Р·РЅР°С‡РµРЅРёРµРј
             float damage = Mathf.Abs(attack.Value);
 
-            // Проверяем, есть ли у армии масштабирование урона для данного типа урона
+            // РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё Сѓ Р°СЂРјРёРё РјР°СЃС€С‚Р°Р±РёСЂРѕРІР°РЅРёРµ СѓСЂРѕРЅР° РґР»СЏ РґР°РЅРЅРѕРіРѕ С‚РёРїР° СѓСЂРѕРЅР°
             if (status.scaleGiveDamage.ContainsKey(attack.Key))
                 damage *= status.scaleGiveDamage[attack.Key];
 
-            // Проверяем, является ли атака критическим ударом на основе шанса критического удара армии
+            // РџСЂРѕРІРµСЂСЏРµРј, СЏРІР»СЏРµС‚СЃСЏ Р»Рё Р°С‚Р°РєР° РєСЂРёС‚РёС‡РµСЃРєРёРј СѓРґР°СЂРѕРј РЅР° РѕСЃРЅРѕРІРµ С€Р°РЅСЃР° РєСЂРёС‚РёС‡РµСЃРєРѕРіРѕ СѓРґР°СЂР° Р°СЂРјРёРё
             damage = UnityEngine.Random.Range(0, 100f) <= status.critChance ? damage * status.crit : damage;
 
-            // Вызываем событие OnDamageGiven, чтобы уведомить его о нанесённом уроне
+            // Р’С‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ OnDamageGiven, С‡С‚РѕР±С‹ СѓРІРµРґРѕРјРёС‚СЊ РµРіРѕ Рѕ РЅР°РЅРµСЃС‘РЅРЅРѕРј СѓСЂРѕРЅРµ
             OnDamageGiven?.Invoke(this, enemy, attack.Key, skill, damage);
 
-            // Наносим урон врагу
+            // РќР°РЅРѕСЃРёРј СѓСЂРѕРЅ РІСЂР°РіСѓ
             enemy.TakeDamage(this, attack.Key, skill, damage);
         }
     }
 
     public bool CanUseSkill(Skill skill)
     {
-        // Проверяем, достаточно ли у нас стамины и маны для атаки
+        // РџСЂРѕРІРµСЂСЏРµРј, РґРѕСЃС‚Р°С‚РѕС‡РЅРѕ Р»Рё Сѓ РЅР°СЃ СЃС‚Р°РјРёРЅС‹ Рё РјР°РЅС‹ РґР»СЏ Р°С‚Р°РєРё
         if (stamina < skill.stamina || mana < skill.mana)
             return false;
 
-        // Вычитаем стоимость стамины и маны для выполнения навыка
+        // Р’С‹С‡РёС‚Р°РµРј СЃС‚РѕРёРјРѕСЃС‚СЊ СЃС‚Р°РјРёРЅС‹ Рё РјР°РЅС‹ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР°
         stamina -= skill.stamina;
         mana -= skill.mana;
         return true;

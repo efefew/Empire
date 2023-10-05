@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using System.Linq;
 
 using TMPro;
@@ -61,7 +61,7 @@ public class ButtonSkill : MonoBehaviour
         UpdateColdownSkill();
     }
 
-    private void UpdateWaitCastSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
+    private void UpdateWaitCastSkill()//.РџРћРњР•РќРЇРўР¬ РќРђ РЎРћР‘Р«РўР�РЇ!!!
     {
         waitCastSkill = false;
         foreach (KeyValuePair<Army, UnityAction> initiatorArmy in initiatorArmies)
@@ -69,10 +69,10 @@ public class ButtonSkill : MonoBehaviour
 
         button.enabled = !waitCastSkill;
         imageLoad.fillAmount = waitCastSkill ? 1 : 0;
-        textLoad.text = waitCastSkill ? "∞" : "";
+        textLoad.text = waitCastSkill ? "в€ћ" : "";
     }
 
-    private void UpdateColdownSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
+    private void UpdateColdownSkill()//.РџРћРњР•РќРЇРўР¬ РќРђ РЎРћР‘Р«РўР�РЇ!!!
     {
         button.enabled = !Silence && timerSkillReload == 0;
         imageLoad.fillAmount = skillTarget.timeCooldown == 0 ? 0 : timerSkillReload / skillTarget.timeCooldown;
@@ -100,7 +100,7 @@ public class ButtonSkill : MonoBehaviour
     }
 
     /// <summary>
-    /// Перезарядка
+    /// РџРµСЂРµР·Р°СЂСЏРґРєР°
     /// </summary>
     public void Reload() => timerSkillReload = skillTarget.timeCooldown;
 

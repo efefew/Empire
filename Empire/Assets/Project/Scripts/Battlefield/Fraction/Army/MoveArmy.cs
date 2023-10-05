@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(PointsAB))]
-public partial class Army : MonoBehaviour// Мобильность армии
+public partial class Army : MonoBehaviour// РњРѕР±РёР»СЊРЅРѕСЃС‚СЊ Р°СЂРјРёРё
 {
     #region Fields
 

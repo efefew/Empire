@@ -1,4 +1,7 @@
 using System;
+
+using static NeuralLayer;
+
 [Serializable]
 public class Neuron
 {
@@ -6,25 +9,73 @@ public class Neuron
     private const float MAX_WEIGHT_VALUE = 2f;
 
     /// <summary>
-    /// Весы между нейронами предыдущего слоя и этим нейроном
+    /// Р’РµСЃС‹ РјРµР¶РґСѓ РЅРµР№СЂРѕРЅР°РјРё РїСЂРµРґС‹РґСѓС‰РµРіРѕ СЃР»РѕСЏ Рё СЌС‚РёРј РЅРµР№СЂРѕРЅРѕРј
     /// </summary>
     public double[] weight;
     public double value;
+    private NeuralLayer layer;
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="weightMatrix">Весы между предыдущим слоем и этим слоем [предыдущий слой, этот слой]</param>
+    /// <param name="weightMatrix">Р’РµСЃС‹ РјРµР¶РґСѓ РїСЂРµРґС‹РґСѓС‰РёРј СЃР»РѕРµРј Рё СЌС‚РёРј СЃР»РѕРµРј [РїСЂРµРґС‹РґСѓС‰РёР№ СЃР»РѕР№, СЌС‚РѕС‚ СЃР»РѕР№]</param>
     /// <param name="myID"></param>
-    public Neuron(double[,] weightMatrix, int myID)
+    public Neuron(double[,] weightMatrix, int myID, NeuralLayer layer)
     {
+        this.layer = layer;
         weight = new double[weightMatrix.GetLength(0)];
         for (int id = 0; id < weightMatrix.GetLength(0); id++)
             weight[id] = weightMatrix[id, myID];
     }
+    public Neuron(int countWeight, NeuralLayer layer)
+    {
+        this.layer = layer;
+        SetRandomWeight(countWeight);
+    }
 
-    public Neuron(int countWeight) => SetRandomWeight(countWeight);
-    public Neuron(double[] weight) => this.weight = weight;
-    public Neuron(double value) => this.value = value;
+    public Neuron(double[] weight, NeuralLayer layer)
+    {
+        this.layer = layer;
+        this.weight = weight;
+    }
+
+    public Neuron(double value, NeuralLayer layer)
+    {
+        this.layer = layer;
+        this.value = value;
+    }
+
+    /// <summary>
+    /// Р¤СѓРЅРєС†РёСЏ Р°РєС‚РёРІР°С†РёРё
+    /// </summary>
+    /// <param name="x">РїР°СЂР°РјРµС‚СЂ</param>
+    /// <returns>СЂРµР·СѓР»СЊС‚Р°С‚</returns>
+    public void ActivationFunction(double x)
+    {
+        value = layer.activationFunction switch
+        {
+            ActivationFunctionType.Sigmoid => 1 / (1 + Math.Pow(Math.E, -x)),
+            ActivationFunctionType.ReLu => Math.Max(0, x),
+            ActivationFunctionType.Th => (Math.Pow(Math.E, x) - Math.Pow(Math.E, -x)) / (Math.Pow(Math.E, x) + Math.Pow(Math.E, -x)),
+            _ => 0,
+        };
+    }
+
+    /// <summary>
+    /// РџСЂРѕРёР·РІРѕРґРЅР°СЏ С„СѓРЅРєС†РёРё
+    /// </summary>
+    /// <param name="x">РїР°СЂР°РјРµС‚СЂ</param>
+    /// <returns>СЂРµР·СѓР»СЊС‚Р°С‚</returns>
+    public double DerivativeFunction()
+    {
+        return layer.activationFunction switch
+        {
+            ActivationFunctionType.Sigmoid => value * (1 - value),
+            ActivationFunctionType.ReLu => value > 0 ? 1 : 0,
+            ActivationFunctionType.Th => 1 - (value * value),
+            _ => 0,
+        };
+    }
+
     public void SetRandomWeight(int countWeight)
     {
         weight = new double[countWeight];

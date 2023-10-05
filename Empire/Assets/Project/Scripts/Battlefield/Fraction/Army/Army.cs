@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Армия
+/// РђСЂРјРёСЏ
 /// </summary>
 public partial class Army : MonoBehaviour, ICombatUnit
 {
@@ -102,10 +102,10 @@ public partial class Army : MonoBehaviour, ICombatUnit
     }
 
     /// <summary>
-    /// Запускает навык
+    /// Р—Р°РїСѓСЃРєР°РµС‚ РЅР°РІС‹Рє
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="targets">цель</param>
+    /// <param name="skill">РЅР°РІС‹Рє</param>
+    /// <param name="targets">С†РµР»СЊ</param>
     public void UseSkill(Skill skill, params Person[] targets)
     {
         status.OnRepeatUseSkillOnPersons -= UseSkill;
@@ -120,10 +120,10 @@ public partial class Army : MonoBehaviour, ICombatUnit
             PursuitUseSkill(skill, targets);
     }
     /// <summary>
-    /// Запускает навык
+    /// Р—Р°РїСѓСЃРєР°РµС‚ РЅР°РІС‹Рє
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="target">цель</param>
+    /// <param name="skill">РЅР°РІС‹Рє</param>
+    /// <param name="target">С†РµР»СЊ</param>
     public void UseSkill(Skill skill, Vector3 target)
     {
         status.OnRepeatUseSkillOnPersons -= UseSkill;
@@ -262,12 +262,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
             return;
 
         for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
-
-            bool allCantRun;
-            if (persons[idPerson].CastRun(skill, target))
-                allCantRun = false;
-        }
+            _ = persons[idPerson].CastRun(skill, target);
 
         _ = conteinerSkill.Silence(this, skill);
         _ = conteinerSkill.Reload(this, skill);
@@ -276,12 +271,12 @@ public partial class Army : MonoBehaviour, ICombatUnit
         personsCanRun.Clear();
     }
     /// <summary>
-    /// Выполнение навыка с наступлением
+    /// Р’С‹РїРѕР»РЅРµРЅРёРµ РЅР°РІС‹РєР° СЃ РЅР°СЃС‚СѓРїР»РµРЅРёРµРј
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
-    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
+    /// <param name="skill">РЅР°РІС‹Рє</param>
+    /// <param name="person">РёРЅРёС†РёР°С‚РѕСЂ</param>
+    /// <param name="target">С†РµР»СЊ</param>
+    /// <returns>С„СѓРЅРєС†РёСЏ, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР°</returns>
     private Func<bool> ForceSkill(Skill skill, Person person, Person target, Army armyTarget)
     {
         return () =>
@@ -290,21 +285,21 @@ public partial class Army : MonoBehaviour, ICombatUnit
                 return true;
             if (person.distracted)
                 CancelForceSkill(person);
-            // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,
-            // или персонажа не существует, или операция была отменена
+            // Р•СЃР»Рё РґРѕСЃС‚РёРіРЅСѓС‚С‹ СѓСЃР»РѕРІРёСЏ РѕС‚РјРµРЅС‹ РѕР¶РёРґР°РЅРёСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР° РїСЂРё РїРµСЂРµРїРѕР»РЅРµРЅРёРё РѕС‡РµСЂРµРґРё,
+            // РёР»Рё РїРµСЂСЃРѕРЅР°Р¶Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, РёР»Рё РѕРїРµСЂР°С†РёСЏ Р±С‹Р»Р° РѕС‚РјРµРЅРµРЅР°
             if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
             {
 
-                // Обновление состояния персонажей, которые могут использовать навыки
+                // РћР±РЅРѕРІР»РµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРµСЂСЃРѕРЅР°Р¶РµР№, РєРѕС‚РѕСЂС‹Рµ РјРѕРіСѓС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РЅР°РІС‹РєРё
                 UpdateWaitPersonsCanRun(skill, armyTarget);
                 return true;
             }
 
-            // Если цель не определена
+            // Р•СЃР»Рё С†РµР»СЊ РЅРµ РѕРїСЂРµРґРµР»РµРЅР°
             if (target == null)
             {
                 target = GetRandomPerson(armyTarget);
-                // Если цель всё ещё  не определена
+                // Р•СЃР»Рё С†РµР»СЊ РІСЃС‘ РµС‰С‘  РЅРµ РѕРїСЂРµРґРµР»РµРЅР°
                 if (target == null)
                 {
                     CancelForceSkill(person);
@@ -320,26 +315,26 @@ public partial class Army : MonoBehaviour, ICombatUnit
                 return false;
             }
 
-            // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
+            // Р•СЃР»Рё СЃС‡РµС‚С‡РёРє СЃС‚Р°РЅР° РїРµСЂСЃРѕРЅР°Р¶Р° СЂР°РІРµРЅ РѕР¶РёРґР°РЅРёСЋ РІС‹РїРѕР»РЅРµРЅРёСЏ Рё СѓРґРѕРІР»РµС‚РІРѕСЂСЏРµС‚ СѓСЃР»РѕРІРёСЏРј РґРёР°РїР°Р·РѕРЅР° РЅР°РІС‹РєР°
             if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target.transform.position, close: true))
             {
-                // Если персонаж не готов к выполнению навыка
+                // Р•СЃР»Рё РїРµСЂСЃРѕРЅР°Р¶ РЅРµ РіРѕС‚РѕРІ Рє РІС‹РїРѕР»РЅРµРЅРёСЋ РЅР°РІС‹РєР°
                 if (!person.Ready)
                 {
                     person.Ready = true;
                     personsCanRun.Add(person);
 
-                    // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
+                    // Р—Р°РїСѓСЃРє РїСЂРѕС†РµСЃСЃР° РѕР¶РёРґР°РЅРёСЏ РїРµСЂСЃРѕРЅР°Р¶РµРј РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР° (РїРµСЂСЃРѕРЅР°Р¶ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ РІ СЃС‚Р°РЅ)
                     _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
                 }
 
                 return false;
             }
 
-            // Если персонаж готов к выполнению навыка
+            // Р•СЃР»Рё РїРµСЂСЃРѕРЅР°Р¶ РіРѕС‚РѕРІ Рє РІС‹РїРѕР»РЅРµРЅРёСЋ РЅР°РІС‹РєР°
             if (person.Ready)
             {
-                // Убираем персонажа из списка, тех кто может выполнить навык
+                // РЈР±РёСЂР°РµРј РїРµСЂСЃРѕРЅР°Р¶Р° РёР· СЃРїРёСЃРєР°, С‚РµС… РєС‚Рѕ РјРѕР¶РµС‚ РІС‹РїРѕР»РЅРёС‚СЊ РЅР°РІС‹Рє
                 _ = personsCanRun.Remove(person);
                 person.Ready = false;
             }
@@ -349,12 +344,12 @@ public partial class Army : MonoBehaviour, ICombatUnit
         };
     }
     /// <summary>
-    /// Выполнение навыка с наступлением
+    /// Р’С‹РїРѕР»РЅРµРЅРёРµ РЅР°РІС‹РєР° СЃ РЅР°СЃС‚СѓРїР»РµРЅРёРµРј
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
-    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
+    /// <param name="skill">РЅР°РІС‹Рє</param>
+    /// <param name="person">РёРЅРёС†РёР°С‚РѕСЂ</param>
+    /// <param name="target">С†РµР»СЊ</param>
+    /// <returns>С„СѓРЅРєС†РёСЏ, РєРѕС‚РѕСЂР°СЏ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ РґР»СЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР°</returns>
     private Func<bool> ForceSkill(Skill skill, Person person, Vector3 target)
     {
         return () =>
@@ -363,36 +358,36 @@ public partial class Army : MonoBehaviour, ICombatUnit
                 return true;
             if (person.distracted)
                 CancelForceSkill(person);
-            // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,
-            // или персонажа не существует, или операция была отменена
+            // Р•СЃР»Рё РґРѕСЃС‚РёРіРЅСѓС‚С‹ СѓСЃР»РѕРІРёСЏ РѕС‚РјРµРЅС‹ РѕР¶РёРґР°РЅРёСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР° РїСЂРё РїРµСЂРµРїРѕР»РЅРµРЅРёРё РѕС‡РµСЂРµРґРё,
+            // РёР»Рё РїРµСЂСЃРѕРЅР°Р¶Р° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚, РёР»Рё РѕРїРµСЂР°С†РёСЏ Р±С‹Р»Р° РѕС‚РјРµРЅРµРЅР°
             if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
             {
 
-                // Обновление состояния персонажей, которые могут использовать навыки
+                // РћР±РЅРѕРІР»РµРЅРёРµ СЃРѕСЃС‚РѕСЏРЅРёСЏ РїРµСЂСЃРѕРЅР°Р¶РµР№, РєРѕС‚РѕСЂС‹Рµ РјРѕРіСѓС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РЅР°РІС‹РєРё
                 UpdateWaitPersonsCanRun(skill, target);
                 return true;
             }
 
-            // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
+            // Р•СЃР»Рё СЃС‡РµС‚С‡РёРє СЃС‚Р°РЅР° РїРµСЂСЃРѕРЅР°Р¶Р° СЂР°РІРµРЅ РѕР¶РёРґР°РЅРёСЋ РІС‹РїРѕР»РЅРµРЅРёСЏ Рё СѓРґРѕРІР»РµС‚РІРѕСЂСЏРµС‚ СѓСЃР»РѕРІРёСЏРј РґРёР°РїР°Р·РѕРЅР° РЅР°РІС‹РєР°
             if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target, close: true))
             {
-                // Если персонаж не готов к выполнению навыка
+                // Р•СЃР»Рё РїРµСЂСЃРѕРЅР°Р¶ РЅРµ РіРѕС‚РѕРІ Рє РІС‹РїРѕР»РЅРµРЅРёСЋ РЅР°РІС‹РєР°
                 if (!person.Ready)
                 {
                     person.Ready = true;
                     personsCanRun.Add(person);
 
-                    // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
+                    // Р—Р°РїСѓСЃРє РїСЂРѕС†РµСЃСЃР° РѕР¶РёРґР°РЅРёСЏ РїРµСЂСЃРѕРЅР°Р¶РµРј РІС‹РїРѕР»РЅРµРЅРёСЏ РЅР°РІС‹РєР° (РїРµСЂСЃРѕРЅР°Р¶ СЃС‚Р°РЅРѕРІРёС‚СЃСЏ РІ СЃС‚Р°РЅ)
                     _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
                 }
 
                 return false;
             }
 
-            // Если персонаж готов к выполнению навыка
+            // Р•СЃР»Рё РїРµСЂСЃРѕРЅР°Р¶ РіРѕС‚РѕРІ Рє РІС‹РїРѕР»РЅРµРЅРёСЋ РЅР°РІС‹РєР°
             if (person.Ready)
             {
-                // Убираем персонажа из списка, тех кто может выполнить навык
+                // РЈР±РёСЂР°РµРј РїРµСЂСЃРѕРЅР°Р¶Р° РёР· СЃРїРёСЃРєР°, С‚РµС… РєС‚Рѕ РјРѕР¶РµС‚ РІС‹РїРѕР»РЅРёС‚СЊ РЅР°РІС‹Рє
                 _ = personsCanRun.Remove(person);
                 person.Ready = false;
             }
@@ -403,10 +398,10 @@ public partial class Army : MonoBehaviour, ICombatUnit
     }
     private void CancelForceSkill(Person person)
     {
-        // Если персонаж готов использовать навык
+        // Р•СЃР»Рё РїРµСЂСЃРѕРЅР°Р¶ РіРѕС‚РѕРІ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РЅР°РІС‹Рє
         if (!personsCanRun.Contains(person))
         {
-            // Добавление персонажа в очередь
+            // Р”РѕР±Р°РІР»РµРЅРёРµ РїРµСЂСЃРѕРЅР°Р¶Р° РІ РѕС‡РµСЂРµРґСЊ
             personsCanRun.Add(person);
         }
 
@@ -426,9 +421,9 @@ public partial class Army : MonoBehaviour, ICombatUnit
     }
 
     /// <summary>
-    /// Использование навыка на цель
+    /// РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РЅР°РІС‹РєР° РЅР° С†РµР»СЊ
     /// </summary>
-    /// <param name="target">цель</param>
+    /// <param name="target">С†РµР»СЊ</param>
     public void TargetForUseSkill(ICombatUnit target)
     {
         battlefield.OnSetTargetArmy -= TargetForUseSkill;
@@ -439,9 +434,9 @@ public partial class Army : MonoBehaviour, ICombatUnit
             UseSkill(battlefield.targetSkill, army.persons.ToArray());
     }
     /// <summary>
-    /// Использование навыка на цель
+    /// РСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РЅР°РІС‹РєР° РЅР° С†РµР»СЊ
     /// </summary>
-    /// <param name="target">цель</param>
+    /// <param name="target">С†РµР»СЊ</param>
     public void TargetForUseSkill(Vector3 target)
     {
         battlefield.OnSetTargetArmy -= TargetForUseSkill;

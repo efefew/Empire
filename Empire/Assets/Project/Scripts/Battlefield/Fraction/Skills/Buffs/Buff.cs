@@ -5,29 +5,29 @@ using AdvancedEditorTools.Attributes;
 using UnityEngine;
 
 /// <summary>
-/// Усиление или ослабление
+/// РЈСЃРёР»РµРЅРёРµ РёР»Рё РѕСЃР»Р°Р±Р»РµРЅРёРµ
 /// </summary>
 public abstract class Buff : MonoBehaviour
 {
     #region Enums
 
     /// <summary>
-    /// Ограничение суммирования эффектов по специфике
+    /// РћРіСЂР°РЅРёС‡РµРЅРёРµ СЃСѓРјРјРёСЂРѕРІР°РЅРёСЏ СЌС„С„РµРєС‚РѕРІ РїРѕ СЃРїРµС†РёС„РёРєРµ
     /// </summary>
     public enum SpecificityStackType
     {
         /// <summary>
-        /// Этот класс усиления или ослабления
+        /// Р­С‚РѕС‚ РєР»Р°СЃСЃ СѓСЃРёР»РµРЅРёСЏ РёР»Рё РѕСЃР»Р°Р±Р»РµРЅРёСЏ
         /// </summary>
         OneBuff,
         /// <summary>
-        /// Конкркетно это усиление или ослабление
+        /// РљРѕРЅРєСЂРєРµС‚РЅРѕ СЌС‚Рѕ СѓСЃРёР»РµРЅРёРµ РёР»Рё РѕСЃР»Р°Р±Р»РµРЅРёРµ
         /// </summary>
         OneThisBuff,
         None
     }
     /// <summary>
-    /// Ограничение суммирования эффектов по инициаторам
+    /// РћРіСЂР°РЅРёС‡РµРЅРёРµ СЃСѓРјРјРёСЂРѕРІР°РЅРёСЏ СЌС„С„РµРєС‚РѕРІ РїРѕ РёРЅРёС†РёР°С‚РѕСЂР°Рј
     /// </summary>
     public enum InitiatorStackType
     {
@@ -40,7 +40,7 @@ public abstract class Buff : MonoBehaviour
     #endregion Enums
 
     #region Fields
-    [Header("Ограничения")]
+    [Header("РћРіСЂР°РЅРёС‡РµРЅРёСЏ")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelOrange)]
 
     [SerializeField]
@@ -49,7 +49,7 @@ public abstract class Buff : MonoBehaviour
     public InitiatorStackType initiatorStack = InitiatorStackType.None;
     [EndColumnArea]
     /// <summary>
-    /// условие действия эффекта
+    /// СѓСЃР»РѕРІРёРµ РґРµР№СЃС‚РІРёСЏ СЌС„С„РµРєС‚Р°
     /// </summary>
     public Condition condition;
     #endregion Fields

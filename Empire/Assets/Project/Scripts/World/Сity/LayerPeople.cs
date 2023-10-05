@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+п»їusing UnityEngine;
 
 public class LayerPeople : MonoBehaviour
 {

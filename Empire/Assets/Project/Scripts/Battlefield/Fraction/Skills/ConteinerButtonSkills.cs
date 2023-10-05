@@ -39,9 +39,9 @@ public class ConteinerButtonSkills : MonoBehaviour
     private void AddTimerSkillCast(Army army) => Silence(army, army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
 
     /// <summary>
-    /// Блокировка использования способностей
+    /// Р‘Р»РѕРєРёСЂРѕРІРєР° РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ СЃРїРѕСЃРѕР±РЅРѕСЃС‚РµР№
     /// </summary>
-    /// <param name="on">блокировать?</param>
+    /// <param name="on">Р±Р»РѕРєРёСЂРѕРІР°С‚СЊ?</param>
     private void Silence(bool on)
     {
         for (int id = 0; id < buttonSkills.Count; id++)
@@ -99,22 +99,22 @@ public class ConteinerButtonSkills : MonoBehaviour
     }
 
     /// <summary>
-    /// Удаляет навык из армии и интерфейса.
+    /// РЈРґР°Р»СЏРµС‚ РЅР°РІС‹Рє РёР· Р°СЂРјРёРё Рё РёРЅС‚РµСЂС„РµР№СЃР°.
     /// </summary>
-    /// <param name="army">Армия, из которой необходимо удалить навык.</param>
-    /// <param name="skill">Навык, который нужно удалить.</param>
+    /// <param name="army">РђСЂРјРёСЏ, РёР· РєРѕС‚РѕСЂРѕР№ РЅРµРѕР±С…РѕРґРёРјРѕ СѓРґР°Р»РёС‚СЊ РЅР°РІС‹Рє.</param>
+    /// <param name="skill">РќР°РІС‹Рє, РєРѕС‚РѕСЂС‹Р№ РЅСѓР¶РЅРѕ СѓРґР°Р»РёС‚СЊ.</param>
     public void Remove(Army army, Skill skill)
     {
-        // Получаем индекс навыка в списке кнопок навыков
+        // РџРѕР»СѓС‡Р°РµРј РёРЅРґРµРєСЃ РЅР°РІС‹РєР° РІ СЃРїРёСЃРєРµ РєРЅРѕРїРѕРє РЅР°РІС‹РєРѕРІ
         int id = IndexOf(skill.buttonSkillPrefab);
-        // Если индекс равен -1, значит навык не найден, возвращаемся
+        // Р•СЃР»Рё РёРЅРґРµРєСЃ СЂР°РІРµРЅ -1, Р·РЅР°С‡РёС‚ РЅР°РІС‹Рє РЅРµ РЅР°Р№РґРµРЅ, РІРѕР·РІСЂР°С‰Р°РµРјСЃСЏ
         if (id == -1)
             return;
 
-        // Удаляем армию из списка инициаторов навыка
+        // РЈРґР°Р»СЏРµРј Р°СЂРјРёСЋ РёР· СЃРїРёСЃРєР° РёРЅРёС†РёР°С‚РѕСЂРѕРІ РЅР°РІС‹РєР°
         buttonSkills[id].Remove(army);
 
-        // Если список инициаторов пустой, удаляем кнопку навыка и удаляем из списка кнопок
+        // Р•СЃР»Рё СЃРїРёСЃРѕРє РёРЅРёС†РёР°С‚РѕСЂРѕРІ РїСѓСЃС‚РѕР№, СѓРґР°Р»СЏРµРј РєРЅРѕРїРєСѓ РЅР°РІС‹РєР° Рё СѓРґР°Р»СЏРµРј РёР· СЃРїРёСЃРєР° РєРЅРѕРїРѕРє
         if (buttonSkills[id].initiatorArmies.Count == 0)
         {
             buttonSkills[id].button.onClick.RemoveListener(() => ClickAnyButtonSkills());
@@ -122,10 +122,10 @@ public class ConteinerButtonSkills : MonoBehaviour
             _ = buttonSkills.Remove(buttonSkills[id]);
         }
 
-        // Если таймер каста навыка не равен 0, значит идет каст навыка
+        // Р•СЃР»Рё С‚Р°Р№РјРµСЂ РєР°СЃС‚Р° РЅР°РІС‹РєР° РЅРµ СЂР°РІРµРЅ 0, Р·РЅР°С‡РёС‚ РёРґРµС‚ РєР°СЃС‚ РЅР°РІС‹РєР°
         if (timerSkillCast == 0)
             return;
-        // Обнуляем таймер каста и перезапускаем его для всех инициаторов навыков
+        // РћР±РЅСѓР»СЏРµРј С‚Р°Р№РјРµСЂ РєР°СЃС‚Р° Рё РїРµСЂРµР·Р°РїСѓСЃРєР°РµРј РµРіРѕ РґР»СЏ РІСЃРµС… РёРЅРёС†РёР°С‚РѕСЂРѕРІ РЅР°РІС‹РєРѕРІ
         timerSkillCast = 0;
         for (int idButtonSkill = 0; idButtonSkill < buttonSkills.Count; idButtonSkill++)
         {

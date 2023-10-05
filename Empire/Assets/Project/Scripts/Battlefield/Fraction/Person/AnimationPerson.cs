@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public partial class Person : MonoBehaviour// Анимация существа
+public partial class Person : MonoBehaviour// РђРЅРёРјР°С†РёСЏ СЃСѓС‰РµСЃС‚РІР°
 {
     #region Fields
 

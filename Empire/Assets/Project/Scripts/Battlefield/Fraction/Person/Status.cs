@@ -7,7 +7,7 @@ using AdvancedEditorTools.Attributes;
 using UnityEngine;
 
 /// <summary>
-/// Характеристики  боевой единицы
+/// РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё  Р±РѕРµРІРѕР№ РµРґРёРЅРёС†С‹
 /// </summary>
 public class Status : MonoBehaviour
 {
@@ -18,7 +18,7 @@ public class Status : MonoBehaviour
     public FractionBattlefield fraction;
     public ulong sideID;
 
-    [Header("Максимум основных параметров")]
+    [Header("РњР°РєСЃРёРјСѓРј РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ")]
     [BeginColumnArea(columnWidth: 0.5f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelGreen)]
     [Min(0)]
     public float maxHealth = 100;
@@ -29,7 +29,7 @@ public class Status : MonoBehaviour
     [Min(0)]
     public float maxMorality = 100;
 
-    [Header("Востановление основных параметров")]
+    [Header("Р’РѕСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РѕСЃРЅРѕРІРЅС‹С… РїР°СЂР°РјРµС‚СЂРѕРІ")]
     [NewColumn(columnWidth: 0.5f)]
     [Min(0)]
     public float regenHealth = 1;
@@ -41,7 +41,7 @@ public class Status : MonoBehaviour
     public float regenMorality = 1;
     [EndColumnArea]
 
-    [Header("Атака")]
+    [Header("РђС‚Р°РєР°")]
     [BeginColumnArea(columnWidth: 1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelRed)]
     public float critChance = 0;
     [Min(1)]
@@ -50,14 +50,14 @@ public class Status : MonoBehaviour
     public DamageTypeDictionary scaleGiveDamage = new();
     [EndColumnArea]
 
-    [Header("Защита")]
+    [Header("Р—Р°С‰РёС‚Р°")]
     [BeginColumnArea(columnWidth: 1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelBlue)]
     [SerializeField]
     public DamageTypeDictionary scaleTakeDamage = new();
     public DamageTypeDictionary shield = new();
     [EndColumnArea]
 
-    [Header("Навыки")]
+    [Header("РќР°РІС‹РєРё")]
     [BeginColumnArea(columnWidth: 1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.Bevel)]
     public Skill[] skills;
     public Melee melee;

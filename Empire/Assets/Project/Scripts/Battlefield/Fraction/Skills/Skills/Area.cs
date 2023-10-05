@@ -15,7 +15,7 @@ public class Area : Skill
     [HideInInspector]
     public int maxCountArea;
     /// <summary>
-    /// Промежуток
+    /// РџСЂРѕРјРµР¶СѓС‚РѕРє
     /// </summary>
     [Min(0.001f)]
     public float gap;
@@ -24,12 +24,12 @@ public class Area : Skill
     [Min(0)]
     public float scatter;
     /// <summary>
-    /// Частота
+    /// Р§Р°СЃС‚РѕС‚Р°
     /// </summary>
     public uint frequency;
 
     ///// <summary>
-    ///// Стоять при использовании навыка?
+    ///// РЎС‚РѕСЏС‚СЊ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РЅР°РІС‹РєР°?
     ///// </summary>
     //public bool stun;
 
