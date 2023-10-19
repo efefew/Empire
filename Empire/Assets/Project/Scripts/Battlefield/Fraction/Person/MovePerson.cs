@@ -6,27 +6,27 @@ using AdvancedEditorTools.Attributes;
 using UnityEngine;
 
 [RequireComponent(typeof(AgentMove))]
-public partial class Person : MonoBehaviour// РњРѕР±РёР»СЊРЅРѕСЃС‚СЊ СЃСѓС‰РµСЃС‚РІР°
+public partial class Person : MonoBehaviour// Мобильность существа
 {
     #region Enums
 
     /// <summary>
-    /// РўРёРї РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ С†РµР»Рё
+    /// Тип преследования цели
     /// </summary>
     public enum TargetType
     {
         /// <summary>
-        /// Р’С‹РЅСѓР¶РґРµРЅР°СЏ
+        /// Вынужденая
         /// </summary>
         forced,
 
         /// <summary>
-        /// РџСЂРёРєР°Р·
+        /// Приказ
         /// </summary>
         command,
 
         /// <summary>
-        /// Р—Р°РєРѕРЅС‡РёС‚СЊ С‚Рѕ, С‡С‚Рѕ РЅР°С‡Р°Р»
+        /// Закончить то, что начал
         /// </summary>
         finish
     }
@@ -154,50 +154,50 @@ public partial class Person : MonoBehaviour// РњРѕР±РёР»СЊРЅРѕСЃС‚СЊ СЃСѓС‰РµСЃС
     }
 
     /// <summary>
-    /// РћРіР»СѓС€Р°РµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Оглушает до определённого момента
     /// </summary>
-    /// <param name="funcStun">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
+    /// <param name="funcStun">определённый момент</param>
     public Coroutine Stun(Func<bool> funcStun) => StartCoroutine(IStun(funcStun));
 
     /// <summary>
-    /// РћРіР»СѓС€Р°РµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Оглушает до определённого момента
     /// </summary>
-    /// <param name="coroutineStun">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
+    /// <param name="coroutineStun">определённый момент</param>
     public Coroutine Stun(IEnumerator coroutineStun) => StartCoroutine(IStun(coroutineStun));
 
     /// <summary>
-    /// РћРіР»СѓС€Р°РµС‚ РЅР° РІСЂРµРјСЏ
+    /// Оглушает на время
     /// </summary>
-    /// <param name="endStun">РІСЂРµРјСЏ</param>
+    /// <param name="endStun">время</param>
     public Coroutine Stun(float time) => StartCoroutine(IStun(Timer(time)));
 
     /// <summary>
-    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Преследует до определённого момента
     /// </summary>
-    /// <param name="funcTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
+    /// <param name="funcTarget">определённый момент</param>
     public Coroutine Pursuit(Person target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
 
     /// <summary>
-    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Преследует до определённого момента
     /// </summary>
-    /// <param name="coroutineTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
+    /// <param name="coroutineTarget">определённый момент</param>
     public Coroutine Pursuit(Person target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
     /// <summary>
-    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Преследует до определённого момента
     /// </summary>
-    /// <param name="funcTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
+    /// <param name="funcTarget">определённый момент</param>
     public Coroutine Pursuit(Vector3 target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
 
     /// <summary>
-    /// РџСЂРµСЃР»РµРґСѓРµС‚ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Преследует до определённого момента
     /// </summary>
-    /// <param name="coroutineTarget">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
+    /// <param name="coroutineTarget">определённый момент</param>
     public Coroutine Pursuit(Vector3 target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
 
     /// <summary>
-    /// РџСЂРµСЃР»РµРґСѓРµС‚ РЅР° РІСЂРµРјСЏ
+    /// Преследует на время
     /// </summary>
-    /// <param name="endStun">РІСЂРµРјСЏ</param>
+    /// <param name="endStun">время</param>
     public Coroutine Pursuit(Person target, float time) => StartCoroutine(IPursuit(target, Timer(time)));
     public void StopPursuit()
     {

@@ -9,7 +9,7 @@ using AdvancedEditorTools.Attributes;
 using UnityEngine;
 [DisallowMultipleComponent()]
 /// <summary>
-/// РќРµР№СЂРѕРЅР°СЏ СЃРµС‚СЊ
+/// Нейроная сеть
 /// https://habr.com/ru/articles/556076/
 /// https://programforyou.ru/poleznoe/convolutional-network-from-scratch-part-zero-introduction
 /// https://ru.stackoverflow.com/questions/834750/
@@ -20,53 +20,53 @@ public class NeuralNetwork : MonoBehaviour
     public Action<double> OnEndOfTheLearningEra;
     #region Enums
     /// <summary>
-    ///  РўРёРї С„СѓРЅРєС†РёРё РїРѕС‚РµСЂСЊ
+    ///  Тип функции потерь
     /// </summary>
     public enum LossFunctionType
     {
         /// <summary>
-        /// СЃСЂРµРґРЅСЏСЏ Р°Р±СЃРѕР»СЋС‚РЅР°СЏ РѕС€РёР±РєР°
+        /// средняя абсолютная ошибка
         /// </summary>
         MAE,
         /// <summary>
-        /// СЃСЂРµРґРЅРµРєРІР°РґСЂР°С‚РёС‡РЅР°СЏ С„СѓРЅРєС†РёСЏ РїРѕС‚РµСЂСЊ
+        /// среднеквадратичная функция потерь
         /// </summary>
         MSE,
         /// <summary>
-        /// СЃСЂРµРґРЅРµРєРІР°РґСЂР°С‚РёС‡РЅРѕРµ РѕС‚РєР»РѕРЅРµРЅРёРµ
+        /// среднеквадратичное отклонение
         /// </summary>
         RMSE
     }
 
     /// <summary>
-    /// РўРёРї РѕС†РµРЅРєРё СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ (РјРµС‚СЂРёРєР°) РњРµС‚СЂРёРєР° РљСЂРёС‚РµСЂРёР№/РћС†РµРЅРєР° РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РїРѕСЃР»Рµ РѕР±СѓС‡РµРЅРёСЏ РґР»СЏ РёР·РјРµСЂРµРЅРёСЏ РѕР±С‰РµР№ РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЊРЅРѕСЃС‚Рё.
+    /// Тип оценки результатов (метрика) Метрика Критерий/Оценка используется после обучения для измерения общей производительности.
     /// https://habr.com/ru/articles/722628/
     /// https://skine.ru/articles/559485/
     /// </summary>
     public enum EvaluationOfResultsType
     {
         /// <summary>
-        /// РњРµС‚СЂРёРєР° "РџСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ"
+        /// Метрика "Правильность"
         /// </summary>
         Accuracy,
 
         /// <summary>
-        /// РњРµС‚СЂРёРєР° "РџРѕР»РЅРѕС‚Р°"
+        /// Метрика "Полнота"
         /// </summary>
         Recall,
 
         /// <summary>
-        /// РњРµС‚СЂРёРєР° " Р”РѕР»СЏ Р»РѕР¶РЅРѕ-РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹С… (False Positive Rate)"
+        /// Метрика " Доля ложно-положительных (False Positive Rate)"
         /// </summary>
         FPR,
 
         /// <summary>
-        /// РњРµС‚СЂРёРєР° "РўРѕС‡РЅРѕСЃС‚СЊ"
+        /// Метрика "Точность"
         /// </summary>
         Precision,
 
         /// <summary>
-        /// РњРµС‚СЂРёРєР° "F-РјРµСЂР°"
+        /// Метрика "F-мера"
         /// </summary>
         F_score
     }
@@ -76,7 +76,7 @@ public class NeuralNetwork : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// Р·РЅР°С‡РµРЅРёРµ, РїРѕРґР±РёСЂР°РµРјРѕРµ СЌРєСЃРїРµСЂРёРјРµРЅС‚Р°Р»СЊРЅРѕ, РѕС‚ РєРѕС‚РѕСЂРѕРіРѕ Р·Р°РІРёСЃРёС‚ СЃРєРѕСЂРѕСЃС‚СЊ РѕР±СѓС‡РµРЅРёСЏ РЅРµР№СЂРѕСЃРµС‚Рё
+    /// значение, подбираемое экспериментально, от которого зависит скорость обучения нейросети
     /// </summary>
     [SerializeField]
     [Range(0f, 1f)]
@@ -88,9 +88,9 @@ public class NeuralNetwork : MonoBehaviour
     public NeuralLayer[] hiddenLayers;
     public NeuralLayer outputLayer;
 
-    [Tooltip("РћС†РµРЅРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ (РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ)")]
+    [Tooltip("Оценка результатов (не используется)")]
     public EvaluationOfResultsType evaluationOfResults;
-    [Tooltip("Р¤СѓРЅРєС†РёСЏ РїРѕС‚РµСЂСЊ")]
+    [Tooltip("Функция потерь")]
     public LossFunctionType lossFunction;
 
     public int countEra, exampleCount;
@@ -101,11 +101,11 @@ public class NeuralNetwork : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// РљРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° РІРµСЃРѕРІ СЃР»РѕСЏ
+    /// Корректировка весов слоя
     /// </summary>
-    /// <param name="neuronsNeeded">С‚СЂРµР±СѓРµРјРѕРµ Р·РЅР°С‡РµРЅРёРµ РЅРµР№СЂРѕРЅРѕРІ СЃР»РѕСЏ</param>
-    /// <param name="previousLayer">РїСЂРµРґС‹РґСѓС‰РёР№ СЃР»РѕР№</param>
-    /// <param name="layer">СЃР»РѕР№</param>
+    /// <param name="neuronsNeeded">требуемое значение нейронов слоя</param>
+    /// <param name="previousLayer">предыдущий слой</param>
+    /// <param name="layer">слой</param>
     /// <param name="errorNeurons"></param>
     /// <returns></returns>
     private double[] AdjustingLayerWeights(double[] neuronsNeeded, NeuralLayer previousLayer, NeuralLayer layer, double[] errorNeurons = null)
@@ -165,13 +165,13 @@ public class NeuralNetwork : MonoBehaviour
     }
 
     /// <summary>
-    ///  РћС†РµРЅРєР° СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
+    ///  Оценка результатов
     /// </summary>
-    /// <param name="TP">РєРѕР»РёС‡РµСЃС‚РІРѕ РёСЃС‚РёРЅРЅРѕ РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹С… СЃР»СѓС‡Р°РµРІ, С‚Рѕ РµСЃС‚СЊ РєРѕРіРґР° СЃР»СѓС‡Р°Р№ Р±С‹Р» РІРµСЂРЅРѕ РєР»Р°СЃСЃРёС„РёС†РёСЂРѕРІР°РЅ Рё РѕРЅ РїСЂРёРЅР°РґР»РµР¶РёС‚ РІС‹Р±СЂР°РЅРЅРѕРјСѓ С†РµР»РµРІРѕРјСѓ РјРЅРѕР¶РµСЃС‚РІСѓ</param>
-    /// <param name="TN">РєРѕР»РёС‡РµСЃС‚РІРѕ РёСЃС‚РёРЅРЅРѕ РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹С…  СЃР»СѓС‡Р°РµРІ, С‚Рѕ РµСЃС‚СЊ РєРѕРіРґР° СЃР»СѓС‡Р°Р№ Р±С‹Р» РІРµСЂРЅРѕ РєР»Р°СЃСЃРёС„РёС†РёСЂРѕРІР°РЅ Рё РѕРЅ РїСЂРёРЅР°РґР»РµР¶РёС‚ РЅРµС†РµР»РµРІРѕРјСѓ РјРЅРѕР¶РµСЃС‚РІСѓ</param>
-    /// <param name="FP">Р»РѕР¶РЅРѕ-РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Р№ вЂ“ С‡РёСЃР»Рѕ СЃР»СѓС‡Р°РµРІ РєР»Р°СЃСЃРёС„РёРєР°С†РёРё СЌР»РµРјРµРЅС‚Р° РЅРµС†РµР»РµРІРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РєР°Рє С†РµР»РµРІРѕРіРѕ</param>
-    /// <param name="FN">Р»РѕР¶РЅРѕ-РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Р№ вЂ“ С‡РёСЃР»Рѕ СЃР»СѓС‡Р°РµРІ РєР»Р°СЃСЃРёС„РёРєР°С†РёРё СЌР»РµРјРµРЅС‚Р° С†РµР»РµРІРѕРіРѕ РјРЅРѕР¶РµСЃС‚РІР° РєР°Рє РЅРµС†РµР»РµРІРѕРіРѕ</param>
-    /// <returns>Р·РЅР°С‡РµРЅРёРµ РѕС†РµРЅРєРё СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ</returns>
+    /// <param name="TP">количество истинно положительных случаев, то есть когда случай был верно классифицирован и он принадлежит выбранному целевому множеству</param>
+    /// <param name="TN">количество истинно отрицательных  случаев, то есть когда случай был верно классифицирован и он принадлежит нецелевому множеству</param>
+    /// <param name="FP">ложно-положительный – число случаев классификации элемента нецелевого множества как целевого</param>
+    /// <param name="FN">ложно-отрицательный – число случаев классификации элемента целевого множества как нецелевого</param>
+    /// <returns>значение оценки результатов</returns>
     private double EvaluationOfResults(double TP, double TN, double FP, double FN)
     {
         return evaluationOfResults switch
@@ -185,10 +185,10 @@ public class NeuralNetwork : MonoBehaviour
         };
     }
     /// <summary>
-    /// РњРµС‚РѕРґ РѕР±СЂР°С‚РЅРѕРіРѕ СЂР°СЃРїСЂРѕСЃС‚СЂР°РЅРµРЅРёСЏ РѕС€РёР±РєРё
+    /// Метод обратного распространения ошибки
     /// </summary>
-    /// <param name="input">РІС…РѕРґ</param>
-    /// <param name="outputNeuronsNeeded">РЅРµРѕР±С…РѕРґРёРјС‹Р№ РІС‹С…РѕРґ</param>
+    /// <param name="input">вход</param>
+    /// <param name="outputNeuronsNeeded">необходимый выход</param>
     private double Backpropagation(double[] input, double[] outputNeuronsNeeded)
     {
 
@@ -230,11 +230,11 @@ public class NeuralNetwork : MonoBehaviour
         }
     }
     /// <summary>
-    ///  Р¤СѓРЅРєС†РёСЏ РїРѕС‚РµСЂСЊ https://habr.com/ru/articles/722628/
+    ///  Функция потерь https://habr.com/ru/articles/722628/
     /// </summary>
-    /// <param name="result">РІС‹С…РѕРґ РЅРµР№СЂРѕРЅР°</param>
-    /// <param name="needResult">РЅРµРѕР±С…РѕРґРёРјС‹Р№ РІС‹С…РѕРґ РЅРµР№СЂРѕРЅР°</param>
-    /// <returns>РѕС‚РєР»РѕРЅРµРЅРёРµ</returns>
+    /// <param name="result">выход нейрона</param>
+    /// <param name="needResult">необходимый выход нейрона</param>
+    /// <returns>отклонение</returns>
     public double LossFunction(double summ, int count)
     {
         return lossFunction switch

@@ -24,7 +24,7 @@ public class Projectile : Skill
 
     public float offset;
     /// <summary>
-    /// СЂР°Р·Р±СЂРѕСЃ
+    /// разброс
     /// </summary>
     [Range(0f, 360f)]
     public float scatter;

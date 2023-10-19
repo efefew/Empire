@@ -3,12 +3,12 @@ using UnityEngine;
 public class NeuralLayer : MonoBehaviour
 {
     /// <summary>
-    /// РўРёРї С„СѓРЅРєС†РёРё Р°РєС‚РёРІР°С†РёРё
+    /// Тип функции активации
     /// </summary>
     public enum ActivationFunctionType
     {
         /// <summary>
-        /// Р›РѕРіРёСЃС‚РёС‡РµСЃРєР°СЏ (СЃРёРіРјРѕРёРґР° РёР»Рё Р“Р»Р°РґРєР°СЏ СЃС‚СѓРїРµРЅСЊРєР°)
+        /// Логистическая (сигмоида или Гладкая ступенька)
         /// </summary>
         Sigmoid,
         /// <summary>
@@ -16,16 +16,16 @@ public class NeuralLayer : MonoBehaviour
         /// </summary>
         ReLu,
         /// <summary>
-        /// Р“РёРїРµСЂР±РѕР»РёС‡РµСЃРєРёР№ С‚Р°РЅРіРµРЅСЃ
+        /// Гиперболический тангенс
         /// </summary>
         Th
     }
     #region Fields
-    [Tooltip("Р¤СѓРЅРєС†РёСЏ Р°РєС‚РёРІР°С†РёРё")]
+    [Tooltip("Функция активации")]
     public ActivationFunctionType activationFunction;
     private NeuralLayer previosLayer;
     /// <summary>
-    /// СЃРјРµС‰РµРЅРёРµ
+    /// смещение
     /// </summary>
     public double bias;
 
@@ -35,9 +35,9 @@ public class NeuralLayer : MonoBehaviour
     #region Methods
 
     /// <summary>
-    /// РЎРѕР·РґР°С‚СЊ РІРµСЃС‹
+    /// Создать весы
     /// </summary>
-    /// <param name="previosLayer">РїСЂРµРґС‹РґСѓС‰РёР№ СЃР»РѕР№</param>
+    /// <param name="previosLayer">предыдущий слой</param>
     public void CreateNeuralLayer(int countNeurons, NeuralLayer previosLayer = null)
     {
         this.previosLayer = previosLayer;
@@ -49,9 +49,9 @@ public class NeuralLayer : MonoBehaviour
             neurons[id] = new Neuron(previosLayer.neurons.Length, this);
     }
     /// <summary>
-    /// РЎРѕР·РґР°С‚СЊ РІРµСЃС‹
+    /// Создать весы
     /// </summary>
-    /// <param name="previosLayer">РїСЂРµРґС‹РґСѓС‰РёР№ СЃР»РѕР№</param>
+    /// <param name="previosLayer">предыдущий слой</param>
     public void CreateNeuralLayer(int countNeurons, double[][] wight, NeuralLayer previosLayer = null)
     {
         this.previosLayer = previosLayer;
@@ -89,7 +89,7 @@ public class NeuralLayer : MonoBehaviour
             neurons[id].ActivationFunction(summ + bias);
             if (double.IsNaN(neurons[id].value) || double.IsInfinity(neurons[id].value))
             {
-                Debug.Log($"<color=#F13939> РЅРµР№СЂРѕРЅ = NaN РёР»Рё Infinity </color>");
+                Debug.Log($"<color=#F13939> нейрон = NaN или Infinity </color>");
             }
         }
     }

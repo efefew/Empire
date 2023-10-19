@@ -1,19 +1,19 @@
-п»їusing System;
+﻿using System;
 using System.Collections;
 
 using UnityEngine;
 
 /// <summary>
-/// РІСЂРµРјРµРЅРЅРѕРµ РґРµР№СЃС‚РІРёРµ
+/// временное действие
 /// </summary>
-public partial class TemporaryAction : MonoBehaviour // СЏ С…Р· РєР°Рє СЌС‚Рѕ СЂРµР°Р»РёР·РѕРІР°С‚СЊ
+public partial class TemporaryAction : MonoBehaviour // я хз как это реализовать
 {
     #region Methods
 
     /// <summary>
-    /// РўР°Р№РјРµСЂ
+    /// Таймер
     /// </summary>
-    /// <param name="time">Р·РЅР°С‡РµРЅРёРµ С‚Р°Р№РјРµСЂР°</param>
+    /// <param name="time">значение таймера</param>
     /// <returns></returns>
     private IEnumerator Timer(float time)
     {
@@ -23,11 +23,11 @@ public partial class TemporaryAction : MonoBehaviour // СЏ С…Р· РєР°�
     }
 
     /// <summary>
-    /// Р”РµР»Р°С‚СЊ РїРѕРєР° СѓСЃР»РѕРІРёРµ РѕРєРѕРЅС‡Р°РЅРёСЏ РґРµР№СЃС‚РІРёСЏ (С„СѓРЅРєС†РёСЏ) РЅРµ РІС‹РїРѕР»РЅРµРЅРѕ
+    /// Делать пока условие окончания действия (функция) не выполнено
     /// </summary>
-    /// <param name="expirationCondition">СѓСЃР»РѕРІРёРµ РѕРєРѕРЅС‡Р°РЅРёСЏ РґРµР№СЃС‚РІРёСЏ (С„СѓРЅРєС†РёСЏ)</param>
-    /// <param name="startAction">РґРµР№СЃС‚РІРёРµ</param>
-    /// <param name="endAction">РѕРєРѕРЅС‡Р°РЅРёРµ РґРµР№СЃС‚РІРёСЏ</param>
+    /// <param name="expirationCondition">условие окончания действия (функция)</param>
+    /// <param name="startAction">действие</param>
+    /// <param name="endAction">окончание действия</param>
     /// <returns></returns>
     private IEnumerator IDo(Func<bool> expirationCondition, Action<object[]> startAction, Action<object[]> endAction, object[] parameters)
     {
@@ -37,11 +37,11 @@ public partial class TemporaryAction : MonoBehaviour // СЏ С…Р· РєР°�
     }
 
     /// <summary>
-    /// Р”РµР»Р°С‚СЊ РїРѕРєР° СѓСЃР»РѕРІРёРµ РѕРєРѕРЅС‡Р°РЅРёСЏ РґРµР№СЃС‚РІРёСЏ (СЃС‡РµС‚С‡РёРє) РЅРµ РІС‹РїРѕР»РЅРµРЅРѕ
+    /// Делать пока условие окончания действия (счетчик) не выполнено
     /// </summary>
-    /// <param name="expirationCondition">СѓСЃР»РѕРІРёРµ РѕРєРѕРЅС‡Р°РЅРёСЏ РґРµР№СЃС‚РІРёСЏ (СЃС‡РµС‚С‡РёРє)</param>
-    /// <param name="startAction">РґРµР№СЃС‚РІРёРµ</param>
-    /// <param name="endAction">РѕРєРѕРЅС‡Р°РЅРёРµ РґРµР№СЃС‚РІРёСЏ</param>
+    /// <param name="expirationCondition">условие окончания действия (счетчик)</param>
+    /// <param name="startAction">действие</param>
+    /// <param name="endAction">окончание действия</param>
     private IEnumerator IDo(IEnumerator expirationCondition, Action<object[]> startAction, Action<object[]> endAction, object[] parameters)
     {
         startAction?.Invoke(parameters);
@@ -50,35 +50,35 @@ public partial class TemporaryAction : MonoBehaviour // СЏ С…Р· РєР°�
     }
 
     /// <summary>
-    /// РЎРѕР·РґР°С‘С‚ РґРµР№СЃС‚РІРёРµ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Создаёт действие до определённого момента
     /// </summary>
-    /// <param name="expirationCondition">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
-    /// <param name="startAction">РґРµР№СЃС‚РІРёРµ</param>
-    /// <param name="endAction">РѕРєРѕРЅС‡Р°РЅРёРµ РґРµР№СЃС‚РІРёСЏ</param>
+    /// <param name="expirationCondition">определённый момент</param>
+    /// <param name="startAction">действие</param>
+    /// <param name="endAction">окончание действия</param>
     public void Do(Func<bool> expirationCondition, Action<object[]> startAction, Action<object[]> endAction, object[] parameters = null) => StartCoroutine(IDo(expirationCondition, startAction, endAction, parameters));
 
     /// <summary>
-    /// РЎРѕР·РґР°С‘С‚ РґРµР№СЃС‚РІРёРµ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Создаёт действие до определённого момента
     /// </summary>
-    /// <param name="expirationCondition">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
-    /// <param name="startAction">РґРµР№СЃС‚РІРёРµ</param>
-    /// <param name="endAction">РѕРєРѕРЅС‡Р°РЅРёРµ РґРµР№СЃС‚РІРёСЏ</param>
+    /// <param name="expirationCondition">определённый момент</param>
+    /// <param name="startAction">действие</param>
+    /// <param name="endAction">окончание действия</param>
     public void Do(IEnumerator expirationCondition, Action<object[]> startAction, Action<object[]> endAction, object[] parameters = null) => StartCoroutine(IDo(expirationCondition, startAction, endAction, parameters));
 
     /// <summary>
-    /// РЎРѕР·РґР°С‘С‚ РґРµР№СЃС‚РІРёРµ РґРѕ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РјРѕРјРµРЅС‚Р°
+    /// Создаёт действие до определённого момента
     /// </summary>
-    /// <param name="expirationCondition">РѕРїСЂРµРґРµР»С‘РЅРЅС‹Р№ РјРѕРјРµРЅС‚</param>
-    /// <param name="startAction">РґРµР№СЃС‚РІРёРµ</param>
-    /// <param name="endAction">РѕРєРѕРЅС‡Р°РЅРёРµ РґРµР№СЃС‚РІРёСЏ</param>
+    /// <param name="expirationCondition">определённый момент</param>
+    /// <param name="startAction">действие</param>
+    /// <param name="endAction">окончание действия</param>
     public void Do(Condition expirationCondition, Action<object[]> startAction, Action<object[]> endAction, object[] parameters = null) => StartCoroutine(IDo(expirationCondition.GetCondition(), startAction, endAction, parameters));
 
     /// <summary>
-    /// РЎРѕР·РґР°С‘С‚ РґРµР№СЃС‚РІРёРµ РЅР° РІСЂРµРјСЏ
+    /// Создаёт действие на время
     /// </summary>
-    /// <param name="time">РІСЂРµРјСЏ</param>
-    /// <param name="expirationCondition">РґРµР№СЃС‚РІРёРµ</param>
-    /// <param name="endAction">РѕРєРѕРЅС‡Р°РЅРёРµ РґРµР№СЃС‚РІРёСЏ</param>
+    /// <param name="time">время</param>
+    /// <param name="expirationCondition">действие</param>
+    /// <param name="endAction">окончание действия</param>
     public void Do(float time, Action<object[]> startAction, Action<object[]> endAction, object[] parameters = null) => StartCoroutine(IDo(Timer(time), startAction, endAction, parameters));
 
     #endregion Methods

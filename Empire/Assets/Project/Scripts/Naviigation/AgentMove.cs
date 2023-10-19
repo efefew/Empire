@@ -32,7 +32,7 @@ public class AgentMove : MonoBehaviour
     }
 
     /// <summary>
-    /// РћР±РЅРѕРІР»РµРЅРёРµ РїСѓС‚Рё СЃСѓС‰РµСЃС‚РІР°
+    /// Обновление пути существа
     /// </summary>
     public void UpdateAgent(bool stun, float speed)
     {

@@ -5,7 +5,7 @@ using AdvancedEditorTools.Attributes;
 
 using UnityEngine;
 
-public partial class Army : MonoBehaviour // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё Р°СЂРјРёРё
+public partial class Army : MonoBehaviour // Характеристики армии
 {
     #region Events
 
@@ -19,7 +19,7 @@ public partial class Army : MonoBehaviour // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё Р°СЂРј
     public Status status;
 
     /// <summary>
-    /// РєРѕР»РёС‡РµСЃС‚РІРѕ РІРѕРёРЅРѕРІ РІ РЅР°С‡Р°Р»Рµ
+    /// количество воинов в начале
     /// </summary>
     public int countWarriors;
 
@@ -47,7 +47,7 @@ public partial class Army : MonoBehaviour // РҐР°СЂР°РєС‚РµСЂРёСЃС‚РёРєРё Р°СЂРј
 
             if (!status.fraction.bot)
                 UpdateStatusUI(armyUI, armyGlobalUI);
-            // Р•СЃР»Рё Р·РґРѕСЂРѕРІСЊРµ Р°СЂРјРёРё СЃС‚Р°Р»Рѕ СЂР°РІРЅС‹Рј 0, РІС‹Р·С‹РІР°РµРј СЃРѕР±С‹С‚РёРµ OnDeadArmy
+            // Если здоровье армии стало равным 0, вызываем событие OnDeadArmy
             if (healthArmy == 0)
                 OnDeadArmy?.Invoke(this);
 

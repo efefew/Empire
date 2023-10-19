@@ -9,7 +9,7 @@ public class Neuron
     private const float MAX_WEIGHT_VALUE = 2f;
 
     /// <summary>
-    /// Р’РµСЃС‹ РјРµР¶РґСѓ РЅРµР№СЂРѕРЅР°РјРё РїСЂРµРґС‹РґСѓС‰РµРіРѕ СЃР»РѕСЏ Рё СЌС‚РёРј РЅРµР№СЂРѕРЅРѕРј
+    /// Весы между нейронами предыдущего слоя и этим нейроном
     /// </summary>
     public double[] weight;
     public double value;
@@ -17,7 +17,7 @@ public class Neuron
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="weightMatrix">Р’РµСЃС‹ РјРµР¶РґСѓ РїСЂРµРґС‹РґСѓС‰РёРј СЃР»РѕРµРј Рё СЌС‚РёРј СЃР»РѕРµРј [РїСЂРµРґС‹РґСѓС‰РёР№ СЃР»РѕР№, СЌС‚РѕС‚ СЃР»РѕР№]</param>
+    /// <param name="weightMatrix">Весы между предыдущим слоем и этим слоем [предыдущий слой, этот слой]</param>
     /// <param name="myID"></param>
     public Neuron(double[,] weightMatrix, int myID, NeuralLayer layer)
     {
@@ -45,10 +45,10 @@ public class Neuron
     }
 
     /// <summary>
-    /// Р¤СѓРЅРєС†РёСЏ Р°РєС‚РёРІР°С†РёРё
+    /// Функция активации
     /// </summary>
-    /// <param name="x">РїР°СЂР°РјРµС‚СЂ</param>
-    /// <returns>СЂРµР·СѓР»СЊС‚Р°С‚</returns>
+    /// <param name="x">параметр</param>
+    /// <returns>результат</returns>
     public void ActivationFunction(double x)
     {
         value = layer.activationFunction switch
@@ -61,10 +61,10 @@ public class Neuron
     }
 
     /// <summary>
-    /// РџСЂРѕРёР·РІРѕРґРЅР°СЏ С„СѓРЅРєС†РёРё
+    /// Производная функции
     /// </summary>
-    /// <param name="x">РїР°СЂР°РјРµС‚СЂ</param>
-    /// <returns>СЂРµР·СѓР»СЊС‚Р°С‚</returns>
+    /// <param name="x">параметр</param>
+    /// <returns>результат</returns>
     public double DerivativeFunction()
     {
         return layer.activationFunction switch

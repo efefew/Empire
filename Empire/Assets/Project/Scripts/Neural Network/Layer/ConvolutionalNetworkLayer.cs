@@ -15,7 +15,7 @@ public abstract class ConvolutionalNetworkLayer : MonoBehaviour
         inWidth = width;
         inHeight = height;
         if (step > size)
-            Debug.Log("РїР»РѕС…Р°СЏ РёРґРµСЏ РґРµР»Р°С‚СЊ С€Р°Рі Р±РѕР»СЊС€Рµ С‡РµРј СЂР°Р·РјРµСЂ");
+            Debug.Log("плохая идея делать шаг больше чем размер");
         outWidth = ((width - size) / step) + 1;
         outHeight = ((height - size) / step) + 1;
         outMatrix = new double[outWidth, outHeight];

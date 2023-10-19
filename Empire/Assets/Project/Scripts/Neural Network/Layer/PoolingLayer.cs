@@ -1,6 +1,6 @@
 using UnityEngine;
 /// <summary>
-/// РЎР»РѕР№ РїРѕРґРІС‹Р±РѕСЂРєРё
+/// Слой подвыборки
 /// </summary>
 public class PoolingLayer : ConvolutionalNetworkLayer
 {
@@ -8,7 +8,7 @@ public class PoolingLayer : ConvolutionalNetworkLayer
     {
         if (inWidth != matrix.GetLength(0) || inHeight != matrix.GetLength(1))
         {
-            Debug.LogError("СѓСЃР»РѕРІРёСЏ РёР·РјРµРЅРёР»РёСЃСЊ!");
+            Debug.LogError("условия изменились!");
             throw new System.Exception();
         }
 

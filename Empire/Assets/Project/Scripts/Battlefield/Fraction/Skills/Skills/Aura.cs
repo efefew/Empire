@@ -15,13 +15,13 @@ public class Aura : Skill
     [HideInInspector]
     public int maxCountAura;
     /// <summary>
-    /// РџСЂРѕРјРµР¶СѓС‚РѕРє
+    /// Промежуток
     /// </summary>
     [Min(0.001f)]
     public float gap;
 
     /// <summary>
-    /// Р§Р°СЃС‚РѕС‚Р°
+    /// Частота
     /// </summary>
     public uint frequency;
     [Min(0)]
@@ -29,7 +29,7 @@ public class Aura : Skill
     [Min(0)]
     public float scatter;
     ///// <summary>
-    ///// РЎС‚РѕСЏС‚СЊ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РЅР°РІС‹РєР°?
+    ///// Стоять при использовании навыка?
     ///// </summary>
     //public bool stun;
 
@@ -51,6 +51,6 @@ public class Aura : Skill
             aura.Build(initiator, this, target);
         }
     }
-    public override void Run(Person initiator, Vector3 target) => Debug.LogError("Р­С‚Р° СЃРїРѕСЃРѕР±РЅРѕСЃС‚СЊ РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ РЅР°РїСЂР°РІР»РµРЅР° РЅР° С‚РѕС‡РєСѓ");
+    public override void Run(Person initiator, Vector3 target) => Debug.LogError("Эта способность не может быть направлена на точку");
     #endregion Methods
 }

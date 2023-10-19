@@ -41,24 +41,24 @@ public class Battlefield : MonoBehaviour
     #region Methods
     private void OnGUI()
     {
-        // РџРѕР»СѓС‡Р°РµРј РѕСЃРЅРѕРІРЅСѓСЋ РєР°РјРµСЂСѓ
+        // Получаем основную камеру
         Camera c = Camera.main;
 
-        // РџРѕР»СѓС‡Р°РµРј С‚РµРєСѓС‰РµРµ СЃРѕР±С‹С‚РёРµ РјС‹С€Рё
+        // Получаем текущее событие мыши
         Event e = Event.current;
 
-        // РџРѕР»СѓС‡Р°РµРј РїРѕР·РёС†РёСЋ РјС‹С€Рё РЅР° СЌРєСЂР°РЅРµ
+        // Получаем позицию мыши на экране
         Vector2 mousePos = new()
         {
             x = e.mousePosition.x,
             y = c.pixelHeight - e.mousePosition.y
         };
 
-        // РЎРѕР·РґР°РµРј РІРµРєС‚РѕСЂ 3D-РїРѕР·РёС†РёРё РЅР° СЌРєСЂР°РЅРµ
-        // СЃ СѓС‡РµС‚РѕРј Р±Р»РёР¶РЅРµР№ РїР»РѕСЃРєРѕСЃС‚Рё РѕС‚СЃРµС‡РµРЅРёСЏ
+        // Создаем вектор 3D-позиции на экране
+        // с учетом ближней плоскости отсечения
         screenPosition = new Vector3(mousePos.x, mousePos.y, c.nearClipPlane);
 
-        // РџСЂРµРѕР±СЂР°Р·СѓРµРј 2D-РєРѕРѕСЂРґРёРЅР°С‚С‹ РЅР° СЌРєСЂР°РЅРµ РІ 3D-РєРѕРѕСЂРґРёРЅР°С‚С‹ РІ РјРёСЂРѕРІРѕРј РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІРµ
+        // Преобразуем 2D-координаты на экране в 3D-координаты в мировом пространстве
         worldPosition = c.ScreenToWorldPoint(screenPosition);
     }
     private void Awake()
@@ -83,16 +83,16 @@ public class Battlefield : MonoBehaviour
         CreatePointTarget(worldPosition);
     }
     /// <summary>
-    /// РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ Р°СЂРјРёСЋ РґР»СЏ РЅР°Р¶Р°С‚РёСЏ
+    /// Активировать армию для нажатия
     /// </summary>
-    /// <param name="army">Р°СЂРјРёСЏ</param>
-    /// <param name="on">Р°РєС‚РёРІРёСЂРѕРІР°С‚СЊ?</param>
+    /// <param name="army">армия</param>
+    /// <param name="on">активировать?</param>
     private void SetActiveArmy(Army army, bool on)
     {
         army.buttonArmy.interactable = on;
 
-        // Р•СЃР»Рё СЌС‚Рѕ РЅР°С€Р° С„СЂР°РєС†РёСЏ, СЃРєСЂС‹РІР°РµРј РіР»РѕР±Р°Р»СЊРЅС‹Р№ UI Р°СЂРјРёРё
-        // (С‚РѕР»СЊРєРѕ РІ РЅР°С€РµР№ С„СЂР°РєС†РёРё РµСЃС‚СЊ РіР»РѕР±Р°Р»СЊРЅС‹Р№ UI РґР»СЏ РІС‹Р±РѕСЂР° Р°СЂРјРёРё)
+        // Если это наша фракция, скрываем глобальный UI армии
+        // (только в нашей фракции есть глобальный UI для выбора армии)
         if (playerFraction == army.status.fraction)
         {
             army.buttonArmy.gameObject.SetActive(on);
@@ -101,7 +101,7 @@ public class Battlefield : MonoBehaviour
     }
 
     /// <summary>
-    /// Р”РµР°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РІСЃРµ Р°СЂРјРёРё РґР»СЏ РЅР°Р¶Р°С‚РёСЏ
+    /// Деактивировать все армии для нажатия
     /// </summary>
     public void DeactiveAllArmies()
     {
@@ -126,9 +126,9 @@ public class Battlefield : MonoBehaviour
     }
 
     /// <summary>
-    /// Р’С‹Р±РѕСЂ С†РµР»Рё
+    /// Выбор цели
     /// </summary>
-    /// <param name="target">С†РµР»СЊ</param>
+    /// <param name="target">цель</param>
     public void SetTargetArmy(ICombatUnit target)
     {
         OnSetTargetArmy?.Invoke(target);
@@ -140,11 +140,11 @@ public class Battlefield : MonoBehaviour
         DeactiveAllArmies();
     }
     /// <summary>
-    /// РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ Р°СЂРјРёРё РґР»СЏ РЅР°Р¶Р°С‚РёСЏ СЃ РѕРіСЂР°РЅРёС‡РµРЅРёРµРј РІ РІРёРґРµ С‚СЂРёРіРіРµСЂР°
+    /// Активировать армии для нажатия с ограничением в виде триггера
     /// </summary>
-    /// <param name="trigger">С‚СЂРёРіРіРµСЂ</param>
-    /// <param name="armyInitiator">Р°СЂРјРёСЏ - РёРЅРёС†РёР°С‚РѕСЂ</param>
-    /// <returns>РђРєС‚РёРІРёСЂРѕРІР°РЅС‹Рµ Р°СЂРјРёРё</returns>
+    /// <param name="trigger">триггер</param>
+    /// <param name="armyInitiator">армия - инициатор</param>
+    /// <returns>Активированые армии</returns>
     public void SetActiveArmies(TriggerType trigger, Army armyInitiator)
     {
         DeactiveAllArmies();

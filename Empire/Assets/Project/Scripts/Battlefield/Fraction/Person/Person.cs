@@ -14,7 +14,7 @@ public partial class Person : MonoBehaviour, ICombatUnit
     public bool Stand { get; set; }
 
     /// <summary>
-    /// РіРѕС‚РѕРІ Р»Рё РёСЃРїРѕР»СЊР»Р·РѕРІР°С‚СЊ РЅР°РІС‹Рє
+    /// готов ли испольлзовать навык
     /// </summary>
     public bool Ready { get; set; }
 
@@ -75,16 +75,16 @@ public partial class Person : MonoBehaviour, ICombatUnit
             yield return new WaitForSeconds(status.melee.timeCooldown);
             if (health == 0)
                 yield break;
-            // РџСЂРѕРІРµСЂСЏРµРј, РЅРµ РѕРіР»СѓС€РµРЅС‹ Р»Рё РјС‹
+            // Проверяем, не оглушены ли мы
             if (stunCount == 0)
                 status.melee.Run(this);
         }
     }
 
     /// <summary>
-    /// Р—Р°РїСѓСЃРєР°РµС‚ РЅР°РІС‹Рє
+    /// Запускает навык
     /// </summary>
-    /// <param name="skill">РЅР°РІС‹Рє</param>
+    /// <param name="skill">навык</param>
     private void UseSkill(Skill skill, Person target)
     {
         if (stunCount != 0)
@@ -132,9 +132,9 @@ public partial class Person : MonoBehaviour, ICombatUnit
     }
 
     /// <summary>
-    /// Р—Р°РїСѓСЃРєР°РµС‚ РЅР°РІС‹Рє
+    /// Запускает навык
     /// </summary>
-    /// <param name="target">С†РµР»СЊ</param>
+    /// <param name="target">цель</param>
     public void TargetForUseSkill(ICombatUnit target)
     {
         battlefield.OnSetTargetArmy -= TargetForUseSkill;
@@ -145,14 +145,14 @@ public partial class Person : MonoBehaviour, ICombatUnit
             UseSkill(battlefield.targetSkill, army.persons[0]);
     }
     /// <summary>
-    /// Р—Р°РїСѓСЃРєР°РµС‚ РЅР°РІС‹Рє
+    /// Запускает навык
     /// </summary>
-    /// <param name="target">С†РµР»СЊ</param>
+    /// <param name="target">цель</param>
     public void TargetForUseSkill(Vector3 target)
     {
         battlefield.OnSetTargetArmy -= TargetForUseSkill;
         battlefield.OnSetTargetPoint -= TargetForUseSkill;
-        //.СЂРµР°Р»РёР·РѕРІР°С‚СЊ UseSkill(battlefield.targetSkill, target);
+        //.реализовать UseSkill(battlefield.targetSkill, target);
     }
     public bool CastRun(Skill skill, Person target)
     {

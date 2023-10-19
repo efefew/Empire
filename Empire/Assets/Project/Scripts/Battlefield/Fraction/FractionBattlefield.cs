@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Р¤СЂР°РєС†РёСЏ РЅР° РїРѕР»Рµ Р±РёС‚РІС‹
+/// Фракция на поле битвы
 /// </summary>
 [RequireComponent(typeof(PointsAB))]
 public class FractionBattlefield : MonoBehaviour

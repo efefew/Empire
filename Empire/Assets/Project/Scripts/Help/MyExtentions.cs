@@ -1,4 +1,4 @@
-п»їusing System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,9 +14,9 @@ public static class MyExtentions
     #region Methods
     private static System.Random random = new((int)DateTime.Now.Ticks & 0x0000FFFF);
     /// <summary>
-    /// РќРѕСЂРјР°Р»РёР·РѕРІР°С‚СЊ РјР°СЃСЃРёРІ
+    /// Нормализовать массив
     /// </summary>
-    /// <param name="array">РјР°СЃСЃРёРІ</param>
+    /// <param name="array">массив</param>
     public static void Normalize(this double[] array, double min = 0, double max = 1)
     {
         double minInArray = array.Min();
@@ -32,15 +32,15 @@ public static class MyExtentions
         double relativeValue;
         for (int id = 0; id < array.Length; id++)
         {
-            relativeValue = (array[id] - minInArray) / (maxInArray - minInArray);//РѕС‚ 0 РґРѕ 1
+            relativeValue = (array[id] - minInArray) / (maxInArray - minInArray);//от 0 до 1
             array[id] = (relativeValue * (max - min)) + min;
         }
     }
     /// <summary>
-    /// РџРµСЂРµРјРµС€РёРІР°РЅРёРµ СЃРїРёСЃРєР°
+    /// Перемешивание списка
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="list">СЃРїРёСЃРѕРє</param>
+    /// <param name="list">список</param>
     public static void Mixing<T>(this IList<T> list)
     {
         int n = list.Count;
@@ -52,10 +52,10 @@ public static class MyExtentions
         }
     }
     /// <summary>
-    /// РџРµСЂРµРјРµС€РёРІР°РЅРёРµ РјР°СЃСЃРёРІР°
+    /// Перемешивание массива
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="array">РјР°СЃСЃРёРІ</param>
+    /// <param name="array">массив</param>
     public static void Mixing<T>(this T[] array)
     {
         int n = array.Length;
@@ -67,15 +67,15 @@ public static class MyExtentions
         }
     }
     /// <summary>
-    /// РџРµСЂРµРјРµС€РёРІР°РЅРёРµ РґРІСѓС… СЃРїРёСЃРєРѕРІ РѕРґРЅР°РєРѕРІРѕ
+    /// Перемешивание двух списков однаково
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="list1">СЃРїРёСЃРѕРє 1</param>
-    /// <param name="list2">СЃРїРёСЃРѕРє 2</param>
+    /// <param name="list1">список 1</param>
+    /// <param name="list2">список 2</param>
     public static void MixingTwoLists<T>(IList<T> list1, IList<T> list2)
     {
         if (list1.Count != list2.Count)
-            throw new Exception("СЃРїРёСЃРєРё РґРѕР»Р¶РЅС‹ РёРјРµС‚СЊ РѕРґРёРЅР°РєРѕРІС‹Р№ СЂР°Р·РјРµСЂ");
+            throw new Exception("списки должны иметь одинаковый размер");
         int n = list1.Count;
         while (n > 1)
         {
@@ -154,7 +154,7 @@ public static class MyExtentions
         path = Path.GetExtension(path) == ".dat" ? path : $"{path}.dat";
         if (!File.Exists(path))
         {
-            Debug.LogWarning($"РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ С„Р°Р№Р»Р° {path}");
+            Debug.LogWarning($"не существует файла {path}");
             return;
         }
 
@@ -194,9 +194,9 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// РћС‡РёСЃС‚РёС‚СЊ РѕР±СЉРµРєС‚ РѕС‚ РІР»РѕР¶РµРЅРЅС‹С… РѕР±СЉРµРєС‚РѕРІ
+    /// Очистить объект от вложенных объектов
     /// </summary>
-    /// <param name="transform">РѕР±СЉРµРєС‚</param>
+    /// <param name="transform">объект</param>
     public static void Clear(this Transform transform)
     {
         if (transform.childCount == 0)
@@ -212,10 +212,10 @@ public static class MyExtentions
     public static Vector3 Z(this Vector3 vector, float value) => new(vector.x, vector.y, value);
 
     /// <summary>
-    /// РЎР»РµРґРёС‚СЊ Р·Р° С†РµР»СЊСЋ (2D РІРµСЂСЃРёСЏ)
+    /// Следить за целью (2D версия)
     /// </summary>
-    /// <param name="transform">СЃР»РµРґСЏС‰РёР№</param>
-    /// <param name="target">С†РµР»СЊ</param>
+    /// <param name="transform">следящий</param>
+    /// <param name="target">цель</param>
     public static void LookAt2D(this Transform transform, Vector3 target)
     {
         Vector2 direction = target - transform.position;
@@ -224,12 +224,12 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// РџСЂРѕРІРµСЂСЏРµС‚, РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё СѓРєР°Р·Р°С‚РµР»СЊ РјС‹С€Рё РЅР°Рґ РѕР±СЉРµРєС‚РѕРј UI.
+    /// Проверяет, находится ли указатель мыши над объектом UI.
     /// </summary>
-    /// <returns>РЅР°С…РѕРґРёС‚СЃСЏ Р»Рё СѓРєР°Р·Р°С‚РµР»СЊ РјС‹С€Рё РЅР°Рґ РѕР±СЉРµРєС‚РѕРј UI</returns>
+    /// <returns>находится ли указатель мыши над объектом UI</returns>
     public static bool IsPointerOverUI()
     {
-        // РЎРѕР·РґР°РµРј СЌРєР·РµРјРїР»СЏСЂ PointerEventData СЃ С‚РµРєСѓС‰РёРј РїРѕР»РѕР¶РµРЅРёРµРј СѓРєР°Р·Р°С‚РµР»СЏ РјС‹С€Рё.
+        // Создаем экземпляр PointerEventData с текущим положением указателя мыши.
         PointerEventData eventDataCurrentPosition = new(EventSystem.current)
         {
             position = new Vector2(Input.mousePosition.x, Input.mousePosition.y)
@@ -237,20 +237,20 @@ public static class MyExtentions
 
         List<RaycastResult> results = new();
 
-        // Р’С‹РїРѕР»РЅСЏРµРј Р»СѓС‡РµРІРѕР№ РєР°СЃС‚РёРЅРі РґР»СЏ РІСЃРµС… РѕР±СЉРµРєС‚РѕРІ РІ С‚РµРєСѓС‰РµР№ РїРѕР·РёС†РёРё СѓРєР°Р·Р°С‚РµР»СЏ РјС‹С€Рё.
-        // Р РµР·СѓР»СЊС‚Р°С‚С‹ СЃРѕС…СЂР°РЅСЏСЋС‚СЃСЏ РІ СЃРїРёСЃРєРµ results.
+        // Выполняем лучевой кастинг для всех объектов в текущей позиции указателя мыши.
+        // Результаты сохраняются в списке results.
         EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
 
-        // Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ Р±РѕР»СЊС€Рµ РЅСѓР»СЏ, Р·РЅР°С‡РёС‚ СѓРєР°Р·Р°С‚РµР»СЊ РјС‹С€Рё РЅР°С…РѕРґРёС‚СЃСЏ РЅР°Рґ РѕР±СЉРµРєС‚РѕРј UI.
+        // Если количество результатов больше нуля, значит указатель мыши находится над объектом UI.
         return results.Count > 0;
     }
 
     /// <summary>
-    /// РќР°СЂР°СЃС‚РёС‚СЊ РіСЂР°РЅРёС†С‹ РјР°СЃСЃРёРІСѓ Р·Р°РїРѕР»РЅРёРІ Р·РЅР°С‡РµРЅРёРµРј value
+    /// Нарастить границы массиву заполнив значением value
     /// </summary>
-    /// <param name="arr">РјР°СЃСЃРёРІ</param>
-    /// <param name="value">Р·РЅР°С‡РµРЅРёРµ</param>
-    /// <returns>РјР°СЃСЃРёРІ СЃ РЅР°СЂР°С‰РµРЅРЅС‹РјРё РіСЂР°РЅРёС†Р°РјРё</returns>
+    /// <param name="arr">массив</param>
+    /// <param name="value">значение</param>
+    /// <returns>массив с наращенными границами</returns>
     public static bool[,] AddBorders(this bool[,] arr, bool value = true)
     {
         bool[,] newArr = new bool[arr.GetLength(0) + 2, arr.GetLength(1) + 2];
@@ -278,10 +278,10 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// РўР°Р№РјРµСЂ
+    /// Таймер
     /// </summary>
-    /// <param name="timer">Р·РЅР°С‡РµРЅРёРµ С‚Р°Р№РјРµСЂР°</param>
-    /// <returns>Р·РЅР°С‡РµРЅРёРµ С‚Р°Р№РјРµСЂР° СЂР°РІРЅРѕ РЅСѓР»СЋ Рё РЅРµ РёР·РјРµРЅРёР»РѕСЃСЊ?</returns>
+    /// <param name="timer">значение таймера</param>
+    /// <returns>значение таймера равно нулю и не изменилось?</returns>
     public static bool Timer(this ref float timer)
     {
         if (timer == 0)
@@ -294,12 +294,12 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// РџРѕРїСЂРѕР±РѕРІР°С‚СЊ РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РґСЂСѓРіРѕРіРѕ С‚РёРїР°
+    /// Попробовать получить значение другого типа
     /// </summary>
-    /// <typeparam name="T">РґСЂСѓРіРѕР№ С‚РёРї</typeparam>
-    /// <param name="obj">РёСЃС…РѕРґРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ</param>
-    /// <param name="valueOtherType">Р·РЅР°С‡РµРЅРёРµ РґСЂСѓРіРѕРіРѕ С‚РёРїР°</param>
-    /// <returns>РџРѕР»СѓС‡РёР»РѕСЃСЊ Р»Рё РїРѕР»СѓС‡РёС‚СЊ Р·РЅР°С‡РµРЅРёРµ РґСЂСѓРіРѕРіРѕ С‚РёРїР°</returns>
+    /// <typeparam name="T">другой тип</typeparam>
+    /// <param name="obj">исходное значение</param>
+    /// <param name="valueOtherType">значение другого типа</param>
+    /// <returns>Получилось ли получить значение другого типа</returns>
     public static bool TryGetValueOtherType<T>(this object obj, out T valueOtherType)
     {
         if (obj.GetType() == typeof(T))
@@ -324,9 +324,9 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Р�С‰РµС‚ min x, min y, max x, max y
+    /// Ищет min x, min y, max x, max y
     /// </summary>
-    /// <param name="points">С‚РѕС‡РєРё</param>
+    /// <param name="points">точки</param>
     /// <returns>min x, min y, max x, max y</returns>
     public static (float, float, float, float) MinMax(this Vector2[] points)
     {

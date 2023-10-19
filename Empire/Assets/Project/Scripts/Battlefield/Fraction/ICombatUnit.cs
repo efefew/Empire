@@ -1,20 +1,20 @@
 /// <summary>
-/// Р‘РѕРµРІР°СЏ РµРґРёРЅРёС†Р°
+/// Боевая единица
 /// </summary>
 public interface ICombatUnit
 {
     /// <summary>
-    /// РџРѕРІС‚РѕСЂСЏС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ РЅР°РІС‹РєР°
+    /// Повторять использование навыка
     /// </summary>
     bool Repeat { get; set; }
     /// <summary>
-    /// РЎС‚РѕСЏС‚СЊ РЅР° РјРµСЃС‚Рµ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РЅР°РІС‹РєР°
+    /// Стоять на месте при использовании навыка
     /// </summary>
     bool Stand { get; set; }
 
     /// <summary>
-    /// Р—Р°РїСѓСЃРєР°РµС‚ РЅР°РІС‹Рє
+    /// Запускает навык
     /// </summary>
-    /// <param name="target">С†РµР»СЊ</param>
+    /// <param name="target">цель</param>
     abstract void TargetForUseSkill(ICombatUnit target);
 }

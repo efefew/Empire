@@ -70,7 +70,7 @@ public class Test : MonoBehaviour
 
             TimeSpan ts = stopWatch.Elapsed;
             string time = string.Format("{0:00}:{1:00}:{2:00}.{3:000}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
-            UnityEngine.Debug.Log($"<color=#1CDE6F> РўРµСЃС‚ {id + 1}: РІСЂРµРјСЏ = {time}, РєРѕР»РёС‡РµСЃС‚РІРѕ {countID} </color>");
+            UnityEngine.Debug.Log($"<color=#1CDE6F> Тест {id + 1}: время = {time}, количество {countID} </color>");
 
             stopWatch.Reset();
         }

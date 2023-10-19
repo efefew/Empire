@@ -1,6 +1,6 @@
 using UnityEngine;
 /// <summary>
-/// РЎРІС‘СЂС‚РѕС‡РЅС‹Р№ СЃР»РѕР№
+/// Свёрточный слой
 /// </summary>
 public class ConvolutionalLayer : ConvolutionalNetworkLayer
 {
@@ -24,7 +24,7 @@ public class ConvolutionalLayer : ConvolutionalNetworkLayer
     {
         if (inWidth != matrix.GetLength(0) || inHeight != matrix.GetLength(1))
         {
-            Debug.LogError("СѓСЃР»РѕРІРёСЏ РёР·РјРµРЅРёР»РёСЃСЊ!");
+            Debug.LogError("условия изменились!");
             throw new System.Exception();
         }
 

@@ -19,25 +19,25 @@ public class AreaObject : MonoBehaviour
         Person target;
         for (int ID = 0; ID < skill.frequency; ID++)
         {
-            // РќР°С…РѕРґРёРј РІСЃРµ РєРѕР»Р»Р°Р№РґРµСЂС‹ РІ СЂР°РґРёСѓСЃРµ РґРµР№СЃС‚РІРёСЏ СѓРјРµРЅРёСЏ
+            // Находим все коллайдеры в радиусе действия умения
             Collider2D[] colliders2D = Physics2D.OverlapCircleAll(tr.position, skill.radius, LayerMask.GetMask("Person"));
-            // РЎС‡РµС‚С‡РёРє С†РµР»РµР№, РїРѕСЂР°Р¶РµРЅРЅС‹С… СѓРјРµРЅРёРµРј
+            // Счетчик целей, пораженных умением
             int countCatch = 0;
             for (int i = 0; i < colliders2D.Length; i++)
             {
                 if (!colliders2D[i].GetComponent<Person>())
                     continue;
                 target = colliders2D[i].GetComponent<Person>();
-                // Р•СЃР»Рё Сѓ С†РµР»Рё РЅРµС‚ Р·РґРѕСЂРѕРІСЊСЏ, РїРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµР№ С†РµР»Рё
+                // Если у цели нет здоровья, переходим к следующей цели
                 if (target.health <= 0)
                     continue;
-                // РќР°РЅРѕСЃРёРј СѓСЂРѕРЅ Рё РїСЂРёРјРµРЅСЏРµРј СЌС„С„РµРєС‚С‹ СѓРјРµРЅРёСЏ
+                // Наносим урон и применяем эффекты умения
                 if (Skill.OnTrigger(skill.triggerTarget, initiator, target))
                 {
                     countCatch++;
                     skill.SetEffectsAndBuffs(initiator, target);
                 }
-                // Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕСЂР°Р¶РµРЅРЅС‹С… С†РµР»РµР№ РґРѕСЃС‚РёРіР»Рѕ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ Рё СЌС‚Рѕ Р·РЅР°С‡РµРЅРёРµ РЅРµ СЂР°РІРЅРѕ 0, С‚Рѕ РѕСЃС‚Р°РІС€РёРµСЃСЏ С†РµР»Рё РЅРµ РїРѕСЂР°Р¶Р°СЋС‚СЃСЏ
+                // Если количество пораженных целей достигло максимального значения и это значение не равно 0, то оставшиеся цели не поражаются
                 if (countCatch >= skill.maxCountCatch && skill.maxCountCatch != 0)
                     yield break;
             }

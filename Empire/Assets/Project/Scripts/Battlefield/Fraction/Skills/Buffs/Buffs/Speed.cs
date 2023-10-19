@@ -2,7 +2,7 @@ using UnityEngine;
 [AddComponentMenu("Buff/Speed")]
 [RequireComponent(typeof(Condition))]
 /// <summary>
-/// РР·РјРµРЅРµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё
+/// Изменение скорости
 /// </summary>
 public class Speed : Buff
 {

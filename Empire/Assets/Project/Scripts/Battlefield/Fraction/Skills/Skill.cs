@@ -3,7 +3,7 @@ using AdvancedEditorTools.Attributes;
 using UnityEngine;
 
 /// <summary>
-/// РќР°РІС‹Рє
+/// Навык
 /// </summary>
 public abstract class Skill : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public abstract class Skill : MonoBehaviour
     #endregion Enums
 
     ///// <summary>
-    ///// РћРіСЂР°РЅРёС‡РµРЅРёРµ РЅР° СЂР°СЃСЃРїСЂРѕСЃС‚СЂРѕРЅРµРЅРёРµ РјРѕРјРµРЅС‚Р°Р»СЊРЅС‹С… Рё РІСЂРµРјРµРЅРЅС‹С… СЌС„С„РµРєС‚РѕРІ
+    ///// Ограничение на расспростронение моментальных и временных эффектов
     ///// </summary>
     //public enum ZoneType
     //{
@@ -36,31 +36,31 @@ public abstract class Skill : MonoBehaviour
 
     public ButtonSkill buttonSkillPrefab;
 
-    [Header("Р’СЂРµРјСЏ")]
+    [Header("Время")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.Bevel)]
     /// <summary>
-    /// РІСЂРµРјСЏ РїРµСЂРµР·Р°СЂСЏРґРєРё
+    /// время перезарядки
     /// </summary>
     [Min(0)]
-    [Tooltip("РІСЂРµРјСЏ РїРµСЂРµР·Р°СЂСЏРґРєРё")]
+    [Tooltip("время перезарядки")]
     public float timeCooldown;
 
     /// <summary>
-    /// РІСЂРµРјСЏ РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ
+    /// время преследования
     /// </summary>
     [Min(0)]
-    [Tooltip("РІСЂРµРјСЏ РїСЂРµСЃР»РµРґРѕРІР°РЅРёСЏ")]
+    [Tooltip("время преследования")]
     public float timeTargetMove;
 
     /// <summary>
-    /// РІСЂРµРјСЏ Р·Р°СЂСЏРґР° РЅР°РІС‹РєР°
+    /// время заряда навыка
     /// </summary>
     [Min(0)]
-    [Tooltip("РІСЂРµРјСЏ Р·Р°СЂСЏРґР° РЅР°РІС‹РєР°")]
+    [Tooltip("время заряда навыка")]
     public float timeCast;
 
     [EndColumnArea]
-    [Header("РЈСЃР»РѕРІРёСЏ РґР»СЏ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёСЏ РЅР°РІС‹РєР°")]
+    [Header("Условия для использования навыка")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelGreen)]
     [Min(0)]
     public float mana;
@@ -77,17 +77,17 @@ public abstract class Skill : MonoBehaviour
     public TriggerType triggerTarget;
 
     [EndColumnArea]
-    [Header("РћСЃРЅРѕРІРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РЅР°РІС‹РєР°")]
+    [Header("Основные параметры навыка")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelBlue)]
     public bool consumable;
 
     /// <summary>
-    /// РџСЂРµСЃР»РµРґРѕРІР°С‚СЊ РїСЂРёРїРѕРїР°РґР°РЅРёРё
+    /// Преследовать припопадании
     /// </summary>
     public bool targetMove;
 
     /// <summary>
-    /// РљРѕР»Р»РµРєС‚РёРІРЅС‹Р№ РЅР°РІС‹Рє
+    /// Коллективный навык
     /// </summary>
     public bool collective;
 
@@ -208,27 +208,27 @@ public abstract class Skill : MonoBehaviour
     }
 
     /// <summary>
-    /// Р РµР°Р»РёР·Р°С†РёСЏ РЅР°РІС‹РєР°
+    /// Реализация навыка
     /// </summary>
-    /// <param name="initiator">СЂРµР°Р»РёР·СѓСЋС‰РёР№ РЅР°РІС‹Рє</param>
-    /// <param name="target">С†РµР»СЊ РЅР°РІС‹РєР°</param>
+    /// <param name="initiator">реализующий навык</param>
+    /// <param name="target">цель навыка</param>
     public abstract void Run(Person initiator, Person target = null);
     /// <summary>
-    /// Р РµР°Р»РёР·Р°С†РёСЏ РЅР°РІС‹РєР°
+    /// Реализация навыка
     /// </summary>
-    /// <param name="initiator">СЂРµР°Р»РёР·СѓСЋС‰РёР№ РЅР°РІС‹Рє</param>
-    /// <param name="target">С†РµР»СЊ РЅР°РІС‹РєР°</param>
+    /// <param name="initiator">реализующий навык</param>
+    /// <param name="target">цель навыка</param>
     public abstract void Run(Person initiator, Vector3 target);
     /// <summary>
-    /// РџСЂРѕРІРµСЂСЏРµС‚ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЂРµР°Р»РёР·Р°С†РёРё РЅР°РІС‹РєР°
+    /// Проверяет возможность реализации навыка
     /// </summary>
-    /// <param name="initiator">СЂРµР°Р»РёР·СѓСЋС‰РёР№ РЅР°РІС‹Рє</param>
-    /// <param name="target">С†РµР»СЊ РЅР°РІС‹РєР°</param>
+    /// <param name="initiator">реализующий навык</param>
+    /// <param name="target">цель навыка</param>
     public virtual bool LimitRun(Person initiator, Vector3 target)
     {
         if (initiator == null)
             return false;
-        // РџСЂРѕРІРµСЂСЏРµРј, РјРѕР¶РµС‚ Р»Рё РїРµСЂСЃРѕРЅР°Р¶ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Рѕ СѓРјРµРЅРёРµ
+        // Проверяем, может ли персонаж использовать это умение
         if ((consumable && (initiator.amountSkill[this] - 1) < 0) || !initiator.CanUseSkill(this))
         {
             initiator.RemoveStateAnimation(nameAnimation);
@@ -239,10 +239,10 @@ public abstract class Skill : MonoBehaviour
     }
 
     /// <summary>
-    /// РџСЂРѕРІРµСЂСЏРµРј, РјРѕР¶РµС‚ Р»Рё РїРµСЂСЃРѕРЅР°Р¶ РґРѕС‚СЏРЅСѓС‚СЊСЃСЏ РґРѕ РІСЂР°РіР° СЌС‚РёРј СѓРјРµРЅРёРµРј
+    /// Проверяем, может ли персонаж дотянуться до врага этим умением
     /// </summary>
-    /// <param name="initiator">РїРµСЂСЃРѕРЅР°Р¶</param>
-    /// <param name="target">РІСЂР°РіР°</param>
+    /// <param name="initiator">персонаж</param>
+    /// <param name="target">врага</param>
     /// <returns></returns>
     public virtual bool LimitRangeRun(Person initiator, Vector3 target, bool close = false)
     {
