@@ -121,7 +121,7 @@ public class NeuralNetwork : MonoBehaviour
             error = errorNeurons == null ?
                   layer.neurons[neuronID].value - neuronsNeeded[neuronID]
                 : errorNeurons[neuronID];
-            delta = error * layer.neurons[neuronID].DerivativeFunction();
+            delta = errorNeurons == null ? error : error * layer.neurons[neuronID].DerivativeFunction();
             for (int prevousNeuronID = 0; prevousNeuronID < previousLayer.neurons.Length; prevousNeuronID++)
             {
                 errorPrevousNeurons[prevousNeuronID] += delta * layer.neurons[neuronID].weight[prevousNeuronID];

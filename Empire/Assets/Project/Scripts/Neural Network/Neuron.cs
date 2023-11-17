@@ -53,9 +53,9 @@ public class Neuron
     {
         value = layer.activationFunction switch
         {
-            ActivationFunctionType.Sigmoid => 1 / (1 + Math.Pow(Math.E, -x)),
+            ActivationFunctionType.Sigmoid => 1 / (1 + Math.Exp(-x)),
             ActivationFunctionType.ReLu => Math.Max(0, x),
-            ActivationFunctionType.Th => (Math.Pow(Math.E, x) - Math.Pow(Math.E, -x)) / (Math.Pow(Math.E, x) + Math.Pow(Math.E, -x)),
+            ActivationFunctionType.Th => (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x)),
             _ => 0,
         };
     }
@@ -80,6 +80,6 @@ public class Neuron
     {
         weight = new double[countWeight];
         for (int id = 0; id < weight.Length; id++)
-            weight[id] = UnityEngine.Random.Range(MIN_WEIGHT_VALUE, MAX_WEIGHT_VALUE);
+            weight[id] = UnityEngine.Random.Range(MIN_WEIGHT_VALUE, MAX_WEIGHT_VALUE) * (UnityEngine.Random.Range(0, 1) == 1 ? 1 : -1);
     }
 }

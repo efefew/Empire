@@ -53,10 +53,10 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
     private void SetPositionArmy(Vector2 a, Vector2 b, int countWarriors)
     {
-        anchors.OnChangedPositions -= MoveArmy;
-        anchors.OnChangedPositions += MoveArmy;
         anchors.OnChangePositions -= MovePoints;
         anchors.OnChangePositions += MovePoints;
+        anchors.OnChangedPositions -= MoveArmy;
+        anchors.OnChangedPositions += MoveArmy;
         anchors.ChangePositionA(a);
         anchors.ChangePositionB(b, true);
         for (int i = 0; i < countWarriors; i++)

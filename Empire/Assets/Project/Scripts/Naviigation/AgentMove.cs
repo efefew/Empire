@@ -1,5 +1,3 @@
-using AdvancedEditorTools.Attributes;
-
 using NavMeshPlus.Extensions;
 
 using UnityEngine;
@@ -11,13 +9,11 @@ public class AgentMove : MonoBehaviour
 {
     #region Fields
 
-    public const float MIN_DISTANCE = 0.2f;
-
+    public const float MIN_DISTANCE = 0.1f;
     [SerializeField]
     private Transform target;
-    [ReadOnly]
     public Transform tempTarget;
-    [ReadOnly]
+    private LineRenderer line;
     public Vector3? tempPointTarget;
     [HideInInspector]
     public NavMeshAgent agent;
@@ -29,6 +25,7 @@ public class AgentMove : MonoBehaviour
     {
         tempPointTarget = null;
         agent = GetComponent<NavMeshAgent>();
+        line = target.GetChild(0).GetComponent<LineRenderer>();
     }
 
     /// <summary>
@@ -59,6 +56,15 @@ public class AgentMove : MonoBehaviour
         _ = agent.SetDestination(point);
         agent.isStopped = agent.remainingDistance < MIN_DISTANCE;
     }
-
+    public void UpdateLine()
+    {
+        if (!target.gameObject.activeSelf)
+            return;
+        Vector3[] corners = agent.path.corners;
+        if (corners.Length < 2)
+            return;
+        line.positionCount = corners.Length;
+        line.SetPositions(corners);
+    }
     #endregion Methods
 }

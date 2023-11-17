@@ -43,7 +43,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
     #region Fields
 
     private const float CAMERA_VISIBLE_DISTANCE = 1230f;
-    private const float UPDATE_MOVE = 1f, UPDATE_STOP_STATUS = 0.5f;
+    private const float UPDATE_MOVE = 0.1f, UPDATE_STOP_STATUS = 0.05f;
     private bool isStoped, rightDirection;
     private Vector3 scaleDefault;
     //public Dictionary<Transform, TargetType> targets = new();
@@ -81,6 +81,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
         SetTarget(target);
         yield return new WaitUntil(funcTarget);
         agentMove.tempPointTarget = null;
+        MoveUpdate();
     }
 
     private IEnumerator IPursuit(Vector3 target, IEnumerator coroutineTarget)
@@ -91,6 +92,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
         SetTarget(target);
         yield return StartCoroutine(coroutineTarget);
         agentMove.tempPointTarget = null;
+        MoveUpdate();
     }
     private IEnumerator IPursuit(Person target, Func<bool> funcTarget)
     {
@@ -100,6 +102,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
         SetTarget(target.transform);
         yield return new WaitUntil(funcTarget);
         agentMove.tempTarget = null;
+        MoveUpdate();
     }
 
     private IEnumerator IPursuit(Person target, IEnumerator coroutineTarget)
@@ -111,6 +114,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
         SetTarget(target.transform);
         yield return StartCoroutine(coroutineTarget);
         agentMove.tempTarget = null;
+        MoveUpdate();
     }
     [Button("MoveUpdate")]
     public void MoveUpdate() => StartCoroutine(IMoveUpdate());
@@ -137,7 +141,11 @@ public partial class Person : MonoBehaviour// Мобильность существа
             if (!isStoped)
             {
                 if (agentMove.agent.path.corners.Length >= 2)
+                {
+                    agentMove.UpdateLine();
                     rightDirection = agentMove.agent.path.corners[1].x - transform.position.x > 0;
+                }
+
                 transform.localScale = scaleDefault.X(scaleDefault.x * (rightDirection ? 1 : -1));
                 animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y, -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
             }
@@ -147,7 +155,6 @@ public partial class Person : MonoBehaviour// Мобильность существа
     {
         do
         {
-            agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
             yield return new WaitForSeconds(UPDATE_MOVE);
             agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
         } while (agentMove.tempTarget != null);

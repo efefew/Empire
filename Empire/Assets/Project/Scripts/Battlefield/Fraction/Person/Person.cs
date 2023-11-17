@@ -28,7 +28,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
     private Battlefield battlefield;
     public Transform target;
-
     #endregion Fields
 
     #region Methods

@@ -11,6 +11,7 @@ public class TestNetwork : MonoBehaviour
     private void Start()
     {
         network = GetComponent<NeuralNetwork>();
+        //AliLearn();
         Learn();
     }
     private void AliLearn()
