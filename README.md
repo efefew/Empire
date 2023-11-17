@@ -7,3 +7,4 @@
 Copy git clone https://github.com/efefew/Empire.git
 4.  Откройте проект в Unity.
 5.  Запустите игру, нажав кнопку "Play" в редакторе Unity.
+6.  Для работы с нейронной сетью необходимо открыть сцену Empire\Empire\Assets\Project\Scenes\Neural Network.unity
