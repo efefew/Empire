@@ -1,5 +1,6 @@
 # Empire
  Стратегия про средневековье в 20 веке
+ ![t](https://github.com/efefew/Empire/assets/29331867/d52ec794-f489-42ac-9233-46c5af99bff2)
 # Установка и запуск
 1. Скачайте UnityHub https://unity.com/ru/download
 2.  установите версию Unity 2023.1.0b4 (или более новую) в UnityHub
