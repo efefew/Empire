@@ -28,6 +28,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
     private ConteinerButtonSkills conteinerSkill;
     private Battlefield battlefield;
+
     [SerializeField]
     [ReadOnly]
     private List<Person> personsCanRun = new();
@@ -41,6 +42,8 @@ public partial class Army : MonoBehaviour, ICombatUnit
     #endregion Fields
 
     #region Methods
+
+    private static Person GetRandomPerson(Army armyTarget) => armyTarget == null || armyTarget.persons.Count == 0 ? null : armyTarget.persons[UnityEngine.Random.Range(0, armyTarget.persons.Count)];
 
     private void Start()
     {
@@ -63,6 +66,271 @@ public partial class Army : MonoBehaviour, ICombatUnit
             persons[i].transform.position = persons[i].target.position;
     }
 
+    private void PursuitUseSkill(Skill skill, Person[] targets)
+    {
+        int idTarget = 0;
+        anchors.OnChangePositions += CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        cancelWaitCastSkill = false;
+
+        if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
+        {
+            buttonSkill.waitCastSkill = true;
+        }
+
+        firstCallWhenAllCanRun = true;
+        status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        {
+            Person person = persons[idPerson];
+            Person target = targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget];
+            person.Ready = false;
+
+            person.StopPursuit();
+            person.armyPursuit = person.Pursuit(target, ForceSkill(skill, person, target, target.army));
+            person.MoveUpdate();
+            idTarget++;
+            if (idTarget >= targets.Length)
+                idTarget = 0;
+        }
+    }
+
+    private void PursuitUseSkill(Skill skill, Vector3 target)
+    {
+        anchors.OnChangePositions += CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        cancelWaitCastSkill = false;
+
+        if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
+        {
+            buttonSkill.waitCastSkill = true;
+        }
+
+        firstCallWhenAllCanRun = true;
+        status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        {
+            Person person = persons[idPerson];
+            person.Ready = false;
+
+            person.StopPursuit();
+            person.armyPursuit = person.Pursuit(target, ForceSkill(skill, person, target));
+            person.MoveUpdate();
+        }
+    }
+
+    private void StandUseSkill(Skill skill, Person[] targets)
+    {
+        int idTarget = 0;
+        bool allCantRun = true;
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        {
+            if (persons[idPerson].stunCount == 0)
+            {
+                if (persons[idPerson].CastRun(skill, targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget]))
+                    allCantRun = false;
+                idTarget++;
+                if (idTarget >= targets.Length)
+                    idTarget = 0;
+            }
+        }
+
+        if (!allCantRun)
+        {
+            _ = conteinerSkill.Silence(this, skill);
+            _ = conteinerSkill.Reload(this, skill);
+            status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
+        }
+    }
+
+    private void StandUseSkill(Skill skill, Vector3 target)
+    {
+        bool allCantRun = true;
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        {
+            if (persons[idPerson].stunCount == 0)
+            {
+                if (persons[idPerson].CastRun(skill, target))
+                    allCantRun = false;
+            }
+        }
+
+        if (!allCantRun)
+        {
+            _ = conteinerSkill.Silence(this, skill);
+            _ = conteinerSkill.Reload(this, skill);
+            status.TimerSkillReload(skill, target);
+        }
+    }
+
+    private void UpdateWaitPersonsCanRun(Skill skill, Army armyTarget)
+    {
+        Person randomTarget = GetRandomPerson(armyTarget);
+        if (!firstCallWhenAllCanRun || personsCanRun.Count < persons.Count)
+            return;
+
+        bool allCantRun = true;
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        {
+            if (persons[idPerson].CastRun(skill, persons[idPerson].LastPursuitTarget != null ? persons[idPerson].LastPursuitTarget : randomTarget))
+                allCantRun = false;
+        }
+
+        _ = conteinerSkill.Silence(this, skill);
+        _ = conteinerSkill.Reload(this, skill);
+        status.TimerSkillReload(skill, allCantRun ? null : randomTarget);
+        firstCallWhenAllCanRun = false;
+        personsCanRun.Clear();
+    }
+
+    private void UpdateWaitPersonsCanRun(Skill skill, Vector3 target)
+    {
+        if (!firstCallWhenAllCanRun || personsCanRun.Count < persons.Count)
+            return;
+
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+            _ = persons[idPerson].CastRun(skill, target);
+
+        _ = conteinerSkill.Silence(this, skill);
+        _ = conteinerSkill.Reload(this, skill);
+        status.TimerSkillReload(skill, target);
+        firstCallWhenAllCanRun = false;
+        personsCanRun.Clear();
+    }
+
+    /// <summary>
+    /// Выполнение навыка с наступлением
+    /// </summary>
+    /// <param name="skill">навык</param>
+    /// <param name="person">инициатор</param>
+    /// <param name="target">цель</param>
+    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
+    private Func<bool> ForceSkill(Skill skill, Person person, Person target, Army armyTarget)
+    {
+        return () =>
+        {
+            //if (!firstCallWhenAllCanRun)
+            //    return true;
+            if (person.distracted)
+                CancelForceSkill(person);
+            // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,
+            // или персонажа не существует, или операция была отменена
+            if (/*personsCanRun.Count == persons.Count || */person == null || cancelWaitCastSkill/* || person.distracte*/)
+            {
+                // Обновление состояния персонажей, которые могут использовать навыки
+                UpdateWaitPersonsCanRun(skill, armyTarget);
+                return true;
+            }
+            // Если цель не определена
+            if (target == null)
+            {
+                target = GetRandomPerson(armyTarget);
+                // Если цель всё ещё  не определена
+                if (target == null)
+                {
+                    CancelForceSkill(person);
+
+                    return true;
+                }
+
+                person.Ready = false;
+                _ = personsCanRun.Remove(person);
+
+                //person.SetTarget(target.transform);
+                person.MoveUpdate();
+                return false;
+            }
+            // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
+            if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target.transform.position, close: true))
+            {
+                // Если персонаж не готов к выполнению навыка
+                if (!person.Ready)
+                {
+                    person.Ready = true;
+                    personsCanRun.Add(person);
+
+                    // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
+                    _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
+                }
+
+                return false;
+            }
+
+            if (person.Ready)// Если персонаж готов к выполнению навыка
+            {
+                // Убираем персонажа из списка, тех кто может выполнить навык
+                _ = personsCanRun.Remove(person);
+                person.Ready = false;
+            }
+
+            return false;
+        };
+    }
+
+    /// <summary>
+    /// Выполнение навыка с наступлением
+    /// </summary>
+    /// <param name="skill">навык</param>
+    /// <param name="person">инициатор</param>
+    /// <param name="target">цель</param>
+    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
+    private Func<bool> ForceSkill(Skill skill, Person person, Vector3 target)
+    {
+        return () =>
+        {
+            if (!firstCallWhenAllCanRun)
+                return true;
+            if (person.distracted)
+                CancelForceSkill(person);
+            // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,
+            // или персонажа не существует, или операция была отменена
+            if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
+            {
+                // Обновление состояния персонажей, которые могут использовать навыки
+                UpdateWaitPersonsCanRun(skill, target);
+                return true;
+            }
+
+            // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
+            if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target, close: true))
+            {
+                // Если персонаж не готов к выполнению навыка
+                if (!person.Ready)
+                {
+                    person.Ready = true;
+                    personsCanRun.Add(person);
+
+                    // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
+                    _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
+                }
+
+                return false;
+            }
+
+            // Если персонаж готов к выполнению навыка
+            if (person.Ready)
+            {
+                // Убираем персонажа из списка, тех кто может выполнить навык
+                _ = personsCanRun.Remove(person);
+                person.Ready = false;
+            }
+
+            return false;
+        };
+    }
+
+    private void CancelForceSkill(Person person)
+    {
+        // Если персонаж готов использовать навык
+        if (!personsCanRun.Contains(person))
+        {
+            // Добавление персонажа в очередь
+            personsCanRun.Add(person);
+        }
+
+        person.Ready = false;
+    }
+
     public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy, StatusUI armyUI, StatusUI armyGlobalUI, ConteinerButtonSkills conteinerSkill)
     {
         this.armyUI = armyUI;
@@ -71,6 +339,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
         BuildArmy(a, b, fraction, buttonArmy);
     }
+
     public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy)
     {
         this.buttonArmy = buttonArmy;
@@ -119,6 +388,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
         else
             PursuitUseSkill(skill, targets);
     }
+
     /// <summary>
     /// Запускает навык
     /// </summary>
@@ -135,100 +405,9 @@ public partial class Army : MonoBehaviour, ICombatUnit
         else
             PursuitUseSkill(skill, target);
     }
-    private void PursuitUseSkill(Skill skill, Person[] targets)
-    {
-        int idTarget = 0;
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
-        cancelWaitCastSkill = false;
 
-        if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
-        {
-            buttonSkill.waitCastSkill = true;
-        }
-
-        firstCallWhenAllCanRun = true;
-        status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
-            Person person = persons[idPerson];
-            Person target = targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget];
-            person.Ready = false;
-
-            person.StopPursuit();
-            person.armyPursuit = person.Pursuit(target, ForceSkill(skill, person, target, target.army));
-            person.MoveUpdate();
-            idTarget++;
-            if (idTarget >= targets.Length)
-                idTarget = 0;
-        }
-    }
-    private void PursuitUseSkill(Skill skill, Vector3 target)
-    {
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
-        cancelWaitCastSkill = false;
-
-        if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
-        {
-            buttonSkill.waitCastSkill = true;
-        }
-
-        firstCallWhenAllCanRun = true;
-        status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
-            Person person = persons[idPerson];
-            person.Ready = false;
-
-            person.StopPursuit();
-            person.armyPursuit = person.Pursuit(target, ForceSkill(skill, person, target));
-            person.MoveUpdate();
-        }
-    }
-    private void StandUseSkill(Skill skill, Person[] targets)
-    {
-        int idTarget = 0;
-        bool allCantRun = true;
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
-            if (persons[idPerson].stunCount == 0)
-            {
-                if (persons[idPerson].CastRun(skill, targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget]))
-                    allCantRun = false;
-                idTarget++;
-                if (idTarget >= targets.Length)
-                    idTarget = 0;
-            }
-        }
-
-        if (!allCantRun)
-        {
-            _ = conteinerSkill.Silence(this, skill);
-            _ = conteinerSkill.Reload(this, skill);
-            status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
-        }
-    }
-    private void StandUseSkill(Skill skill, Vector3 target)
-    {
-        bool allCantRun = true;
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
-            if (persons[idPerson].stunCount == 0)
-            {
-                if (persons[idPerson].CastRun(skill, target))
-                    allCantRun = false;
-            }
-        }
-
-        if (!allCantRun)
-        {
-            _ = conteinerSkill.Silence(this, skill);
-            _ = conteinerSkill.Reload(this, skill);
-            status.TimerSkillReload(skill, target);
-        }
-    }
     public void CancelWaitCastSkill(Transform a, Transform b) => CancelWaitCastSkill();
+
     public void CancelWaitCastSkill()
     {
         if (!armyUI.toggle.isOn)
@@ -237,181 +416,11 @@ public partial class Army : MonoBehaviour, ICombatUnit
         anchors.OnChangePositions -= CancelWaitCastSkill;
         cancelWaitCastSkill = true;
     }
-    private void UpdateWaitPersonsCanRun(Skill skill, Army armyTarget)
-    {
-        Person randomTarget = GetRandomPerson(armyTarget);
-        if (!firstCallWhenAllCanRun || personsCanRun.Count < persons.Count)
-            return;
-
-        bool allCantRun = true;
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
-            if (persons[idPerson].CastRun(skill, persons[idPerson].LastPursuitTarget != null ? persons[idPerson].LastPursuitTarget : randomTarget))
-                allCantRun = false;
-        }
-
-        _ = conteinerSkill.Silence(this, skill);
-        _ = conteinerSkill.Reload(this, skill);
-        status.TimerSkillReload(skill, allCantRun ? null : randomTarget);
-        firstCallWhenAllCanRun = false;
-        personsCanRun.Clear();
-    }
-    private void UpdateWaitPersonsCanRun(Skill skill, Vector3 target)
-    {
-        if (!firstCallWhenAllCanRun || personsCanRun.Count < persons.Count)
-            return;
-
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-            _ = persons[idPerson].CastRun(skill, target);
-
-        _ = conteinerSkill.Silence(this, skill);
-        _ = conteinerSkill.Reload(this, skill);
-        status.TimerSkillReload(skill, target);
-        firstCallWhenAllCanRun = false;
-        personsCanRun.Clear();
-    }
-    /// <summary>
-    /// Выполнение навыка с наступлением
-    /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
-    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
-    private Func<bool> ForceSkill(Skill skill, Person person, Person target, Army armyTarget)
-    {
-        return () =>
-        {
-            if (!firstCallWhenAllCanRun)
-                return true;
-            if (person.distracted)
-                CancelForceSkill(person);
-            // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,
-            // или персонажа не существует, или операция была отменена
-            if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
-            {
-
-                // Обновление состояния персонажей, которые могут использовать навыки
-                UpdateWaitPersonsCanRun(skill, armyTarget);
-                return true;
-            }
-
-            // Если цель не определена
-            if (target == null)
-            {
-                target = GetRandomPerson(armyTarget);
-                // Если цель всё ещё  не определена
-                if (target == null)
-                {
-                    CancelForceSkill(person);
-
-                    return true;
-                }
-
-                person.Ready = false;
-                _ = personsCanRun.Remove(person);
-
-                person.SetTarget(target.transform);
-                person.MoveUpdate();
-                return false;
-            }
-
-            // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
-            if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target.transform.position, close: true))
-            {
-                // Если персонаж не готов к выполнению навыка
-                if (!person.Ready)
-                {
-                    person.Ready = true;
-                    personsCanRun.Add(person);
-
-                    // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
-                    _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
-                }
-
-                return false;
-            }
-
-            // Если персонаж готов к выполнению навыка
-            if (person.Ready)
-            {
-                // Убираем персонажа из списка, тех кто может выполнить навык
-                _ = personsCanRun.Remove(person);
-                person.Ready = false;
-            }
-
-            return false;
-
-        };
-    }
-    /// <summary>
-    /// Выполнение навыка с наступлением
-    /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
-    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
-    private Func<bool> ForceSkill(Skill skill, Person person, Vector3 target)
-    {
-        return () =>
-        {
-            if (!firstCallWhenAllCanRun)
-                return true;
-            if (person.distracted)
-                CancelForceSkill(person);
-            // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,
-            // или персонажа не существует, или операция была отменена
-            if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
-            {
-
-                // Обновление состояния персонажей, которые могут использовать навыки
-                UpdateWaitPersonsCanRun(skill, target);
-                return true;
-            }
-
-            // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
-            if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target, close: true))
-            {
-                // Если персонаж не готов к выполнению навыка
-                if (!person.Ready)
-                {
-                    person.Ready = true;
-                    personsCanRun.Add(person);
-
-                    // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
-                    _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
-                }
-
-                return false;
-            }
-
-            // Если персонаж готов к выполнению навыка
-            if (person.Ready)
-            {
-                // Убираем персонажа из списка, тех кто может выполнить навык
-                _ = personsCanRun.Remove(person);
-                person.Ready = false;
-            }
-
-            return false;
-
-        };
-    }
-    private void CancelForceSkill(Person person)
-    {
-        // Если персонаж готов использовать навык
-        if (!personsCanRun.Contains(person))
-        {
-            // Добавление персонажа в очередь
-            personsCanRun.Add(person);
-        }
-
-        person.Ready = false;
-    }
-
-    private static Person GetRandomPerson(Army armyTarget) => armyTarget == null || armyTarget.persons.Count == 0 ? null : armyTarget.persons[UnityEngine.Random.Range(0, armyTarget.persons.Count)];
 
     public void SetRepeat(bool on) => Repeat = on;
+
     public void SetStand(bool on) => Stand = on;
+
     public void SetActive(bool on)
     {
         armyGlobalUI.toggle.SetIsOnWithoutNotify(on);
@@ -433,6 +442,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
         if (target.TryGetValueOtherType(out Army army))
             UseSkill(battlefield.targetSkill, army.persons.ToArray());
     }
+
     /// <summary>
     /// Использование навыка на цель
     /// </summary>
@@ -443,11 +453,13 @@ public partial class Army : MonoBehaviour, ICombatUnit
         battlefield.OnSetTargetPoint -= TargetForUseSkill;
         UseSkill(battlefield.targetSkill, target);
     }
+
     [Button("MoveUpdate")]
     public void MoveUpdate()
     {
         for (int id = 0; id < persons.Count; id++)
             persons[id].MoveUpdate();
     }
+
     #endregion Methods
 }

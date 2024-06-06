@@ -28,6 +28,7 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
     private Battlefield battlefield;
     public Transform target;
+
     #endregion Fields
 
     #region Methods
@@ -47,7 +48,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
         OnDeadPerson -= DeadPerson;
         if (army)
             _ = army.persons.Remove(this);
-        //agentMove.agent.isStopped = true;
         ChangeStateAnimation(deadState, uint.MaxValue);
         if (transform.childCount > 0)
         {
@@ -58,7 +58,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
         Destroy(target.gameObject);
         Destroy(gameObject);
-
     }
 
     private IEnumerator MeleeUpdate()
@@ -101,12 +100,14 @@ public partial class Person : MonoBehaviour, ICombatUnit
         yield return new WaitForSeconds(skill.timeCast);
         skill.Run(this, target);
     }
+
     private IEnumerator ICastRun(Skill skill, Vector3 target)
     {
         _ = Stun(skill.timeCast);
         yield return new WaitForSeconds(skill.timeCast);
         skill.Run(this, target);
     }
+
     public void Build(Army army)
     {
         this.army = army;
@@ -143,6 +144,7 @@ public partial class Person : MonoBehaviour, ICombatUnit
         if (target.TryGetValueOtherType(out Army army))
             UseSkill(battlefield.targetSkill, army.persons[0]);
     }
+
     /// <summary>
     /// Запускает навык
     /// </summary>
@@ -153,6 +155,7 @@ public partial class Person : MonoBehaviour, ICombatUnit
         battlefield.OnSetTargetPoint -= TargetForUseSkill;
         //.реализовать UseSkill(battlefield.targetSkill, target);
     }
+
     public bool CastRun(Skill skill, Person target)
     {
         if (skill.LimitRun(this, target.transform.position))
@@ -174,6 +177,7 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
         return false;
     }
+
     public bool CastRun(Skill skill, Vector3 target)
     {
         if (skill.LimitRun(this, target))
@@ -195,5 +199,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
 
         return false;
     }
+
     #endregion Methods
 }

@@ -161,6 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a73a9da468307b04c9da1cfeb5d19fe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battlefield: {fileID: 0}
   a: {fileID: 2628039790361537914}
   b: {fileID: 590324384580541193}
 --- !u!114 &6076616553520303654
@@ -185,7 +186,7 @@ MonoBehaviour:
   offsetX: 1.5
   offsetY: 1.5
   status: {fileID: 6398175788483333073}
-  countWarriors: 80
+  countWarriors: 50
 --- !u!114 &6398175788483333073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -327,7 +328,7 @@ NavMeshAgent:
   m_Height: 1.4226667
   m_BaseOffset: 0.71133333
   m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
+  m_ObstacleAvoidanceType: 0
 --- !u!114 &5808312228857711057
 MonoBehaviour:
   m_ObjectHideFlags: 0

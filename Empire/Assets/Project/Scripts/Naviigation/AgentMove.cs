@@ -9,7 +9,9 @@ public class AgentMove : MonoBehaviour
 {
     #region Fields
 
-    public const float MIN_DISTANCE = 0.1f;
+    public const float
+        MIN_DISTANCE = 0.1f,
+        MIN_DISTANCE_ENEMY_CONTACT = 1f;
     [SerializeField]
     private Transform target;
     public Transform tempTarget;
@@ -40,21 +42,12 @@ public class AgentMove : MonoBehaviour
             return;
         }
 
-        if (stun)
-        {
-            agent.isStopped = true;
-            return;
-        }
-
+        agent.isStopped = stun;
         Vector3 point = tempPointTarget == null ? target.position : (Vector3)tempPointTarget;
         point = tempTarget ? tempTarget.position : point;
-        Move(point);
-    }
 
-    private void Move(Vector3 point)
-    {
         _ = agent.SetDestination(point);
-        agent.isStopped = agent.remainingDistance < MIN_DISTANCE;
+        agent.stoppingDistance = tempTarget ? MIN_DISTANCE_ENEMY_CONTACT : MIN_DISTANCE;
     }
     public void UpdateLine()
     {

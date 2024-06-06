@@ -150,7 +150,7 @@ public class ConteinerButtonSkills : MonoBehaviour
         buttonSkill = null;
         for (int id = 0; id < buttonSkills.Count; id++)
         {
-            if (buttonSkills[id].skillTarget == skill)
+            if (buttonSkills[id].targetSkill == skill)
             {
                 if (buttonSkills[id].initiatorArmies.ContainsKey(army))
                 {

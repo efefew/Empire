@@ -38,7 +38,8 @@ public class CameraOperator : MonoBehaviour
             CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, HEIGHT);
     }
 
-    private void Update() => CameraControler();
+    private void FixedUpdate() => CameraControler();
+    private void Update() => Zoom();
 
     private void NormalizePos(Transform trNorm, float height = HEIGHT) => trNorm.position = new Vector3(trNorm.position.x, trNorm.position.y, height);
 
@@ -88,6 +89,7 @@ public class CameraOperator : MonoBehaviour
 
     private void Move()
     {
+        FixedZoom();
         if (Input.GetKey(KeyCode.D))
             CamTr.position += SpeedMove * CamTr.right * (MyCam.orthographicSize / MaxZoom);
 
@@ -108,24 +110,38 @@ public class CameraOperator : MonoBehaviour
 
     private void Zoom()
     {
-        if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range < 0) || */(Input.GetKey(KeyCode.E) && !(limit == Limits.point)) || Input.GetAxis("Mouse ScrollWheel") >= 0.1)
+        if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range < 0) || */Input.GetAxis("Mouse ScrollWheel") >= 0.1)
         {
             MyCam.orthographicSize -= SpeedScale * (MyCam.orthographicSize / MaxZoom);
             if (MyCam.orthographicSize < MinZoom)
                 MyCam.orthographicSize = MinZoom;
         }
 
-        if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range > 0) || */(Input.GetKey(KeyCode.Q) && !(limit == Limits.point)) || Input.GetAxis("Mouse ScrollWheel") <= -0.1)
+        if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range > 0) || */Input.GetAxis("Mouse ScrollWheel") <= -0.1)
         {
             MyCam.orthographicSize += SpeedScale * (MyCam.orthographicSize / MaxZoom);
             if (MyCam.orthographicSize > MaxZoom)
                 MyCam.orthographicSize = MaxZoom;
         }
     }
+    private void FixedZoom()
+    {
+        if (Input.GetKey(KeyCode.E) && !(limit == Limits.point))
+        {
+            MyCam.orthographicSize -= SpeedScale * (MyCam.orthographicSize / MaxZoom);
+            if (MyCam.orthographicSize < MinZoom)
+                MyCam.orthographicSize = MinZoom;
+        }
 
+        if (Input.GetKey(KeyCode.Q) && !(limit == Limits.point))
+        {
+            MyCam.orthographicSize += SpeedScale * (MyCam.orthographicSize / MaxZoom);
+            if (MyCam.orthographicSize > MaxZoom)
+                MyCam.orthographicSize = MaxZoom;
+        }
+    }
     private void CameraControler()
     {
-        Zoom();
         switch (limit)
         {
             case Limits.square:

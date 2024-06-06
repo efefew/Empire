@@ -12,7 +12,7 @@ public class ButtonSkill : MonoBehaviour
 {
     #region Properties
 
-    internal Skill skillTarget { get; private set; }
+    internal Skill targetSkill { get; private set; }
     internal Button button { get; private set; }
     internal int prefabID { get; private set; }
 
@@ -75,25 +75,25 @@ public class ButtonSkill : MonoBehaviour
     private void UpdateColdownSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
     {
         button.enabled = !Silence && timerSkillReload == 0;
-        imageLoad.fillAmount = skillTarget.timeCooldown == 0 ? 0 : timerSkillReload / skillTarget.timeCooldown;
+        imageLoad.fillAmount = targetSkill.timeCooldown == 0 ? 0 : timerSkillReload / targetSkill.timeCooldown;
         textLoad.text = timerSkillReload == 0 ? "" : System.Math.Round(timerSkillReload, 1).ToString();
     }
 
     private void CheckWaitCastSkill(Army army)
     {
-        if (army.status.waitCastSkill == skillTarget)
+        if (army.status.waitCastSkill == targetSkill)
             waitCastSkill = true;
     }
 
     private void AddTimerSkillReload(Army army)
     {
-        if (army.status.timersSkillReload.ContainsKey(skillTarget))
-            timerSkillReload = army.status.timersSkillReload[skillTarget] > timerSkillReload ? army.status.timersSkillReload[skillTarget] : timerSkillReload;
+        if (army.status.timersSkillReload.ContainsKey(targetSkill))
+            timerSkillReload = army.status.timersSkillReload[targetSkill] > timerSkillReload ? army.status.timersSkillReload[targetSkill] : timerSkillReload;
     }
 
     public void Build(Army army, Skill skillTarget)
     {
-        this.skillTarget = skillTarget;
+        this.targetSkill = skillTarget;
         AddTimerSkillReload(army);
         CheckWaitCastSkill(army);
         prefabID = skillTarget.buttonSkillPrefab.GetInstanceID();
@@ -102,7 +102,7 @@ public class ButtonSkill : MonoBehaviour
     /// <summary>
     /// Перезарядка
     /// </summary>
-    public void Reload() => timerSkillReload = skillTarget.timeCooldown;
+    public void Reload() => timerSkillReload = targetSkill.timeCooldown;
 
     public void Add(Army army)
     {
@@ -113,8 +113,8 @@ public class ButtonSkill : MonoBehaviour
         {
             battlefield.OnSetTargetArmy += army.TargetForUseSkill;
             battlefield.OnSetTargetPoint += army.TargetForUseSkill;
-            battlefield.targetSkill = skillTarget;
-            battlefield.SetActiveArmies(skillTarget.triggerTarget, army);
+            battlefield.targetSkill = targetSkill;
+            battlefield.SetActiveArmies(targetSkill.triggerTarget, army);
         };
         initiatorArmies.Add(army, skillRunner);
         button.onClick.AddListener(skillRunner);

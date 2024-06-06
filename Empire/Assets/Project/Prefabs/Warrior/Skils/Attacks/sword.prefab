@@ -52,7 +52,8 @@ MonoBehaviour:
   mana: 0
   stamina: 5
   range: 1
-  amountSkill: 0
+  maxAmountSkill: 0
+  pointCanBeTarget: 0
   triggerTarget: 0
   consumable: 0
   targetMove: 1
