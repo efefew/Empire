@@ -186,7 +186,7 @@ MonoBehaviour:
   offsetX: 1.5
   offsetY: 1.5
   status: {fileID: 6398175788483333073}
-  countWarriors: 50
+  countWarriors: 10
 --- !u!114 &6398175788483333073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,6 +297,7 @@ MonoBehaviour:
   needTarget: 1
   collective: 0
   distracted: 0
+  stopDistracted: 0
   buffs: []
   tempMelee: {fileID: 0}
 --- !u!222 &274735537375082142

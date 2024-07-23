@@ -36,7 +36,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
     #region Properties
 
     public int stunCount { get; private set; }
-    public Person LastPursuitTarget { get; private set; }
+    public Person LastPursuitTarget { get; set; }
 
     #endregion Properties
 
@@ -49,6 +49,7 @@ public partial class Person : MonoBehaviour// Мобильность существа
 
     //public Dictionary<Transform, TargetType> targets = new();
     public Coroutine armyPursuit;
+    public Army armyTarget;
 
     public AgentMove agentMove;
 
@@ -149,6 +150,8 @@ public partial class Person : MonoBehaviour// Мобильность существа
         do
         {
             yield return new WaitForSeconds(UPDATE_MOVE);
+            if (agentMove.tempTarget == null)
+                agentMove.tempTarget = armyTarget != null ? Army.GetRandomPerson(armyTarget).transform : null;
             agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
         } while (agentMove.tempTarget != null);
     }

@@ -7,7 +7,7 @@ public partial class Person : MonoBehaviour, ICombatUnit
 {
     #region Properties
 
-    public Army army { get; private set; }
+    public Army army { get; set; }
 
     public Status status { get; private set; }
     public bool Repeat { get; set; }
