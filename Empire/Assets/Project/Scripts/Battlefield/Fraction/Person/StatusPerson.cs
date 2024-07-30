@@ -40,7 +40,6 @@ public partial class Person : MonoBehaviour // Характеристики существа
     public bool needTarget = true;
     public bool collective = false;
     public bool distracted = false;
-    public bool stopDistracted = false;
     #endregion Properties
 
     #region Fields

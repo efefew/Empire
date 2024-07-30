@@ -246,7 +246,8 @@ public abstract class Skill : MonoBehaviour
     /// <returns></returns>
     public virtual bool LimitRangeRun(Person initiator, Vector3 target, bool close = false)
     {
-        if (target == null || (Vector2.Distance(initiator.transform.position, target) > range * (close ? LIMIT_CLOSE_RANGE : 1) && range != 0))
+        float distance = Vector2.Distance(initiator.transform.position, target);
+        if (target == null || (distance > range * (close ? LIMIT_CLOSE_RANGE : 1) && range != 0))
         {
             initiator.RemoveStateAnimation(nameAnimation);
             return false;

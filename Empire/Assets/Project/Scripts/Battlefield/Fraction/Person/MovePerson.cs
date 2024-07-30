@@ -151,7 +151,8 @@ public partial class Person : MonoBehaviour// Мобильность существа
         {
             yield return new WaitForSeconds(UPDATE_MOVE);
             if (agentMove.tempTarget == null)
-                agentMove.tempTarget = armyTarget != null ? Army.GetRandomPerson(armyTarget).transform : null;
+                agentMove.tempTarget = armyTarget != null ? Army.GetRandomPerson(armyTarget)?.transform : null;
+
             agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
         } while (agentMove.tempTarget != null);
     }
