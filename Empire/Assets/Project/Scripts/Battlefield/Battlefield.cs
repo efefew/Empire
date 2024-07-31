@@ -132,6 +132,7 @@ public class Battlefield : MonoBehaviour
     public void SetTargetArmy(ICombatUnit target)
     {
         OnSetTargetArmy?.Invoke(target);
+        targetSkill = null;
         DeactiveAllArmies();
     }
     public void SetTargetPoint(Vector3 target)

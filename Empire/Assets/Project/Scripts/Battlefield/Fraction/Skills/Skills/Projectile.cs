@@ -55,7 +55,7 @@ public class Projectile : Skill
     }
     public override void Run(Person initiator, Person target = null)
     {
-        if (!LimitRun(initiator, target.transform.position))
+        if (target == null || !LimitRun(initiator, target.transform.position))
             return;
 
         if (consumable)

@@ -67,9 +67,6 @@ public partial class Army : MonoBehaviour, ICombatUnit
     private void PursuitUseSkill(Skill skill, Person[] targets)
     {
         int idTarget = 0;
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
-        cancelWaitCastSkill = false;
 
         if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
             buttonSkill.waitCastSkill = true;
@@ -94,14 +91,8 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
     private void PursuitUseSkill(Skill skill, Vector3 target)
     {
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
-        cancelWaitCastSkill = false;
-
         if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
-        {
             buttonSkill.waitCastSkill = true;
-        }
 
         firstCallWhenAllCanRun = true;
         status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
@@ -134,6 +125,8 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
         if (!allCantRun)
         {
+            for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+                persons[idPerson].armyTarget = null;
             _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
@@ -154,6 +147,8 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
         if (!allCantRun)
         {
+            for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+                persons[idPerson].armyTarget = null;
             _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, target);
@@ -220,9 +215,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
             if (HandleSkillExecution(skill, person, target.transform.position))
                 return false;
-
             ReadyCheck(person);
-
             return false;
         };
     }
@@ -245,9 +238,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
 
             if (HandleSkillExecution(skill, person, target))
                 return false;
-
             ReadyCheck(person);
-
             return false;
         };
     }
@@ -409,6 +400,10 @@ public partial class Army : MonoBehaviour, ICombatUnit
         if (Repeat)
             status.OnRepeatUseSkillOnPersons += UseSkill;
 
+        anchors.OnChangePositions += CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        cancelWaitCastSkill = false;
+
         SetTargetArmy(targets[0].army);
         if (Stand)
             StandUseSkill(skill, targets);
@@ -426,7 +421,6 @@ public partial class Army : MonoBehaviour, ICombatUnit
         status.OnRepeatUseSkillOnPersons -= UseSkill;
         if (Repeat)
             status.OnRepeatUseSkillOnPersons += UseSkill;
-
         if (Stand)
             StandUseSkill(skill, target);
         else
@@ -469,7 +463,6 @@ public partial class Army : MonoBehaviour, ICombatUnit
             UseSkill(battlefield.targetSkill, person);
         if (target.TryGetValueOtherType(out Army army))
             UseSkill(battlefield.targetSkill, army.persons.ToArray());
-        battlefield.targetSkill = null;
     }
 
     /// <summary>
@@ -481,7 +474,6 @@ public partial class Army : MonoBehaviour, ICombatUnit
         battlefield.OnSetTargetArmy -= TargetForUseSkill;
         battlefield.OnSetTargetPoint -= TargetForUseSkill;
         UseSkill(battlefield.targetSkill, target);
-        battlefield.targetSkill = null;
     }
 
     [Button("MoveUpdate")]

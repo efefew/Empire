@@ -143,7 +143,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
             UseSkill(battlefield.targetSkill, person);
         if (target.TryGetValueOtherType(out Army army))
             UseSkill(battlefield.targetSkill, army.persons[0]);
-        battlefield.targetSkill = null;
 
     }
 
@@ -156,7 +155,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
         battlefield.OnSetTargetArmy -= TargetForUseSkill;
         battlefield.OnSetTargetPoint -= TargetForUseSkill;
         //.реализовать UseSkill(battlefield.targetSkill, target);
-        battlefield.targetSkill = null;
     }
 
     public bool CastRun(Skill skill, Person target)
