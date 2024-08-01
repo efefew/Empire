@@ -119,6 +119,7 @@ public class Status : MonoBehaviour
     private IEnumerator ITimerSkillReload(Skill skill, Person target)
     {
         timersSkillReload.Add(skill, skill.timeCooldown);
+        Army army = target.army;
         while (timersSkillReload[skill] > 0)
         {
             yield return new WaitForFixedUpdate();
@@ -127,8 +128,8 @@ public class Status : MonoBehaviour
 
         _ = timersSkillReload.Remove(skill);
 
-        if (target != null)
-            OnRepeatUseSkillOnPersons?.Invoke(skill, target.army ? target.army.persons.ToArray() : new Person[1] { target });
+        if (target != null || army != null)
+            OnRepeatUseSkillOnPersons?.Invoke(skill, army ? army.persons.ToArray() : new Person[1] { target });
     }
     private IEnumerator ITimerSkillReload(Skill skill, Vector3 target)
     {
