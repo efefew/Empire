@@ -24,8 +24,9 @@ public class CameraOperator : MonoBehaviour
     private const int HEIGHT = -10;
     public float SpeedScale, SpeedMove, MaxRadius, MinZoom, MaxZoom;
     public Transform CamTr, TargetTr;
+    public GameObject conteinerUI;
     public Camera MyCam;
-    public float timeSpeed, whenChangeTiledImage;
+    public float timeSpeed, whenChangeTiledImage, zoomWhenHideUI;
     public Limits limit;
 
     #endregion Fields
@@ -115,6 +116,7 @@ public class CameraOperator : MonoBehaviour
             MyCam.orthographicSize -= SpeedScale * (MyCam.orthographicSize / MaxZoom);
             if (MyCam.orthographicSize < MinZoom)
                 MyCam.orthographicSize = MinZoom;
+            conteinerUI.SetActive(zoomWhenHideUI < MyCam.orthographicSize);
         }
 
         if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range > 0) || */Input.GetAxis("Mouse ScrollWheel") <= -0.1)
@@ -122,6 +124,7 @@ public class CameraOperator : MonoBehaviour
             MyCam.orthographicSize += SpeedScale * (MyCam.orthographicSize / MaxZoom);
             if (MyCam.orthographicSize > MaxZoom)
                 MyCam.orthographicSize = MaxZoom;
+            conteinerUI.SetActive(zoomWhenHideUI < MyCam.orthographicSize);
         }
     }
     private void FixedZoom()

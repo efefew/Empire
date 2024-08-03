@@ -50,6 +50,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
         battlefield = Battlefield.singleton;
         foreach (Skill skill in status.skills)
             skill.buttonSkillPrefab.Build(this, skill);
+        anchors.OnChangedPositions += (Transform a, Transform b) => targetButtonPersonId = newTargetButtonPersonId;
     }
 
     private void SetPositionArmy(Vector2 a, Vector2 b, int countWarriors)
@@ -394,12 +395,14 @@ public partial class Army : MonoBehaviour, ICombatUnit
     /// <param name="targets">цель</param>
     public void UseSkill(Skill skill, params Person[] targets)
     {
-        status.OnRepeatUseSkillOnPersons -= UseSkill;
-        if (targets.NotUnityNull().Count() == 0)
+        if (!status.skills.Contains(skill) || targets.NotUnityNull().Count() == 0)
             return;
+        status.OnRepeatUseSkillOnPersons -= UseSkill;
         if (Repeat)
             status.OnRepeatUseSkillOnPersons += UseSkill;
 
+        anchors.OnChangePositions -= CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
         anchors.OnChangePositions += CancelWaitCastSkill;
         conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
         cancelWaitCastSkill = false;
@@ -418,9 +421,18 @@ public partial class Army : MonoBehaviour, ICombatUnit
     /// <param name="target">цель</param>
     public void UseSkill(Skill skill, Vector3 target)
     {
-        status.OnRepeatUseSkillOnPersons -= UseSkill;
+        if (!status.skills.Contains(skill))
+            return;
+        status.OnRepeatUseSkillOnPoint -= UseSkill;
         if (Repeat)
-            status.OnRepeatUseSkillOnPersons += UseSkill;
+            status.OnRepeatUseSkillOnPoint += UseSkill;
+
+        anchors.OnChangePositions -= CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
+        anchors.OnChangePositions += CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        cancelWaitCastSkill = false;
+
         if (Stand)
             StandUseSkill(skill, target);
         else
@@ -435,6 +447,8 @@ public partial class Army : MonoBehaviour, ICombatUnit
             return;
         conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
         anchors.OnChangePositions -= CancelWaitCastSkill;
+        status.OnRepeatUseSkillOnPersons -= UseSkill;
+        status.OnRepeatUseSkillOnPoint -= UseSkill;
         cancelWaitCastSkill = true;
         SetTargetArmy(null);
     }

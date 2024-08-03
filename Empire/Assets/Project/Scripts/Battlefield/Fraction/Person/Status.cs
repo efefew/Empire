@@ -119,7 +119,7 @@ public class Status : MonoBehaviour
     private IEnumerator ITimerSkillReload(Skill skill, Person target)
     {
         timersSkillReload.Add(skill, skill.timeCooldown);
-        Army army = target.army;
+        Army army = target?.army;
         while (timersSkillReload[skill] > 0)
         {
             yield return new WaitForFixedUpdate();
@@ -142,8 +142,7 @@ public class Status : MonoBehaviour
 
         _ = timersSkillReload.Remove(skill);
 
-        if (target != null)
-            OnRepeatUseSkillOnPoint?.Invoke(skill, target);
+        OnRepeatUseSkillOnPoint?.Invoke(skill, target);
     }
     #endregion Methods
 }

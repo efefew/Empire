@@ -114,7 +114,7 @@ public class ButtonSkill : MonoBehaviour
             battlefield.OnSetTargetArmy += army.TargetForUseSkill;
             battlefield.OnSetTargetPoint += army.TargetForUseSkill;
             battlefield.targetSkill = targetSkill;
-            battlefield.SetActiveArmies(targetSkill.triggerTarget, army);
+            battlefield.ActiveArmies(targetSkill.triggerTarget, army);
         };
         initiatorArmies.Add(army, skillRunner);
         button.onClick.AddListener(skillRunner);

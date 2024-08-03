@@ -9,6 +9,7 @@ public partial class Army : MonoBehaviour// Мобильность армии
     private bool firstMinDistance;
     public PointsAB anchors;
     public float offsetX, offsetY;
+    private int targetButtonPersonId, newTargetButtonPersonId;
     #endregion Fields
 
     #region Methods
@@ -18,10 +19,11 @@ public partial class Army : MonoBehaviour// Мобильность армии
 
         if (persons.Count == 0)
             return;
+
         if (buttonArmy.gameObject.activeInHierarchy)
-            buttonArmy.transform.position = persons[persons.Count / 2].transform.position;
+            buttonArmy.transform.position = persons[targetButtonPersonId].transform.position;
         if (!status.fraction.bot)
-            armyGlobalUI.transform.position = persons[persons.Count / 2].transform.position;
+            armyGlobalUI.transform.position = persons[targetButtonPersonId].transform.position;
     }
     private void MovePoints(Transform a, Transform b)
     {
@@ -31,8 +33,7 @@ public partial class Army : MonoBehaviour// Мобильность армии
         if (distance < (firstMinDistance ? FIRST_MIN_DISTANCE : MIN_DISTANCE))
             return;
 
-        int countX = (int)((distance / offsetX) + 1);
-        int x = 0, y = 0;
+        int countX = (int)((distance / offsetX) + 1), x = 0, y = 0;
         for (int id = 0; id < persons.Count; id++)
         {
             persons[id].target.position = a.position - (a.up * offsetY * y) + (a.right * offsetX * x);
@@ -44,6 +45,9 @@ public partial class Army : MonoBehaviour// Мобильность армии
             }
         }
 
+        int widhArmy = persons.Count < countX ? persons.Count : countX;
+        int heightArmy = x == 0 ? y : y - 1;
+        newTargetButtonPersonId = (widhArmy * (heightArmy / 2)) + (widhArmy / 2);
         firstMinDistance = false;
     }
     private void MoveArmy(Transform a, Transform b)

@@ -29,7 +29,6 @@ public class Battlefield : MonoBehaviour
     [SerializeField]
     private FractionBattlefield[] fractions;
 
-    private bool pointTargetclicked;
     internal Skill targetSkill;
 
     public Vector3 screenPosition { get; private set; }
@@ -146,7 +145,7 @@ public class Battlefield : MonoBehaviour
     /// <param name="trigger">триггер</param>
     /// <param name="armyInitiator">армия - инициатор</param>
     /// <returns>Активированые армии</returns>
-    public void SetActiveArmies(TriggerType trigger, Army armyInitiator)
+    public void ActiveArmies(TriggerType trigger, Army armyInitiator)
     {
         DeactiveAllArmies();
 
@@ -161,12 +160,7 @@ public class Battlefield : MonoBehaviour
     }
     public void CreatePointTarget(Vector3 point)
     {
-        if (pointTargetclicked)
-        {
-            pointTargetclicked = false;
-            return;
-        }
-
+        DeactiveAllArmies();
         pointTarget.gameObject.SetActive(true);
         pointTarget.transform.position = point;
     }
