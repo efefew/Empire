@@ -34,13 +34,13 @@ public class ButtonSkill : MonoBehaviour
     private float timerSkillReload;
 
     [SerializeField]
-    private Image imageLoad;
+    private Image imageLoad, imagePatrol;
 
     [SerializeField]
     private TMP_Text textLoad;
 
     private bool silence;
-    public bool waitCastSkill;
+    public bool waitCastSkill, firstClick;
     public Dictionary<Army, UnityAction> initiatorArmies = new();
 
     #endregion Fields
@@ -49,7 +49,24 @@ public class ButtonSkill : MonoBehaviour
 
     private void Awake() => button = GetComponent<Button>();
 
-    private void Start() => battlefield = Battlefield.singleton;
+    private void Start()
+    {
+        battlefield = Battlefield.singleton;
+        firstClick = true;
+        button.onClick.AddListener(() =>
+        {
+            imagePatrol.fillAmount = 1;
+            imagePatrol.gameObject.SetActive(!firstClick);
+            if (!firstClick)
+                battlefield.SetPatrol();
+            firstClick = !firstClick;
+        });
+        battlefield.conteinerSkill.OnClickAnyButtonSkills += (ButtonSkill buttonSkill) =>
+        {
+            if (buttonSkill != this)
+                firstClick = true;
+        };
+    }
 
     private void FixedUpdate()
     {
@@ -113,6 +130,7 @@ public class ButtonSkill : MonoBehaviour
         {
             battlefield.OnSetTargetArmy += army.TargetForUseSkill;
             battlefield.OnSetTargetPoint += army.TargetForUseSkill;
+            battlefield.OnSetPatrol += army.TargetForUseSkill;
             battlefield.targetSkill = targetSkill;
             battlefield.ActiveArmies(targetSkill.triggerTarget, army);
         };

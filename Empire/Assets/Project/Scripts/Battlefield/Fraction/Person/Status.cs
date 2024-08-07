@@ -13,6 +13,8 @@ public class Status : MonoBehaviour
 {
     public Action<Skill, Person[]> OnRepeatUseSkillOnPersons;
     public Action<Skill, Vector3> OnRepeatUseSkillOnPoint;
+    public Action<Skill> OnPatrol;
+
     #region Fields
 
     public FractionBattlefield fraction;
@@ -130,6 +132,8 @@ public class Status : MonoBehaviour
 
         if (target != null || army != null)
             OnRepeatUseSkillOnPersons?.Invoke(skill, army ? army.persons.ToArray() : new Person[1] { target });
+        else
+            OnPatrol?.Invoke(skill);
     }
     private IEnumerator ITimerSkillReload(Skill skill, Vector3 target)
     {

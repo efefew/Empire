@@ -10,8 +10,9 @@ public class Battlefield : MonoBehaviour
 {
     #region Events
 
-    public event Action<ICombatUnit> OnSetTargetArmy;
+    public event Action<Army> OnSetTargetArmy;
     public event Action<Vector3> OnSetTargetPoint;
+    public event Action OnSetPatrol;
 
     #endregion Events
 
@@ -29,12 +30,15 @@ public class Battlefield : MonoBehaviour
     [SerializeField]
     private FractionBattlefield[] fractions;
 
+    public ConteinerButtonSkills conteinerSkill;
+
     internal Skill targetSkill;
 
     public Vector3 screenPosition { get; private set; }
     public Vector3 worldPosition { get; private set; }
     public FractionBattlefield playerFraction;
     public Button pointTarget;
+    public Toggle toggleArmyGroup, toggleStand, toggleRepeat;
     #endregion Fields
 
     #region Methods
@@ -123,20 +127,33 @@ public class Battlefield : MonoBehaviour
 
         singleton = this;
     }
-
     /// <summary>
     /// Выбор цели
     /// </summary>
     /// <param name="target">цель</param>
-    public void SetTargetArmy(ICombatUnit target)
+    public void SetTargetArmy(Army target)
     {
         OnSetTargetArmy?.Invoke(target);
         targetSkill = null;
         DeactiveAllArmies();
     }
+
+    /// <summary>
+    /// Выбор точки
+    /// </summary>
+    /// <param name="target">точка</param>
     public void SetTargetPoint(Vector3 target)
     {
         OnSetTargetPoint?.Invoke(target);
+        DeactiveAllArmies();
+    }
+    /// <summary>
+    /// Патрулировать
+    /// </summary>
+    public void SetPatrol()
+    {
+        OnSetPatrol?.Invoke();
+        targetSkill = null;
         DeactiveAllArmies();
     }
     /// <summary>

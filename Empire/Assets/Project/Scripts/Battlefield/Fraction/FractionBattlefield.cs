@@ -24,13 +24,7 @@ public class FractionBattlefield : MonoBehaviour
     private Transform conteinerGlobal, conteinerArmy;
 
     [SerializeField]
-    private ConteinerButtonSkills conteinerSkill;
-
-    [SerializeField]
     private ToggleGroup conteinerToggle;
-
-    [SerializeField]
-    private Toggle toggleArmyGroup, toggleStand, toggleRepeat;
 
     private Battlefield battlefield;
 
@@ -71,7 +65,7 @@ public class FractionBattlefield : MonoBehaviour
         if (!bot)
         {
             mainAB.conteinerToggle = conteinerToggle;
-            toggleArmyGroup.onValueChanged.AddListener((bool on) => mainAB.Group(on));
+            battlefield.toggleArmyGroup.onValueChanged.AddListener((bool on) => mainAB.Group(on));
             //toggleStand.onValueChanged.AddListener((bool on) =>  );
         }
 
@@ -115,24 +109,24 @@ public class FractionBattlefield : MonoBehaviour
             if (on == true)
             {
                 army.AddSkillsUI();
-                toggleRepeat.SetIsOnWithoutNotify(army.Repeat);
-                toggleStand.SetIsOnWithoutNotify(army.Stand);
+                battlefield.toggleRepeat.SetIsOnWithoutNotify(army.Repeat);
+                battlefield.toggleStand.SetIsOnWithoutNotify(army.Stand);
                 battlefield.DeactiveAllArmies();
-                toggleRepeat.onValueChanged.AddListener(army.SetRepeat);
-                toggleStand.onValueChanged.AddListener(army.SetStand);
+                battlefield.toggleRepeat.onValueChanged.AddListener(army.SetRepeat);
+                battlefield.toggleStand.onValueChanged.AddListener(army.SetStand);
                 army.SetActive(true);
             }
             else
             {
                 army.RemoveSkillsUI();
-                toggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
-                toggleStand.onValueChanged.RemoveListener(army.SetStand);
+                battlefield.toggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
+                battlefield.toggleStand.onValueChanged.RemoveListener(army.SetStand);
                 army.SetActive(false);
             }
         });
         armyGlobalUI.toggle.onValueChanged.AddListener((bool on) => toggle.isOn = !toggle.isOn);
 
-        army.BuildArmy(a, b, this, buttonArmy, armyUI, armyGlobalUI, conteinerSkill);
+        army.BuildArmy(a, b, this, buttonArmy, armyUI, armyGlobalUI, battlefield.conteinerSkill);
     }
 
     private void DeadArmy(Army army)

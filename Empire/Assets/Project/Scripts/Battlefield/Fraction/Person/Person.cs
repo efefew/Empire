@@ -3,15 +3,13 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(TemporaryAction))]
-public partial class Person : MonoBehaviour, ICombatUnit
+public partial class Person : MonoBehaviour
 {
     #region Properties
 
     public Army army { get; set; }
 
     public Status status { get; private set; }
-    public bool Repeat { get; set; }
-    public bool Stand { get; set; }
 
     /// <summary>
     /// готов ли испольлзовать навык
@@ -79,21 +77,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
         }
     }
 
-    /// <summary>
-    /// Запускает навык
-    /// </summary>
-    /// <param name="skill">навык</param>
-    private void UseSkill(Skill skill, Person target)
-    {
-        if (stunCount != 0)
-            return;
-        if (CastRun(skill, target))
-        {
-            //conteinerSkill.Silence(skill.timeCast);
-            status.TimerSkillReload(skill, target);
-        }
-    }
-
     private IEnumerator ICastRun(Skill skill, Person target = null)
     {
         _ = Stun(skill.timeCast);
@@ -129,32 +112,6 @@ public partial class Person : MonoBehaviour, ICombatUnit
         _ = StartCoroutine(IRegenUpdate());
         _ = StartCoroutine(IStopStatusUpdate());
         OnDeadPerson += DeadPerson;
-    }
-
-    /// <summary>
-    /// Запускает навык
-    /// </summary>
-    /// <param name="target">цель</param>
-    public void TargetForUseSkill(ICombatUnit target)
-    {
-        battlefield.OnSetTargetArmy -= TargetForUseSkill;
-        battlefield.OnSetTargetPoint -= TargetForUseSkill;
-        if (target.TryGetValueOtherType(out Person person))
-            UseSkill(battlefield.targetSkill, person);
-        if (target.TryGetValueOtherType(out Army army))
-            UseSkill(battlefield.targetSkill, army.persons[0]);
-
-    }
-
-    /// <summary>
-    /// Запускает навык
-    /// </summary>
-    /// <param name="target">цель</param>
-    public void TargetForUseSkill(Vector3 target)
-    {
-        battlefield.OnSetTargetArmy -= TargetForUseSkill;
-        battlefield.OnSetTargetPoint -= TargetForUseSkill;
-        //.реализовать UseSkill(battlefield.targetSkill, target);
     }
 
     public bool CastRun(Skill skill, Person target)

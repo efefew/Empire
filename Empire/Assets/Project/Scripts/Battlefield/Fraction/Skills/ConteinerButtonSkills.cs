@@ -12,7 +12,7 @@ public class ConteinerButtonSkills : MonoBehaviour
     private Transform tr;
     private float timerSkillCast;
     private Coroutine coroutine;
-    public Action OnClickAnyButtonSkills;
+    public Action<ButtonSkill> OnClickAnyButtonSkills;
     public List<ButtonSkill> buttonSkills = new();
 
     #endregion Fields
@@ -34,7 +34,7 @@ public class ConteinerButtonSkills : MonoBehaviour
         timerSkillCast = 0;
     }
 
-    private void ClickAnyButtonSkills() => OnClickAnyButtonSkills?.Invoke();
+    private void ClickAnyButtonSkills(ButtonSkill buttonSkill) => OnClickAnyButtonSkills?.Invoke(buttonSkill);
 
     private void AddTimerSkillCast(Army army) => Silence(army, army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
 
@@ -88,7 +88,7 @@ public class ConteinerButtonSkills : MonoBehaviour
             ButtonSkill buttonSkill = Instantiate(skill.buttonSkillPrefab, tr);
             buttonSkill.Build(army, skill);
             buttonSkill.Add(army);
-            buttonSkill.button.onClick.AddListener(() => ClickAnyButtonSkills());
+            buttonSkill.button.onClick.AddListener(() => ClickAnyButtonSkills(buttonSkill));
             buttonSkills.Add(buttonSkill);
             AddTimerSkillCast(army);
             return;
@@ -117,7 +117,7 @@ public class ConteinerButtonSkills : MonoBehaviour
         // ≈сли список инициаторов пустой, удал€ем кнопку навыка и удал€ем из списка кнопок
         if (buttonSkills[id].initiatorArmies.Count == 0)
         {
-            buttonSkills[id].button.onClick.RemoveListener(() => ClickAnyButtonSkills());
+            buttonSkills[id].button.onClick.RemoveListener(() => ClickAnyButtonSkills(buttonSkills[id]));
             Destroy(buttonSkills[id].gameObject);
             _ = buttonSkills.Remove(buttonSkills[id]);
         }

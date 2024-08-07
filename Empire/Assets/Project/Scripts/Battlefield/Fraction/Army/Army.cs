@@ -12,7 +12,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Армия
 /// </summary>
-public partial class Army : MonoBehaviour, ICombatUnit
+public partial class Army : MonoBehaviour
 {
     #region Properties
 
@@ -63,6 +63,8 @@ public partial class Army : MonoBehaviour, ICombatUnit
         anchors.ChangePositionB(b, true);
         for (int i = 0; i < countWarriors; i++)
             persons[i].transform.position = persons[i].target.position;
+        MovePoints(anchors.a, anchors.b);
+        targetButtonPersonId = newTargetButtonPersonId;
     }
 
     private void PursuitUseSkill(Skill skill, Person[] targets)
@@ -401,10 +403,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
         if (Repeat)
             status.OnRepeatUseSkillOnPersons += UseSkill;
 
-        anchors.OnChangePositions -= CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        ListenCancelWaitCastSkill();
         cancelWaitCastSkill = false;
 
         SetTargetArmy(targets[0].army);
@@ -427,10 +426,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
         if (Repeat)
             status.OnRepeatUseSkillOnPoint += UseSkill;
 
-        anchors.OnChangePositions -= CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        ListenCancelWaitCastSkill();
         cancelWaitCastSkill = false;
 
         if (Stand)
@@ -438,10 +434,18 @@ public partial class Army : MonoBehaviour, ICombatUnit
         else
             PursuitUseSkill(skill, target);
     }
+    /// <summary>
+    /// Запускает навык
+    /// </summary>
+    /// <param name="skill">навык</param>
+    public void UseSkill(Skill skill)
+    {
+        if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army))
+            UseSkill(skill, army.persons.ToArray());
+    }
+    public void CancelWaitCastSkill(Transform a, Transform b) => CancelWaitCastSkill(null);
 
-    public void CancelWaitCastSkill(Transform a, Transform b) => CancelWaitCastSkill();
-
-    public void CancelWaitCastSkill()
+    public void CancelWaitCastSkill(ButtonSkill buttonSkill)
     {
         if (!armyUI.toggle.isOn)
             return;
@@ -449,6 +453,7 @@ public partial class Army : MonoBehaviour, ICombatUnit
         anchors.OnChangePositions -= CancelWaitCastSkill;
         status.OnRepeatUseSkillOnPersons -= UseSkill;
         status.OnRepeatUseSkillOnPoint -= UseSkill;
+        status.OnPatrol -= UseSkill;
         cancelWaitCastSkill = true;
         SetTargetArmy(null);
     }
@@ -469,10 +474,9 @@ public partial class Army : MonoBehaviour, ICombatUnit
     /// Использование навыка на цель
     /// </summary>
     /// <param name="target">цель</param>
-    public void TargetForUseSkill(ICombatUnit target)
+    public void TargetForUseSkill(Army target)
     {
-        battlefield.OnSetTargetArmy -= TargetForUseSkill;
-        battlefield.OnSetTargetPoint -= TargetForUseSkill;
+        ClearTargetUseSkill();
         if (target.TryGetValueOtherType(out Person person))
             UseSkill(battlefield.targetSkill, person);
         if (target.TryGetValueOtherType(out Army army))
@@ -485,10 +489,39 @@ public partial class Army : MonoBehaviour, ICombatUnit
     /// <param name="target">цель</param>
     public void TargetForUseSkill(Vector3 target)
     {
-        battlefield.OnSetTargetArmy -= TargetForUseSkill;
-        battlefield.OnSetTargetPoint -= TargetForUseSkill;
+        ClearTargetUseSkill();
         UseSkill(battlefield.targetSkill, target);
     }
+    /// <summary>
+    /// Использование навыка патрулём
+    /// </summary>
+    public void TargetForUseSkill()
+    {
+        ClearTargetUseSkill();
+        ListenCancelWaitCastSkill();
+        status.OnPatrol -= UseSkill;
+        status.OnPatrol += UseSkill;
+
+        if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army))
+            UseSkill(battlefield.targetSkill, army.persons.ToArray());
+    }
+
+    private void ListenCancelWaitCastSkill()
+    {
+        anchors.OnChangePositions -= CancelWaitCastSkill;
+        anchors.OnChangePositions += CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+    }
+
+    private void ClearTargetUseSkill()
+    {
+        battlefield.OnSetTargetArmy -= TargetForUseSkill;
+        battlefield.OnSetTargetPoint -= TargetForUseSkill;
+        battlefield.OnSetPatrol -= TargetForUseSkill;
+    }
+
+    private bool AnyEnemyInRange(out Army target) => throw new NotImplementedException();
 
     [Button("MoveUpdate")]
     public void MoveUpdate()
