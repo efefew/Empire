@@ -9,7 +9,22 @@ public partial class Army : MonoBehaviour// Мобильность армии
     private bool firstMinDistance;
     public PointsAB anchors;
     public float offsetX, offsetY;
-    private int targetButtonPersonId, newTargetButtonPersonId;
+    private int targetButtonPersonId;
+    public int TargetButtonPersonId
+    {
+        get
+        {
+            if (targetButtonPersonId >= persons.Count)
+            {
+                MovePoints(anchors.a, anchors.b);
+                TargetButtonPersonId = newTargetButtonPersonId;
+            }
+
+            return targetButtonPersonId;
+        }
+        private set => targetButtonPersonId = value;
+    }
+    private int newTargetButtonPersonId;
     #endregion Fields
 
     #region Methods
@@ -19,11 +34,16 @@ public partial class Army : MonoBehaviour// Мобильность армии
 
         if (persons.Count == 0)
             return;
+        if (TargetButtonPersonId >= persons.Count)
+        {
+            MovePoints(anchors.a, anchors.b);
+            TargetButtonPersonId = newTargetButtonPersonId;
+        }
 
         if (buttonArmy.gameObject.activeInHierarchy)
-            buttonArmy.transform.position = persons[targetButtonPersonId].transform.position;
+            buttonArmy.transform.position = persons[TargetButtonPersonId].transform.position;
         if (!status.fraction.bot)
-            armyGlobalUI.transform.position = persons[targetButtonPersonId].transform.position;
+            armyGlobalUI.transform.position = persons[TargetButtonPersonId].transform.position;
     }
     private void MovePoints(Transform a, Transform b)
     {

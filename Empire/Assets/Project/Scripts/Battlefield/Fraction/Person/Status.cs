@@ -13,7 +13,7 @@ public class Status : MonoBehaviour
 {
     public Action<Skill, Person[]> OnRepeatUseSkillOnPersons;
     public Action<Skill, Vector3> OnRepeatUseSkillOnPoint;
-    public Action<Skill> OnPatrol;
+    //public Action<Skill> OnPatrol;
 
     #region Fields
 
@@ -130,10 +130,10 @@ public class Status : MonoBehaviour
 
         _ = timersSkillReload.Remove(skill);
 
-        if (target != null || army != null)
+        if (target != null || (army != null && army.persons.Count != 0))
             OnRepeatUseSkillOnPersons?.Invoke(skill, army ? army.persons.ToArray() : new Person[1] { target });
-        else
-            OnPatrol?.Invoke(skill);
+        //else
+        //OnPatrol?.Invoke(skill);
     }
     private IEnumerator ITimerSkillReload(Skill skill, Vector3 target)
     {

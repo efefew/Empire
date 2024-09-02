@@ -27,8 +27,7 @@ public class Battlefield : MonoBehaviour
     [SerializeField]
     private Color selfColor, friendColor, enemyColor;
 
-    [SerializeField]
-    private FractionBattlefield[] fractions;
+    public FractionBattlefield[] fractions;
 
     public ConteinerButtonSkills conteinerSkill;
 

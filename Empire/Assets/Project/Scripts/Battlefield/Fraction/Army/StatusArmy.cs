@@ -17,7 +17,6 @@ public partial class Army : MonoBehaviour // ’арактеристики армии
 
     private float healthArmy, manaArmy, staminaArmy, moralityArmy;
     public Status status;
-
     /// <summary>
     /// количество воинов в начале
     /// </summary>
