@@ -75,6 +75,8 @@ crashlytics-build.properties
 *.rar
 *.zip
 
+#trash
+/Empire/Logs
 #large files
 /Empire/Library
 
