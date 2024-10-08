@@ -13,7 +13,6 @@ public class Status : MonoBehaviour
 {
     public Action<Skill, Person[]> OnRepeatUseSkillOnPersons;
     public Action<Skill, Vector3> OnRepeatUseSkillOnPoint;
-    //public Action<Skill> OnPatrol;
 
     #region Fields
 

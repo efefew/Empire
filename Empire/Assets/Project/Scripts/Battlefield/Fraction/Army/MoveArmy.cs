@@ -72,8 +72,6 @@ public partial class Army : MonoBehaviour// Мобильность армии
     }
     private void MoveArmy(Transform a, Transform b)
     {
-        if (Patrol)
-            Patrol = false;
         for (int id = 0; id < persons.Count; id++)
             persons[id].MoveUpdate();
     }

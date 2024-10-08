@@ -12,7 +12,6 @@ public class Battlefield : MonoBehaviour
 
     public event Action<Army> OnSetTargetArmy;
     public event Action<Vector3> OnSetTargetPoint;
-    public event Action OnSetPatrol;
 
     #endregion Events
 
@@ -151,7 +150,6 @@ public class Battlefield : MonoBehaviour
     /// </summary>
     public void SetPatrol()
     {
-        OnSetPatrol?.Invoke();
         targetSkill = null;
         DeactiveAllArmies();
     }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,27 +33,11 @@ public partial class Army : MonoBehaviour
     [ReadOnly]
     private List<Person> personsCanRun = new();
 
-    private bool firstCallWhenAllCanRun, cancelWaitCastSkill, patrol;
-    private bool Patrol
-    {
-        get => patrol;
-        set
-        {
-            patrol = value;
-            if (!patrol)
-            {
-                for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-                    persons[idPerson].armyTarget = null;
-                StopCoroutine(patrolCoroutine);
-            }
-        }
-    }
-    private Coroutine patrolCoroutine;
+    private bool firstCallWhenAllCanRun, cancelWaitCastSkill;
     public const float OFFSET_BETWEEN_ARMIES = 2f;
     public List<Person> persons = new();
     public StatusUI armyUI, armyGlobalUI;
     public Button buttonArmy;
-    private const float PATROL_DELAY = 0.1f;
 
     #endregion Fields
 
@@ -451,24 +434,6 @@ public partial class Army : MonoBehaviour
         else
             PursuitUseSkill(skill, target);
     }
-    ///// <summary>
-    ///// Запускает навык
-    ///// </summary>
-    ///// <param name="skill">навык</param>
-    //public void UseSkill(Skill skill) => StartCoroutine(IPatrol(skill));//if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army, skill))//    UseSkill(skill, army.persons.ToArray());
-    private IEnumerator IPatrol(Skill skill)
-    {
-        Patrol = true;
-        while (true)
-        {
-            SetRepeat(true);
-            SetStand(true);
-            yield return new WaitForSeconds(PATROL_DELAY);
-            //yield return new WaitUntil(() => (persons[0].armyTarget == null && AnyEnemyInRange(out army, skill)) || !Patrol);
-            if (Patrol && persons[0].armyTarget == null && AnyEnemyInRange(out Army army, skill))
-                UseSkill(skill, army.persons.ToArray());
-        }
-    }
     public void CancelWaitCastSkill(Transform a, Transform b) => CancelWaitCastSkill(null);
 
     public void CancelWaitCastSkill(ButtonSkill buttonSkill)
@@ -479,8 +444,6 @@ public partial class Army : MonoBehaviour
         anchors.OnChangePositions -= CancelWaitCastSkill;
         status.OnRepeatUseSkillOnPersons -= UseSkill;
         status.OnRepeatUseSkillOnPoint -= UseSkill;
-        //status.OnPatrol -= UseSkill;
-        Patrol = false;
         cancelWaitCastSkill = true;
         SetTargetArmy(null);
     }
@@ -526,10 +489,6 @@ public partial class Army : MonoBehaviour
     {
         ClearTargetUseSkill();
         ListenCancelWaitCastSkill();
-        //status.OnPatrol -= UseSkill;
-        //status.OnPatrol += UseSkill;
-        //UseSkill(battlefield.targetSkill);
-        patrolCoroutine = StartCoroutine(IPatrol(battlefield.targetSkill));
     }
 
     private void ListenCancelWaitCastSkill()
@@ -544,7 +503,6 @@ public partial class Army : MonoBehaviour
     {
         battlefield.OnSetTargetArmy -= TargetForUseSkill;
         battlefield.OnSetTargetPoint -= TargetForUseSkill;
-        battlefield.OnSetPatrol -= TargetForUseSkill;
     }
 
     private bool AnyEnemyInRange(out Army target, Skill skill)
