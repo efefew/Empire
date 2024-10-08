@@ -50,7 +50,11 @@ public partial class Army : MonoBehaviour
         battlefield = Battlefield.singleton;
         foreach (Skill skill in status.skills)
             skill.buttonSkillPrefab.Build(this, skill);
-        anchors.OnChangedPositions += (Transform a, Transform b) => TargetButtonPersonId = newTargetButtonPersonId;
+        anchors.OnChangedPositions += (Transform a, Transform b) =>
+        {
+            TargetButtonPersonId = newTargetButtonPersonId;
+            battlefield.RemovePointTarget();
+        };
     }
 
     private void SetPositionArmy(Vector2 a, Vector2 b, int countWarriors)
@@ -194,6 +198,7 @@ public partial class Army : MonoBehaviour
         firstCallWhenAllCanRun = false;
         personsCanRun.Clear();
     }
+
     /// <summary>
     /// Выполнение навыка с наступлением
     /// </summary>
@@ -222,6 +227,7 @@ public partial class Army : MonoBehaviour
             return false;
         };
     }
+
     /// <summary>
     /// Выполнение навыка с наступлением
     /// </summary>
@@ -349,6 +355,51 @@ public partial class Army : MonoBehaviour
             persons[id].armyTarget = armyTarget;
     }
 
+    private void ListenCancelWaitCastSkill()
+    {
+        anchors.OnChangePositions -= CancelWaitCastSkill;
+        anchors.OnChangePositions += CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
+        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+    }
+
+    private void ClearTargetUseSkill()
+    {
+        battlefield.OnSetTargetArmy -= TargetForUseSkill;
+        battlefield.OnSetTargetPoint -= TargetForUseSkill;
+    }
+
+    private bool AnyEnemyInRange(out Army target, Skill skill)
+    {
+        for (int idEnemyFraction = 0; idEnemyFraction < battlefield.fractions.Length; idEnemyFraction++)
+        {
+            FractionBattlefield enemyFraction = battlefield.fractions[idEnemyFraction];
+            bool itsEnemy = enemyFraction.sideID != status.fraction.sideID;
+            if (itsEnemy)
+            {
+                for (int idEnemyArmy = 0; idEnemyArmy < enemyFraction.armies.Count; idEnemyArmy++)
+                {
+                    Army enemy = enemyFraction.armies[idEnemyArmy];
+                    if (EnemyInRange(enemy, skill))
+                    {
+                        target = enemy;
+                        return true;
+                    }
+                }
+            }
+        }
+
+        target = null;
+        return false;
+    }
+
+    private bool EnemyInRange(Army enemy, Skill skill)
+    {
+        float distance = Vector3.Distance(persons[TargetButtonPersonId].transform.position, enemy.persons[enemy.TargetButtonPersonId].transform.position);
+        float range = skill.range;
+        return distance <= range;
+    }
+
     public static Person GetRandomPerson(Army armyTarget) => armyTarget == null || armyTarget.persons.Count == 0 ? null : armyTarget.persons[UnityEngine.Random.Range(0, armyTarget.persons.Count)];
 
     public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy, StatusUI armyUI, StatusUI armyGlobalUI, ConteinerButtonSkills conteinerSkill)
@@ -369,7 +420,7 @@ public partial class Army : MonoBehaviour
         _ = StartCoroutine(UIArmyUpdate());
         for (int id = 0; id < countWarriors; id++)
         {
-            persons.Add(Instantiate(warriorPrefab, transform));
+            persons.Add(Instantiate(warriorPrefab, transform));//просит позицию знать заранее -_-
             persons.Last().OnDeadPerson += (Person person) => personsCanRun.Remove(person);
             persons.Last().name += $" {id}";
             persons.Last().Build(this);
@@ -434,6 +485,7 @@ public partial class Army : MonoBehaviour
         else
             PursuitUseSkill(skill, target);
     }
+
     public void CancelWaitCastSkill(Transform a, Transform b) => CancelWaitCastSkill(null);
 
     public void CancelWaitCastSkill(ButtonSkill buttonSkill)
@@ -482,6 +534,7 @@ public partial class Army : MonoBehaviour
         ClearTargetUseSkill();
         UseSkill(battlefield.targetSkill, target);
     }
+
     /// <summary>
     /// Использование навыка патрулём
     /// </summary>
@@ -491,49 +544,6 @@ public partial class Army : MonoBehaviour
         ListenCancelWaitCastSkill();
     }
 
-    private void ListenCancelWaitCastSkill()
-    {
-        anchors.OnChangePositions -= CancelWaitCastSkill;
-        anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
-    }
-
-    private void ClearTargetUseSkill()
-    {
-        battlefield.OnSetTargetArmy -= TargetForUseSkill;
-        battlefield.OnSetTargetPoint -= TargetForUseSkill;
-    }
-
-    private bool AnyEnemyInRange(out Army target, Skill skill)
-    {
-        for (int idEnemyFraction = 0; idEnemyFraction < battlefield.fractions.Length; idEnemyFraction++)
-        {
-            FractionBattlefield enemyFraction = battlefield.fractions[idEnemyFraction];
-            bool itsEnemy = enemyFraction.sideID != status.fraction.sideID;
-            if (itsEnemy)
-            {
-                for (int idEnemyArmy = 0; idEnemyArmy < enemyFraction.armies.Count; idEnemyArmy++)
-                {
-                    Army enemy = enemyFraction.armies[idEnemyArmy];
-                    if (EnemyInRange(enemy, skill))
-                    {
-                        target = enemy;
-                        return true;
-                    }
-                }
-            }
-        }
-
-        target = null;
-        return false;
-    }
-    private bool EnemyInRange(Army enemy, Skill skill)
-    {
-        float distance = Vector3.Distance(persons[TargetButtonPersonId].transform.position, enemy.persons[enemy.TargetButtonPersonId].transform.position);
-        float range = skill.range;
-        return distance <= range;
-    }
     [Button("MoveUpdate")]
     public void MoveUpdate()
     {

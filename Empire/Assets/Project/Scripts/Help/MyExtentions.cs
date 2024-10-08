@@ -7,12 +7,21 @@ using B83.Image.BMP;
 
 using UnityEngine;
 using UnityEngine.EventSystems;
+
 public static class MyExtentions
 {
+    #region Delegates
+
     public delegate void BinaryWriteHandler(ref BinaryWriter writer);
+
     public delegate void BinaryReadHandler(ref BinaryReader reader);
+
+    #endregion Delegates
+
     #region Methods
+
     private static System.Random random = new((int)DateTime.Now.Ticks & 0x0000FFFF);
+
     /// <summary>
     /// Нормализовать массив
     /// </summary>
@@ -36,6 +45,7 @@ public static class MyExtentions
             array[id] = (relativeValue * (max - min)) + min;
         }
     }
+
     /// <summary>
     /// Перемешивание списка
     /// </summary>
@@ -51,6 +61,7 @@ public static class MyExtentions
             (list[n], list[k]) = (list[k], list[n]);
         }
     }
+
     /// <summary>
     /// Перемешивание массива
     /// </summary>
@@ -66,6 +77,7 @@ public static class MyExtentions
             (array[n], array[k]) = (array[k], array[n]);
         }
     }
+
     /// <summary>
     /// Перемешивание двух списков однаково
     /// </summary>
@@ -85,6 +97,7 @@ public static class MyExtentions
             (list2[n], list2[k]) = (list2[k], list2[n]);
         }
     }
+
     public static T[] ToArray<T>(this T[,] matrix)
     {
         T[] array = new T[matrix.GetLength(0) * matrix.GetLength(1)];
@@ -100,6 +113,7 @@ public static class MyExtentions
 
         return array;
     }
+
     public static void WriteArray(this BinaryWriter writer, double[] arr)
     {
         writer.Write(arr.Length);
@@ -107,6 +121,7 @@ public static class MyExtentions
         for (int id = 0; id < arr.Length; id++)
             writer.Write(arr[id]);
     }
+
     public static void WriteArray2D(this BinaryWriter writer, double[,] arr)
     {
         writer.Write(arr.GetLength(1));
@@ -118,6 +133,7 @@ public static class MyExtentions
                 writer.Write(arr[x, y]);
         }
     }
+
     public static double[] ReadArray(this BinaryReader reader)
     {
         int length = reader.ReadInt32();
@@ -128,6 +144,7 @@ public static class MyExtentions
 
         return array;
     }
+
     public static double[,] ReadArray2D(this BinaryReader reader)
     {
         int yCount = reader.ReadInt32();
@@ -141,6 +158,7 @@ public static class MyExtentions
 
         return array;
     }
+
     public static void WriteDat(string fileName, BinaryWriteHandler write)
     {
         using FileStream fs = new($"{fileName}.dat", FileMode.Create);
@@ -149,6 +167,7 @@ public static class MyExtentions
         binaryWriter.Flush();
         binaryWriter.Close();
     }
+
     public static void ReadDat(string path, BinaryReadHandler read)
     {
         path = Path.GetExtension(path) == ".dat" ? path : $"{path}.dat";
@@ -163,7 +182,9 @@ public static class MyExtentions
         read?.Invoke(ref binaryReader);
         binaryReader.Close();
     }
+
     public static Sprite ToSprite(this Texture2D tex) => Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+
     public static Texture2D LoadBmpTexture(string filePath)
     {
         Texture2D tex = null;
@@ -185,6 +206,7 @@ public static class MyExtentions
 
         return tex;
     }
+
     public static Texture2D ToTexture2D(this byte[] bytes)
     {
         Texture2D texture = new(2, 2);
@@ -243,6 +265,34 @@ public static class MyExtentions
 
         // Если количество результатов больше нуля, значит указатель мыши находится над объектом UI.
         return results.Count > 0;
+    }
+
+    /// <summary>
+    /// Проверяет, находится ли указатель мыши над конкретным объектом UI.
+    /// </summary>
+    /// <param name="targetUI">цель</param>
+    /// <returns>находится ли указатель мыши над объектом UI</returns>
+    public static bool IsPointerOverUI(GameObject targetUI)
+    {
+        // Создаем экземпляр PointerEventData с текущим положением указателя мыши.
+        PointerEventData eventDataCurrentPosition = new(EventSystem.current)
+        {
+            position = new Vector2(Input.mousePosition.x, Input.mousePosition.y)
+        };
+
+        List<RaycastResult> results = new();
+
+        // Выполняем лучевой кастинг для всех объектов в текущей позиции указателя мыши.
+        // Результаты сохраняются в списке results.
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+        foreach (RaycastResult result in results)
+        {
+            GameObject objectUI = result.module.gameObject;
+            if (objectUI == targetUI)
+                return true;
+        }
+        // Если количество результатов больше нуля, значит указатель мыши находится над объектом UI.
+        return false;
     }
 
     /// <summary>
@@ -349,5 +399,6 @@ public static class MyExtentions
 
         return (minPoint.x, minPoint.y, maxPoint.x, maxPoint.y);
     }
+
     #endregion Methods
 }

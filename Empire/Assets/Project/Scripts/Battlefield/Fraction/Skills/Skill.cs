@@ -74,6 +74,7 @@ public abstract class Skill : MonoBehaviour
     [Min(0)]
     public float maxAmountSkill;
     public bool pointCanBeTarget;
+    public bool ñanBePatrol;
     public TriggerType triggerTarget;
 
     [EndColumnArea]

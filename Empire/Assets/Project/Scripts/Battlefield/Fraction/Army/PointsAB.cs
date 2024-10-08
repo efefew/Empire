@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public class PointsAB : MonoBehaviour
 {
+    #region Fields
+
+    private const float MIN_DISTANCE_AB = 1f;
+
+    #endregion Fields
+
     #region Events
 
     public event Action<Transform, Transform> OnChangePositions, OnChangedPositions;
@@ -30,6 +36,7 @@ public class PointsAB : MonoBehaviour
     #endregion Fields
 
     #region Methods
+
     private void Start()
     {
         if (Battlefield.singleton != null)
@@ -91,14 +98,16 @@ public class PointsAB : MonoBehaviour
         a.LookAt2D(b.position);
         if (firstCall)
             OnChangedPositions?.Invoke(a, b);
-        OnChangePositions?.Invoke(a, b);
+        if (Vector2.Distance(a.position, b.position) >= MIN_DISTANCE_AB)
+            OnChangePositions?.Invoke(a, b);
 
         SetGroupPoints();
     }
 
     public void ChangedPositions()
     {
-        OnChangedPositions?.Invoke(a, b);
+        if (Vector2.Distance(a.position, b.position) >= MIN_DISTANCE_AB)
+            OnChangedPositions?.Invoke(a, b);
         if (!groupAB)
             return;
         for (int id = 0; id < childrensAB.Count; id++)

@@ -5,11 +5,6 @@ public partial class Army : MonoBehaviour// Мобильность армии
 {
     #region Fields
 
-    private const float MIN_DISTANCE = 1f, FIRST_MIN_DISTANCE = 5f;
-    private bool firstMinDistance;
-    public PointsAB anchors;
-    public float offsetX, offsetY;
-    private int targetButtonPersonId;
     public int TargetButtonPersonId
     {
         get
@@ -24,14 +19,20 @@ public partial class Army : MonoBehaviour// Мобильность армии
         }
         private set => targetButtonPersonId = value;
     }
+
+    private const float MIN_DISTANCE = 1f, FIRST_MIN_DISTANCE = 5f;
+    private bool firstMinDistance;
+    private int targetButtonPersonId;
     private int newTargetButtonPersonId;
+    public PointsAB anchors;
+    public float offsetX, offsetY;
+
     #endregion Fields
 
     #region Methods
 
     private void Update()
     {
-
         if (persons.Count == 0)
             return;
         if (TargetButtonPersonId >= persons.Count)
@@ -45,6 +46,7 @@ public partial class Army : MonoBehaviour// Мобильность армии
         if (!status.fraction.bot)
             armyGlobalUI.transform.position = persons[TargetButtonPersonId].transform.position;
     }
+
     private void MovePoints(Transform a, Transform b)
     {
         if (Input.GetKeyDown(KeyCode.Mouse0) || status.fraction.bot)
@@ -70,10 +72,12 @@ public partial class Army : MonoBehaviour// Мобильность армии
         newTargetButtonPersonId = (widhArmy * (heightArmy / 2)) + (widhArmy / 2);
         firstMinDistance = false;
     }
+
     private void MoveArmy(Transform a, Transform b)
     {
         for (int id = 0; id < persons.Count; id++)
             persons[id].MoveUpdate();
     }
+
     #endregion Methods
 }
