@@ -42,7 +42,11 @@ public partial class Army : MonoBehaviour
         {
             patrol = value;
             if (!patrol)
+            {
+                for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+                    persons[idPerson].armyTarget = null;
                 StopCoroutine(patrolCoroutine);
+            }
         }
     }
     private Coroutine patrolCoroutine;

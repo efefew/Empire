@@ -49,7 +49,7 @@ MonoBehaviour:
   timeCooldown: 2
   timeTargetMove: 0
   timeCast: 2
-  mana: 25
+  mana: 1
   stamina: 3
   range: 40
   maxAmountSkill: 0
