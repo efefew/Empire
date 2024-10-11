@@ -47,9 +47,11 @@ public class ButtonSkill : MonoBehaviour
 
     #region Methods
 
-    private void Awake() => button = GetComponent<Button>();
-
-    private void Start() => battlefield = Battlefield.singleton;
+    private void Awake()
+    {
+        button = GetComponent<Button>();
+        battlefield = Battlefield.singleton;
+    }
 
     private void FixedUpdate()
     {
@@ -111,11 +113,19 @@ public class ButtonSkill : MonoBehaviour
 
         UnityAction skillRunner = () =>
         {
+            battlefield.OnSetTargetArmy -= army.TargetForUseSkill;
+            battlefield.OnSetTargetPoint -= army.TargetForUseSkill;
             battlefield.OnSetTargetArmy += army.TargetForUseSkill;
             battlefield.OnSetTargetPoint += army.TargetForUseSkill;
             battlefield.targetSkill = targetSkill;
             battlefield.ActiveArmies(targetSkill.triggerTarget, army);
+            battlefield.ActiveSkillButtons(targetSkill);
+            battlefield.StopPatrol();
         };
+        battlefield.OnStartPatrol -= army.StartPatrol;
+        battlefield.OnStopPatrol -= army.StopPatrol;
+        battlefield.OnStartPatrol += army.StartPatrol;
+        battlefield.OnStopPatrol += army.StopPatrol;
         initiatorArmies.Add(army, skillRunner);
         button.onClick.AddListener(skillRunner);
     }
@@ -126,6 +136,8 @@ public class ButtonSkill : MonoBehaviour
         battlefield.OnSetTargetPoint -= army.TargetForUseSkill;
         UnityAction skillRunner = initiatorArmies.First((KeyValuePair<Army, UnityAction> initiatorArmy) => army == initiatorArmy.Key).Value;
 
+        battlefield.OnStartPatrol -= army.StartPatrol;
+        battlefield.OnStopPatrol -= army.StopPatrol;
         _ = initiatorArmies.Remove(army);
         button.onClick.RemoveListener(skillRunner);
 

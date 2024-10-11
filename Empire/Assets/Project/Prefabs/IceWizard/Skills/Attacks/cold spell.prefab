@@ -54,6 +54,7 @@ MonoBehaviour:
   range: 40
   maxAmountSkill: 0
   pointCanBeTarget: 1
+  "\u0441anBePatrol": 1
   triggerTarget: 0
   consumable: 0
   targetMove: 0

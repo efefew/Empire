@@ -10,6 +10,8 @@ public class Battlefield : MonoBehaviour
 {
     #region Events
 
+    public event Action<Skill> OnStartPatrol;
+    public event Action OnStopPatrol;
     public event Action<Army> OnSetTargetArmy;
 
     public event Action<Vector3> OnSetTargetPoint;
@@ -36,7 +38,8 @@ public class Battlefield : MonoBehaviour
 
     public ConteinerButtonSkills conteinerSkill;
     public FractionBattlefield playerFraction;
-    public Button pointTarget;
+    private bool skillButtonsPopup;
+    public Button pointTarget, patrol;
     public Toggle toggleArmyGroup, toggleStand, toggleRepeat;
 
     #endregion Fields
@@ -45,31 +48,35 @@ public class Battlefield : MonoBehaviour
 
     private void OnGUI()
     {
-        // Получаем основную камеру
         Camera c = Camera.main;
-
-        // Получаем текущее событие мыши
         Event e = Event.current;
 
-        // Получаем позицию мыши на экране
         Vector2 mousePos = new()
         {
             x = e.mousePosition.x,
             y = c.pixelHeight - e.mousePosition.y
         };
 
-        // Создаем вектор 3D-позиции на экране
-        // с учетом ближней плоскости отсечения
         screenPosition = new Vector3(mousePos.x, mousePos.y, c.nearClipPlane);
 
-        // Преобразуем 2D-координаты на экране в 3D-координаты в мировом пространстве
         worldPosition = c.ScreenToWorldPoint(screenPosition);
     }
 
     private void Awake()
     {
         InitializeSingleton();
+        skillButtonsPopup = false;
         DeactiveAllArmies();
+        toggleStand.onValueChanged.AddListener((bool on) =>
+        {
+            if (!on)
+                StopPatrol();
+        });
+        toggleRepeat.onValueChanged.AddListener((bool on) =>
+        {
+            if (!on)
+                StopPatrol();
+        });
         pointTarget.onClick.AddListener(() =>
         {
             SetTargetPoint(pointTarget.transform.position);
@@ -81,9 +88,9 @@ public class Battlefield : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyUp(KeyCode.Mouse0) && pointTarget.gameObject.activeSelf && !MyExtentions.IsPointerOverUI(pointTarget.gameObject))
+        if (Input.GetKeyUp(KeyCode.Mouse0))
         {
-            RemovePointTarget();
+            RemoveSkillAditionalUI();
             return;
         }
 
@@ -163,12 +170,17 @@ public class Battlefield : MonoBehaviour
     /// <summary>
     /// Патрулировать
     /// </summary>
-    public void SetPatrol()
+    public void StartPatrol(Skill skill)
     {
         targetSkill = null;
         DeactiveAllArmies();
+        toggleStand.isOn = true;
+        toggleRepeat.isOn = true;
+        // реализовать иникатор на кнопке навыка
+        // патрулировать
+        OnStartPatrol.Invoke(skill);
     }
-
+    public void StopPatrol() => OnStopPatrol?.Invoke();
     /// <summary>
     /// Активировать армии для нажатия с ограничением в виде триггера
     /// </summary>
@@ -188,12 +200,39 @@ public class Battlefield : MonoBehaviour
             }
         }
     }
-
-    public void RemovePointTarget()
+    public void ActiveSkillButtons(Skill skill)
     {
-        targetSkill = null;
-        DeactiveAllArmies();
-        pointTarget.gameObject.SetActive(false);
+        if (!(skill.collective || skill.сanBePatrol))
+            return;
+        skillButtonsPopup = true;
+        if (skill.collective)
+        { }
+
+        if (skill.сanBePatrol)
+        {
+            patrol.gameObject.SetActive(true);
+            patrol.onClick.RemoveAllListeners();
+            patrol.onClick.AddListener(() => StartPatrol(skill));
+        }
+    }
+    public void RemoveSkillAditionalUI()
+    {
+        if (!skillButtonsPopup)
+        {
+            if (patrol.gameObject.activeSelf)
+                patrol.gameObject.SetActive(false);
+        }
+        else
+        {
+            skillButtonsPopup = false;
+        }
+
+        if (pointTarget.gameObject.activeSelf && !MyExtentions.IsPointerOverUI(pointTarget.gameObject))
+        {
+            targetSkill = null;
+            DeactiveAllArmies();
+            pointTarget.gameObject.SetActive(false);
+        }
     }
 
     public void CreatePointTarget(Vector3 point)

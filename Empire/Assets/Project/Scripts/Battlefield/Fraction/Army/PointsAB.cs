@@ -32,7 +32,7 @@ public class PointsAB : MonoBehaviour
 
     public Battlefield battlefield;
     public Transform a, b;
-
+    private bool wasOverUI;
     #endregion Fields
 
     #region Methods
@@ -46,19 +46,26 @@ public class PointsAB : MonoBehaviour
     private void Update()
     {
         if ((parentAB && parentAB.groupAB) || MyExtentions.IsPointerOverUI())
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            wasOverUI = true;
+            return;
+        }
+
+        ChangePointsAB(KeyCode.Mouse0);
+    }
+
+    private void ChangePointsAB(KeyCode key)
+    {
+        if (Input.GetKeyDown(key))
+        {
+            wasOverUI = false;
             ChangePositionA(battlefield.worldPosition);
         }
 
-        if (Input.GetKey(KeyCode.Mouse0))
-        {
+        if (Input.GetKey(key))
             ChangePositionB(battlefield.worldPosition);
-        }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (!wasOverUI && Input.GetKeyUp(key))
         {
             battlefield.DeactiveAllArmies();
             ChangedPositions();

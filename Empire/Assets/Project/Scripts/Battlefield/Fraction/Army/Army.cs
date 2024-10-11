@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,10 +36,11 @@ public partial class Army : MonoBehaviour
 
     private bool firstCallWhenAllCanRun, cancelWaitCastSkill;
     public const float OFFSET_BETWEEN_ARMIES = 2f;
+    private const float PATROL_DELAY = 0.1f;
     public List<Person> persons = new();
     public StatusUI armyUI, armyGlobalUI;
     public Button buttonArmy;
-
+    private Coroutine patrolCoroutine;
     #endregion Fields
 
     #region Methods
@@ -53,7 +55,8 @@ public partial class Army : MonoBehaviour
         anchors.OnChangedPositions += (Transform a, Transform b) =>
         {
             TargetButtonPersonId = newTargetButtonPersonId;
-            battlefield.RemovePointTarget();
+            battlefield.RemoveSkillAditionalUI();
+            battlefield.StopPatrol();
         };
     }
 
@@ -132,8 +135,7 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-                persons[idPerson].armyTarget = null;
+            ForgetTargetArmy();
             _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
@@ -154,12 +156,17 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-                persons[idPerson].armyTarget = null;
+            ForgetTargetArmy();
             _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, target);
         }
+    }
+
+    private void ForgetTargetArmy()
+    {
+        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+            persons[idPerson].armyTarget = null;
     }
 
     private void UpdateWaitPersonsCanRun(Skill skill, Army armyTarget, bool melee)
@@ -503,7 +510,32 @@ public partial class Army : MonoBehaviour
     public void SetRepeat(bool on) => Repeat = on;
 
     public void SetStand(bool on) => Stand = on;
+    /// <summary>
+    /// Патрулировать
+    /// </summary>
+    public void StartPatrol(Skill skill) =>
+            //if (patrolCoroutine == null)
+            patrolCoroutine = StartCoroutine(IPatrol(skill));
 
+    public void StopPatrol()
+    {
+        if (patrolCoroutine != null)
+        {
+            status.OnRepeatUseSkillOnPersons -= UseSkill;
+            ForgetTargetArmy();
+            StopCoroutine(patrolCoroutine);
+        }
+    }
+
+    private IEnumerator IPatrol(Skill skill)
+    {
+        while (true)
+        {
+            if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army, skill))
+                UseSkill(skill, army.persons.ToArray());
+            yield return new WaitForSeconds(PATROL_DELAY);
+        }
+    }
     public void SetActive(bool on)
     {
         armyGlobalUI.toggle.SetIsOnWithoutNotify(on);
