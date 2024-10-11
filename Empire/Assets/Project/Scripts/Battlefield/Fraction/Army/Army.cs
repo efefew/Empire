@@ -135,10 +135,13 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            ForgetTargetArmy();
             _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
+        }
+        else
+        {
+            ForgetTargetArmy();
         }
     }
 
@@ -156,10 +159,13 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            ForgetTargetArmy();
             _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, target);
+        }
+        else
+        {
+            ForgetTargetArmy();
         }
     }
 
@@ -513,9 +519,11 @@ public partial class Army : MonoBehaviour
     /// <summary>
     /// Патрулировать
     /// </summary>
-    public void StartPatrol(Skill skill) =>
-            //if (patrolCoroutine == null)
+    public void StartPatrol(Skill skill)
+    {
+        if (patrolCoroutine == null)
             patrolCoroutine = StartCoroutine(IPatrol(skill));
+    }
 
     public void StopPatrol()
     {
@@ -524,6 +532,7 @@ public partial class Army : MonoBehaviour
             status.OnRepeatUseSkillOnPersons -= UseSkill;
             ForgetTargetArmy();
             StopCoroutine(patrolCoroutine);
+            patrolCoroutine = null;
         }
     }
 
@@ -532,7 +541,10 @@ public partial class Army : MonoBehaviour
         while (true)
         {
             if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army, skill))
+            {
                 UseSkill(skill, army.persons.ToArray());
+            }
+
             yield return new WaitForSeconds(PATROL_DELAY);
         }
     }
