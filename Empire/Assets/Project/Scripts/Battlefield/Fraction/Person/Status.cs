@@ -16,10 +16,6 @@ public class Status : MonoBehaviour
     public Action<Skill, Person[]> OnRepeatUseSkillOnPersons;
     public Action<Skill, Vector3> OnRepeatUseSkillOnPoint;
 
-    #endregion Fields
-
-    #region Fields
-
     public FractionBattlefield fraction;
     public ulong sideID;
 

@@ -80,6 +80,11 @@ public class ConteinerButtonSkills : MonoBehaviour
         tr.Clear();
     }
 
+    public void UpdatePatrolUI()
+    {
+        for (int id = 0; id < buttonSkills.Count; id++)
+            buttonSkills[id].UpdatePatrolUI();
+    }
     public void Add(Army army, Skill skill)
     {
         int id = IndexOf(skill.buttonSkillPrefab);
@@ -91,11 +96,13 @@ public class ConteinerButtonSkills : MonoBehaviour
             buttonSkill.button.onClick.AddListener(() => ClickAnyButtonSkills(buttonSkill));
             buttonSkills.Add(buttonSkill);
             AddTimerSkillCast(army);
+            UpdatePatrolUI();
             return;
         }
 
         buttonSkills[id].Add(army);
         AddTimerSkillCast(army);
+        UpdatePatrolUI();
     }
 
     /// <summary>
@@ -132,10 +139,13 @@ public class ConteinerButtonSkills : MonoBehaviour
             foreach (KeyValuePair<Army, UnityAction> initiatorArmy in buttonSkills[idButtonSkill].initiatorArmies)
                 AddTimerSkillCast(initiatorArmy.Key);
         }
+
+        UpdatePatrolUI();
     }
 
     public bool Reload(Army army, Skill skill)
     {
+        Silence(army, skill);
         if (Contains(army, skill, out ButtonSkill buttonSkill))
         {
             buttonSkill.Reload();

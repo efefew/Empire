@@ -41,6 +41,7 @@ public partial class Army : MonoBehaviour
     public StatusUI armyUI, armyGlobalUI;
     public Button buttonArmy;
     private Coroutine patrolCoroutine;
+    public Skill PatrolSkill { get; private set; }
     #endregion Fields
 
     #region Methods
@@ -135,7 +136,6 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
         }
@@ -159,7 +159,6 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            _ = conteinerSkill.Silence(this, skill);
             _ = conteinerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, target);
         }
@@ -190,7 +189,6 @@ public partial class Army : MonoBehaviour
                 persons[idPerson].armyTarget = null;
         }
 
-        _ = conteinerSkill.Silence(this, skill);
         _ = conteinerSkill.Reload(this, skill);
         status.TimerSkillReload(skill, allCantRun ? null : randomTarget);
         firstCallWhenAllCanRun = false;
@@ -205,7 +203,6 @@ public partial class Army : MonoBehaviour
         for (int idPerson = 0; idPerson < persons.Count; idPerson++)
             _ = persons[idPerson].CastRun(skill, target);
 
-        _ = conteinerSkill.Silence(this, skill);
         _ = conteinerSkill.Reload(this, skill);
         status.TimerSkillReload(skill, target);
         firstCallWhenAllCanRun = false;
@@ -522,7 +519,11 @@ public partial class Army : MonoBehaviour
     public void StartPatrol(Skill skill)
     {
         if (patrolCoroutine == null)
+        {
+            PatrolSkill = skill;
             patrolCoroutine = StartCoroutine(IPatrol(skill));
+            conteinerSkill.UpdatePatrolUI();
+        }
     }
 
     public void StopPatrol()
@@ -533,6 +534,8 @@ public partial class Army : MonoBehaviour
             ForgetTargetArmy();
             StopCoroutine(patrolCoroutine);
             patrolCoroutine = null;
+            PatrolSkill = null;
+            conteinerSkill.UpdatePatrolUI();
         }
     }
 
@@ -587,7 +590,6 @@ public partial class Army : MonoBehaviour
         ClearTargetUseSkill();
         ListenCancelWaitCastSkill();
     }
-
     [Button("MoveUpdate")]
     public void MoveUpdate()
     {

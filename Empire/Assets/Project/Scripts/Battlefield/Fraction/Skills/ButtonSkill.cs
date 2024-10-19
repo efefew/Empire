@@ -47,11 +47,7 @@ public class ButtonSkill : MonoBehaviour
 
     #region Methods
 
-    private void Awake()
-    {
-        button = GetComponent<Button>();
-        battlefield = Battlefield.singleton;
-    }
+    private void Awake() => button = GetComponent<Button>();
 
     private void FixedUpdate()
     {
@@ -95,6 +91,7 @@ public class ButtonSkill : MonoBehaviour
 
     public void Build(Army army, Skill skillTarget)
     {
+        battlefield = Battlefield.singleton;
         this.targetSkill = skillTarget;
         AddTimerSkillReload(army);
         CheckWaitCastSkill(army);
@@ -128,6 +125,25 @@ public class ButtonSkill : MonoBehaviour
         battlefield.OnStopPatrol += army.StopPatrol;
         initiatorArmies.Add(army, skillRunner);
         button.onClick.AddListener(skillRunner);
+    }
+    public void UpdatePatrolUI()
+    {
+        bool anyArmyPatrol = false;
+        foreach (KeyValuePair<Army, UnityAction> army in initiatorArmies)
+        {
+            if (targetSkill == army.Key.PatrolSkill)
+            {
+                imagePatrol.fillAmount = 1f;
+                anyArmyPatrol = true;
+            }
+            else if (anyArmyPatrol)
+            {
+                imagePatrol.fillAmount = 1 / 2f;
+                break;
+            }
+        }
+
+        imagePatrol.gameObject.SetActive(anyArmyPatrol);
     }
 
     public void Remove(Army army)
