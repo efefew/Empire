@@ -565,6 +565,7 @@ MonoBehaviour:
   runState: run
   hitState: hit
   deadState: dead
+  armyTarget: {fileID: 0}
   agentMove: {fileID: 5818222585719674614}
   target: {fileID: 6078754508076618242}
   speedScale: 1
@@ -572,7 +573,6 @@ MonoBehaviour:
   needTarget: 1
   collective: 0
   distracted: 0
-  stopDistracted: 0
   buffs: []
   tempMelee: {fileID: 0}
 --- !u!114 &5818222585719674614
