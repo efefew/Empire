@@ -1,0 +1,936 @@
+fileFormatVersion: 2
+guid: 91bfb3be005d9614c94e3f750a6c51fd
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2049031167342790603
+    second: warrior accent back walk_0
+  - first:
+      213: -4011577685086903808
+    second: warrior accent back walk_1
+  - first:
+      213: 6747886226110211345
+    second: warrior accent back walk_2
+  - first:
+      213: -4567815933335670415
+    second: warrior accent back walk_3
+  - first:
+      213: 4981018067754946759
+    second: warrior accent back walk_4
+  - first:
+      213: -3344615605816861047
+    second: warrior accent back walk_5
+  - first:
+      213: 1638149138321646275
+    second: warrior accent back walk_6
+  - first:
+      213: -7751306157368383854
+    second: warrior accent back walk_7
+  - first:
+      213: 7905784873707965516
+    second: warrior accent back defend_0
+  - first:
+      213: 7317813360876020686
+    second: warrior accent back defend_1
+  - first:
+      213: -3081473424658614432
+    second: warrior accent back defend_2
+  - first:
+      213: 747164308960815749
+    second: warrior accent back defend_3
+  - first:
+      213: 8061561946483604060
+    second: warrior accent back defend_4
+  - first:
+      213: -4860129738281591372
+    second: warrior accent back attack_0_0
+  - first:
+      213: 5942800241751914686
+    second: warrior accent back attack_0_1
+  - first:
+      213: -3582312842137522402
+    second: warrior accent back attack_0_2
+  - first:
+      213: -2026799199080746690
+    second: warrior accent back attack_0_3
+  - first:
+      213: 8590175603991279283
+    second: warrior accent back attack_0_4
+  - first:
+      213: 2775778964001003052
+    second: warrior accent back attack_1_0
+  - first:
+      213: 5121025763365011780
+    second: warrior accent back attack_1_1
+  - first:
+      213: 4953766472468458015
+    second: warrior accent back attack_1_2
+  - first:
+      213: 9045342699278200693
+    second: warrior accent back attack_1_3
+  - first:
+      213: 1085501692030429666
+    second: warrior accent back idle_0
+  - first:
+      213: -2930697992425650574
+    second: warrior accent back idle_1
+  - first:
+      213: -5917513729050217314
+    second: warrior accent back idle_2
+  - first:
+      213: 5922556277325802021
+    second: warrior accent back idle_3
+  - first:
+      213: -1304574134548922448
+    second: warrior accent back idle_4
+  - first:
+      213: -9155971134238893452
+    second: warrior accent back dead_0
+  - first:
+      213: 7663757222518986192
+    second: warrior accent back dead_1
+  - first:
+      213: -8856636519353638662
+    second: warrior accent back dead_2
+  - first:
+      213: 993048776715582942
+    second: warrior accent back dead_3
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: warrior accent back walk_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da944f6d433857c4983b9a7ab767de48
+      internalID: 2056974955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_1
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ca8f0278d34cd846a4b8a30707bc137
+      internalID: 236778649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_2
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4fe23c6dfa852948b2edc26db41e1fe
+      internalID: -876960906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_3
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a6dc1b3abf18d340a1155f085bdea6e
+      internalID: 168122943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_4
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98de92e5cef92bf40bd765c708590c8e
+      internalID: -1908967311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_5
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa4408319fdb57b4b850d254a86e3fc2
+      internalID: -513015409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_6
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7c60a40499353f4093a44d03d425ab7
+      internalID: 750757057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back walk_7
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 34e0e38c46d1d9241883f957126b4857
+      internalID: 814181967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back defend_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53a9b6d08cc8ed84188ba96294238b80
+      internalID: 767113757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back defend_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7625f96bd5be7c4e8c0c99a61ab0dc0
+      internalID: 622657853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back defend_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dff709085cc9e5647b8489187085a229
+      internalID: -1561528040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back defend_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c76c0ee3b55b334190d5f338a09cb5e
+      internalID: 179185116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back defend_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6544fa88aeaf35a49a70c6c16b04c317
+      internalID: -2084569313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_0_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc94ebf51552f34408ba7c3309ef01f5
+      internalID: -1485102203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_0_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a109f3d36c2fcd4f974a1b64b17f984
+      internalID: 428163686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_0_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccc21f2065349254583cb9b282296961
+      internalID: 46326259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_0_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ad8d795cb09732498c78872ea909087
+      internalID: -910787774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_0_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 703444b602e5f8f41b5f4de30a626568
+      internalID: 284947350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_1_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09347ca3f0b6e5d439e9a21af9037021
+      internalID: -997346465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_1_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efd5e5e1635ae77428ea98360f9f33b9
+      internalID: -817943782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_1_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b5e23a290a30e54eb8fd152d218eda3
+      internalID: -488695105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back attack_1_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cbef46a207be6c4386b90c356545e31
+      internalID: 177535793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back idle_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0024fe233320964fbe670c84d4c0f1d
+      internalID: -257167805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back idle_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6a696c73f1f7d364c9d1e10fe6445b35
+      internalID: 321497027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back idle_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 219f43465196f76478eb7ddf1ac44023
+      internalID: 2128071877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back idle_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8a9005a6b3f73e42a89b474d1673ba1
+      internalID: 1030391942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back idle_4
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01eba17737bfa5b4ea201e6a3c5c5b9d
+      internalID: 1043714070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back dead_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e18f931de055e94abf2d901ed4c32f1
+      internalID: -441440596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back dead_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c911beb933ac2624296e873390254a12
+      internalID: -1457094204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back dead_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ed9068e384da1948ba1492d235d5a8c
+      internalID: -1000513362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent back dead_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 9
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62b4dae6b15280246bc1fbfda40f2a70
+      internalID: 1996483921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: aa855e48fbc3e0b41935e2eabd024959
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      warrior accent back attack_0_0: -1485102203
+      warrior accent back attack_0_1: 428163686
+      warrior accent back attack_0_2: 46326259
+      warrior accent back attack_0_3: -910787774
+      warrior accent back attack_0_4: 284947350
+      warrior accent back attack_1_0: -997346465
+      warrior accent back attack_1_1: -817943782
+      warrior accent back attack_1_2: -488695105
+      warrior accent back attack_1_3: 177535793
+      warrior accent back dead_0: -441440596
+      warrior accent back dead_1: -1457094204
+      warrior accent back dead_2: -1000513362
+      warrior accent back dead_3: 1996483921
+      warrior accent back defend_0: 767113757
+      warrior accent back defend_1: 622657853
+      warrior accent back defend_2: -1561528040
+      warrior accent back defend_3: 179185116
+      warrior accent back defend_4: -2084569313
+      warrior accent back idle_0: -257167805
+      warrior accent back idle_1: 321497027
+      warrior accent back idle_2: 2128071877
+      warrior accent back idle_3: 1030391942
+      warrior accent back idle_4: 1043714070
+      warrior accent back walk_0: 2056974955
+      warrior accent back walk_1: 236778649
+      warrior accent back walk_2: -876960906
+      warrior accent back walk_3: 168122943
+      warrior accent back walk_4: -1908967311
+      warrior accent back walk_5: -513015409
+      warrior accent back walk_6: 750757057
+      warrior accent back walk_7: 814181967
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

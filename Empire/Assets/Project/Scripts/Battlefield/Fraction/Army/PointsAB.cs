@@ -40,32 +40,40 @@ public class PointsAB : MonoBehaviour
     private void Start()
     {
         if (Battlefield.singleton != null)
+        {
             battlefield = Battlefield.singleton;
+        }
     }
 
     private void Update()
     {
-        if ((parentAB && parentAB.groupAB) || MyExtentions.IsPointerOverUI())
+        if (parentAB && parentAB.groupAB)
         {
-            wasOverUI = true;
             return;
         }
 
+        wasOverUI = MyExtentions.IsPointerOverUI();
         ChangePointsAB(KeyCode.Mouse0);
     }
 
     private void ChangePointsAB(KeyCode key)
     {
+        if (wasOverUI)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(key))
         {
-            wasOverUI = false;
             ChangePositionA(battlefield.worldPosition);
         }
 
         if (Input.GetKey(key))
+        {
             ChangePositionB(battlefield.worldPosition);
+        }
 
-        if (!wasOverUI && Input.GetKeyUp(key))
+        if (Input.GetKeyUp(key))
         {
             battlefield.DeactiveAllArmies();
             ChangedPositions();
@@ -75,14 +83,20 @@ public class PointsAB : MonoBehaviour
     private void SetGroupPoints()
     {
         if (!groupAB)
+        {
             return;
+        }
+
         int countActiveAB = childrensAB.Where((PointsAB points) => { return points.enabled; }).Count();
         float distance = Mathf.Max(0, (Vector2.Distance(a.position, b.position) - (Army.OFFSET_BETWEEN_ARMIES * (countActiveAB - 1))) / countActiveAB);
         Vector3 position = a.position;
         for (int id = 0; id < childrensAB.Count; id++)
         {
             if (!childrensAB[id].enabled)
+            {
                 continue;
+            }
+
             childrensAB[id].ChangePositionA(position);
             position += a.right * distance;
             childrensAB[id].ChangePositionB(position);
@@ -104,9 +118,14 @@ public class PointsAB : MonoBehaviour
         b.position = vector;
         a.LookAt2D(b.position);
         if (firstCall)
+        {
             OnChangedPositions?.Invoke(a, b);
+        }
+
         if (Vector2.Distance(a.position, b.position) >= MIN_DISTANCE_AB)
+        {
             OnChangePositions?.Invoke(a, b);
+        }
 
         SetGroupPoints();
     }
@@ -114,11 +133,19 @@ public class PointsAB : MonoBehaviour
     public void ChangedPositions()
     {
         if (Vector2.Distance(a.position, b.position) >= MIN_DISTANCE_AB)
+        {
             OnChangedPositions?.Invoke(a, b);
+        }
+
         if (!groupAB)
+        {
             return;
+        }
+
         for (int id = 0; id < childrensAB.Count; id++)
+        {
             childrensAB[id].ChangedPositions();
+        }
     }
 
     public void Group(bool on)

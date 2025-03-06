@@ -1,0 +1,936 @@
+fileFormatVersion: 2
+guid: 387704ec60e93994b8a771e1809e3476
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2876085662706956696
+    second: warrior accent border walk_0
+  - first:
+      213: 838549236747984415
+    second: warrior accent border walk_1
+  - first:
+      213: -4805713243333052335
+    second: warrior accent border walk_2
+  - first:
+      213: 415239332521306593
+    second: warrior accent border walk_3
+  - first:
+      213: 5790647666867589528
+    second: warrior accent border walk_4
+  - first:
+      213: -2328599406549891921
+    second: warrior accent border walk_5
+  - first:
+      213: 6688000936373238211
+    second: warrior accent border walk_6
+  - first:
+      213: 181569668296420243
+    second: warrior accent border walk_7
+  - first:
+      213: 7156015358449067207
+    second: warrior accent border defend_0
+  - first:
+      213: 206253174544931174
+    second: warrior accent border defend_1
+  - first:
+      213: -7931086839858716223
+    second: warrior accent border defend_2
+  - first:
+      213: 1802516879109028150
+    second: warrior accent border defend_3
+  - first:
+      213: -6195397468024419110
+    second: warrior accent border defend_4
+  - first:
+      213: 3722280835472330623
+    second: warrior accent border attack_0_0
+  - first:
+      213: 1045857493009540574
+    second: warrior accent border attack_0_1
+  - first:
+      213: 4207261137519143526
+    second: warrior accent border attack_0_2
+  - first:
+      213: -6341836081612182564
+    second: warrior accent border attack_0_3
+  - first:
+      213: -2965374125778074728
+    second: warrior accent border attack_0_4
+  - first:
+      213: -165607607002062242
+    second: warrior accent border attack_1_0
+  - first:
+      213: -8701935196016891923
+    second: warrior accent border attack_1_1
+  - first:
+      213: 9081333260841846128
+    second: warrior accent border attack_1_2
+  - first:
+      213: 7749002980048093176
+    second: warrior accent border attack_1_3
+  - first:
+      213: 1321750159030261865
+    second: warrior accent border idle_0
+  - first:
+      213: -7576176344770988323
+    second: warrior accent border idle_1
+  - first:
+      213: 5424053935615326121
+    second: warrior accent border idle_2
+  - first:
+      213: -4666573796427951716
+    second: warrior accent border idle_3
+  - first:
+      213: -7498288929139318789
+    second: warrior accent border idle_4
+  - first:
+      213: 7353687663929541518
+    second: warrior accent border dead_0
+  - first:
+      213: 6770002010857804544
+    second: warrior accent border dead_1
+  - first:
+      213: -536765355102932264
+    second: warrior accent border dead_2
+  - first:
+      213: 5356383318987512420
+    second: warrior accent border dead_3
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: warrior accent border walk_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 493f7d6f8f1e9864c973d5e71d42476e
+      internalID: 1681955905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_1
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5666a1fe772f0824a8bd64d65ea427fa
+      internalID: -553299807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_2
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84b66cb224c2b454b9080b52bdec9842
+      internalID: 111219070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_3
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a263f0d463425c649be2c0c8595e07b8
+      internalID: -44134260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_4
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 067cd7a5d3f49c94ca28bdf7e728d4df
+      internalID: 1286915823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_5
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7d30b4892685d344997381ec89026ca
+      internalID: -2703806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_6
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8edcac20298a4a64db4960a0bc56473f
+      internalID: 1271166504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border walk_7
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1468af4711532984f9375db6f42c453f
+      internalID: -1240908072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border defend_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75fd1862e6c32ed4a9fc4b4378acacd9
+      internalID: 1418836248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border defend_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c1ea0f6876e0424ab67f3b1bd28052e
+      internalID: 1601302600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border defend_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8823cda190b0d6e49aba4789b7242a75
+      internalID: 187377423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border defend_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e68f4d7a206e694496d2cfa15391eb0
+      internalID: -319583004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border defend_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 35b3ece5ed78402439dede9805174fbc
+      internalID: -1010751778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_0_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80cc84bb70013504ba4a3f974822369a
+      internalID: 753963116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_0_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95b925301888d794780016613fbaf808
+      internalID: 1876959204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_0_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 968370ceebb789642b2e81ca3d41ea16
+      internalID: 1566651626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_0_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9036c4e4b657c284c809dde8a038a9a8
+      internalID: -813817080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_0_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84de75c312873504d867ee3d1909111c
+      internalID: -848188919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_1_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78986564cbed98c4994977ab6f92df33
+      internalID: -1239165748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_1_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 75df81aff8b93b848a6df2a4913d622e
+      internalID: -129926251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_1_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c0b3c5efcd00fee4db4fef94cb1dbc06
+      internalID: 1053326821
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border attack_1_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08d048ba1d99246449d2a85f01e402b4
+      internalID: -356768283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border idle_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b22e5ada9bc8784c87b01deb714e1da
+      internalID: 2116954405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border idle_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e519a923363eb294bb5f36d707da3b33
+      internalID: -1837930014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border idle_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 919c8a5d1c07d1c4aaee1510a6d562c6
+      internalID: -870790804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border idle_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7c4a7acc3afc004497525742982b563
+      internalID: 926311715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border idle_4
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4d2675db7ae86d4eafe5d484da112fb
+      internalID: -492035429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border dead_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50e2579631c2e19488b68f576f18f3d3
+      internalID: -282589108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border dead_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89ef9cab3037cc74ea5f44c7dd1f6f3a
+      internalID: 1137680960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border dead_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f91b88006b2e96646ad13533c3c9f38d
+      internalID: 410378151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior accent border dead_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 9
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3734a3aa57e25234fbdf0b26b57fc24c
+      internalID: 1099290266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 1255b92ee800f5140829db000db93902
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      warrior accent border attack_0_0: 753963116
+      warrior accent border attack_0_1: 1876959204
+      warrior accent border attack_0_2: 1566651626
+      warrior accent border attack_0_3: -813817080
+      warrior accent border attack_0_4: -848188919
+      warrior accent border attack_1_0: -1239165748
+      warrior accent border attack_1_1: -129926251
+      warrior accent border attack_1_2: 1053326821
+      warrior accent border attack_1_3: -356768283
+      warrior accent border dead_0: -282589108
+      warrior accent border dead_1: 1137680960
+      warrior accent border dead_2: 410378151
+      warrior accent border dead_3: 1099290266
+      warrior accent border defend_0: 1418836248
+      warrior accent border defend_1: 1601302600
+      warrior accent border defend_2: 187377423
+      warrior accent border defend_3: -319583004
+      warrior accent border defend_4: -1010751778
+      warrior accent border idle_0: 2116954405
+      warrior accent border idle_1: -1837930014
+      warrior accent border idle_2: -870790804
+      warrior accent border idle_3: 926311715
+      warrior accent border idle_4: -492035429
+      warrior accent border walk_0: 1681955905
+      warrior accent border walk_1: -553299807
+      warrior accent border walk_2: 111219070
+      warrior accent border walk_3: -44134260
+      warrior accent border walk_4: 1286915823
+      warrior accent border walk_5: -2703806
+      warrior accent border walk_6: 1271166504
+      warrior accent border walk_7: -1240908072
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,944 @@
+fileFormatVersion: 2
+guid: 36423bb0383468740923fae958b21eba
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3326704012212865633
+    second: IMG_3067_0
+  - first:
+      213: -8610610014717987129
+    second: IMG_3067_1
+  - first:
+      213: 8148998495206585903
+    second: IMG_3067_2
+  - first:
+      213: -3542015715236067796
+    second: IMG_3067_3
+  - first:
+      213: 3423511055545226498
+    second: IMG_3067_4
+  - first:
+      213: 6089771724324203341
+    second: IMG_3067_5
+  - first:
+      213: 5130633977177181535
+    second: IMG_3067_6
+  - first:
+      213: 5804310083086037007
+    second: IMG_3067_7
+  - first:
+      213: -2509080261534110756
+    second: IMG_3067_8
+  - first:
+      213: 6518496479742549478
+    second: IMG_3067_9
+  - first:
+      213: -8168798150602556565
+    second: IMG_3067_10
+  - first:
+      213: 24908062705214997
+    second: IMG_3067_11
+  - first:
+      213: -1681844831437242047
+    second: IMG_3067_12
+  - first:
+      213: -1678813630353540388
+    second: IMG_3067_13
+  - first:
+      213: 4567663620539136993
+    second: IMG_3067_14
+  - first:
+      213: 7983690783906021720
+    second: IMG_3067_15
+  - first:
+      213: 7984568505379687476
+    second: IMG_3067_16
+  - first:
+      213: -2857268307881897655
+    second: IMG_3067_17
+  - first:
+      213: -6869078219087107400
+    second: IMG_3067_18
+  - first:
+      213: -953505728840587272
+    second: IMG_3067_19
+  - first:
+      213: 2343206363845100220
+    second: IMG_3067_20
+  - first:
+      213: -8103048308327618358
+    second: IMG_3067_21
+  - first:
+      213: 6277200205634304562
+    second: IMG_3067_22
+  - first:
+      213: -2957021571181444340
+    second: IMG_3067_23
+  - first:
+      213: -8251739273503933515
+    second: IMG_3067_24
+  - first:
+      213: -2425767946053822034
+    second: IMG_3067_25
+  - first:
+      213: -8476831031117546040
+    second: IMG_3067_26
+  - first:
+      213: -8668911173874218745
+    second: IMG_3067_27
+  - first:
+      213: 7110660901388171137
+    second: IMG_3067_28
+  - first:
+      213: -113974212866108168
+    second: IMG_3067_29
+  - first:
+      213: -8808975016203911967
+    second: IMG_3067_30
+  - first:
+      213: -4941333247424890990
+    second: IMG_3067_31
+  - first:
+      213: 7698175966278672856
+    second: IMG_3067_32
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: warior back walk_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47fed77f1b6f524428b887d246113934
+      internalID: 1132239315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_1
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0613f66412413543b9aa5ceb075a58c
+      internalID: 790750846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_2
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f38626e4346f68c438fe700c409440ea
+      internalID: -549104493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_3
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07c2f70a491f74a47933600f43dd4761
+      internalID: -1313681709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_4
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38006bf1d3ed76541bab72bc412e8079
+      internalID: 1596515603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_5
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc54fdafeb3e70d439dd16bb5838c039
+      internalID: 1000577671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_6
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1c998ac89a705af46844e1700a5c702d
+      internalID: 1444767306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back walk_7
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 97663c4c2312643479bd58bccf430cf7
+      internalID: -195564432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back defend_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7264964e7bd817f49b4a34f861d6154a
+      internalID: -667461833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back defend_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1b5836e62a8dd1e4887e948196509001
+      internalID: 27579766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back defend_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c2af2fee031b8f4facc7c3dbd185177
+      internalID: 1571524007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back defend_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a4d2f9d4d8339b43855b72617a69b49
+      internalID: 1372081994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back defend_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ec57483cb49d79d4f8fb8bb875aa67de
+      internalID: 893097033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_0_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 473117e5817167a4ca3a7992f2494358
+      internalID: 855553231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_0_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f3477948b63f2b4d86a01348a9b1a9a
+      internalID: 633745790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_0_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ec0d80fb33b66746b8a949b6b209dee
+      internalID: -2082399837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_0_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b97b2cec4714b0b4d8b745e6f042d5f3
+      internalID: -1181166667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_0_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d09f5aea4eecafd4f851a035fda53ccb
+      internalID: -2075095567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_1_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e687a8ae9716730428e97d33cda8df52
+      internalID: 1449698545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_1_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 457f7c289b83eeb418ce0d24027a022e
+      internalID: 620837080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_1_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dd4a68f5a68ca644f84c00196e4daf39
+      internalID: 1521060542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back attack_1_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c43eec8c92ce45e4eb11ef2f85487cd6
+      internalID: -37680933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back idle_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9e5386c2b90804f4fa617539ac8bca9c
+      internalID: -2067197105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back idle_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 729423b7b587bea4a985decf434f4250
+      internalID: -453096506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back idle_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 071b48638d3760245baf1deccd4ec1c0
+      internalID: 1405276293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back idle_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 044ffb99f75f8e04ab2082840a92af25
+      internalID: 1181567829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back idle_4
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 089d7719b44a0ee4ca4ff5f5314cf1ec
+      internalID: -385881452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back dead_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e7fa47c82cc7d7542baa27c2f866b06e
+      internalID: 314126369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back dead_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 49b7290cdd6f964448e86b04e8db3dd7
+      internalID: 698091395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back dead_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef7e55a9de2b0ec4e8c5304be0d6d29f
+      internalID: 605032963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warior back dead_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 9
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5853800a63423448a4730c12ea9297c
+      internalID: 876735974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2be0ecf5c7586434eb3708ccbec454ee
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      attack_1_0: 620837080
+      walk: 790750846
+      warior back attack_0_0: 855553231
+      warior back attack_0_1: 633745790
+      warior back attack_0_2: -2082399837
+      warior back attack_0_3: -1181166667
+      warior back attack_0_4: -2075095567
+      warior back attack_1_0: 1449698545
+      warior back attack_1_1: 620837080
+      warior back attack_1_2: 1521060542
+      warior back attack_1_3: -37680933
+      warior back dead_0: 314126369
+      warior back dead_1: 698091395
+      warior back dead_2: 605032963
+      warior back dead_3: 876735974
+      warior back defend_0: -667461833
+      warior back defend_1: 27579766
+      warior back defend_2: 1571524007
+      warior back defend_3: 1372081994
+      warior back defend_4: 893097033
+      warior back idle_0: -2067197105
+      warior back idle_1: -453096506
+      warior back idle_2: 1405276293
+      warior back idle_3: 1181567829
+      warior back idle_4: -385881452
+      warior back walk_0: 1132239315
+      warior back walk_1: 790750846
+      warior back walk_2: -549104493
+      warior back walk_3: -1313681709
+      warior back walk_4: 1596515603
+      warior back walk_5: 1000577671
+      warior back walk_6: 1444767306
+      warior back walk_7: -195564432
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

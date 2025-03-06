@@ -1,0 +1,942 @@
+fileFormatVersion: 2
+guid: 7299d7bfd4e5a9840ab917722e1eab09
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3151302516334306064
+    second: warrior border walk_0
+  - first:
+      213: 8840576195827093622
+    second: warrior border walk_1
+  - first:
+      213: 6843547665103583118
+    second: warrior border walk_2
+  - first:
+      213: -7576935267494576735
+    second: warrior border walk_3
+  - first:
+      213: 3598274974136602084
+    second: warrior border walk_4
+  - first:
+      213: -6490307085710431422
+    second: warrior border walk_5
+  - first:
+      213: -4813820089132328606
+    second: warrior border walk_6
+  - first:
+      213: 3866927889416655110
+    second: warrior border walk_7
+  - first:
+      213: -7273437642694520240
+    second: warrior border defend_0
+  - first:
+      213: 2716601128233903788
+    second: warrior border defend_1
+  - first:
+      213: -6518422394702053444
+    second: warrior border defend_2
+  - first:
+      213: -5895160840873732833
+    second: warrior border defend_3
+  - first:
+      213: -664528108240700784
+    second: warrior border defend_4
+  - first:
+      213: 3423267176833510596
+    second: warrior border attack_0_0
+  - first:
+      213: -8580566103095282565
+    second: warrior border attack_0_1
+  - first:
+      213: 3292894990249233179
+    second: warrior border attack_0_2
+  - first:
+      213: 4772173646366385527
+    second: warrior border attack_0_3
+  - first:
+      213: -3726064295671090737
+    second: warrior border attack_0_4
+  - first:
+      213: 3721084857514655374
+    second: warrior border attack_1_0
+  - first:
+      213: -5746183457416621461
+    second: warrior border attack_1_1
+  - first:
+      213: 1934008502997655046
+    second: warrior border attack_1_2
+  - first:
+      213: -8322236371775011990
+    second: warrior border attack_1_3
+  - first:
+      213: 2845448670530042070
+    second: warrior border idle_0
+  - first:
+      213: 4563415086489853152
+    second: warrior border idle_1
+  - first:
+      213: -7561160568455971671
+    second: warrior border idle_2
+  - first:
+      213: -3366743424458395474
+    second: warrior border idle_3
+  - first:
+      213: 3123254623402398805
+    second: warrior border idle_4
+  - first:
+      213: -1507803650768272787
+    second: warrior border dead_0
+  - first:
+      213: 7945466877009863218
+    second: warrior border dead_1
+  - first:
+      213: 5881037940423750729
+    second: warrior border dead_2
+  - first:
+      213: -6605066343648552347
+    second: warrior border dead_3
+  - first:
+      213: 2512633289505165307
+    second: warrior border dead_2
+  - first:
+      213: -8956510175520530903
+    second: warrior border dead_1
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: warrior border walk_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1a98842c63dce041ae697898e4296dd
+      internalID: 1144229462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_1
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20fd3b306f252404eaa3165881738af3
+      internalID: -660117198
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_2
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77e3e435e3ed7a34ca9f9f44945b6d6c
+      internalID: -1850823504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_3
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6fc273234f3cd34b87e6a72cdf271ca
+      internalID: 476237975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_4
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae88fa9956de268419c7661190fa9873
+      internalID: 1496251979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_5
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8cee595f0995e8c4ab0e3939b3fbe18e
+      internalID: 1726081857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_6
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b35e857441ffac6498352d1b23e3da71
+      internalID: 1325666076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border walk_7
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df92385cbaa03e94ca90ddc9aec2a322
+      internalID: -182239420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border defend_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0164c9eccf2262e4b8bdf60ebb51c18c
+      internalID: 1919711088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border defend_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 2009
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ce81a2643d2c224bb8a22ac927d3c1e
+      internalID: -1043067221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border defend_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01ddcce8344297740aad2f36e4830b73
+      internalID: 1917519013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border defend_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d60335f46701b034ba2e09e6f39286a8
+      internalID: 1978437191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border defend_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81f0f552f903ca2468b1303000fcae21
+      internalID: -1561206311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_0_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19a951e2acc2ffa46a2a96569ef73c30
+      internalID: 1143463104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_0_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1609
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45454612027390245b0b06efaef025e3
+      internalID: -428880313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_0_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0006ca357e9d1c44994dd5c6bef9e9f5
+      internalID: 1388220881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_0_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: add5824c81d9ea445acf720e1f190603
+      internalID: 996591754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_0_4
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de0511d357cba284a9cbb28ec89c3dc0
+      internalID: 1823599570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_1_0
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e70585015bafda14ea38a1439c8a82bc
+      internalID: -1714427764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_1_1
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 1209
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c6e5d90c27fc784f8cf49082c7135b9
+      internalID: -739972350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_1_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3f1bf714b5ba17145b81f48d8a60eddf
+      internalID: -2094897219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border attack_1_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b76372e8d5fce674d8a63d4297e8a274
+      internalID: 467836018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border idle_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ee96cfb088e77c341acc85c598caa26a
+      internalID: 471737202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border idle_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d892e7a61a5ee0442b4bd53869193d21
+      internalID: -803515004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border idle_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 809
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4968f0393278e6141a4b1ae38537be91
+      internalID: -1136654646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border idle_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9578b6befce6b9b41b7c448131adbec4
+      internalID: 675570116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border idle_4
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e48683aae84fd0f458ee9a8df5de8c41
+      internalID: 3477030
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border dead_0
+      rect:
+        serializedVersion: 2
+        x: 825
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fafca8cb2ac16f45a6b124a283b0d3a
+      internalID: 822488678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border dead_1
+      rect:
+        serializedVersion: 2
+        x: 1225
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3356ae2ef6f59f044851e07d64fd177d
+      internalID: 1742702250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border dead_2
+      rect:
+        serializedVersion: 2
+        x: 1625
+        y: 409
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4752b4a66ce60340a22fc4df3eb46ca
+      internalID: -2135868104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: warrior border dead_3
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 9
+        width: 400
+        height: 400
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf2fc04f3730bb74285a231ee14d7b3e
+      internalID: 1266552931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: a8c769da8b4fd7346996e7d12c1e68c8
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      warrior border attack_0_0: 1143463104
+      warrior border attack_0_1: -428880313
+      warrior border attack_0_2: 1388220881
+      warrior border attack_0_3: 996591754
+      warrior border attack_0_4: 1823599570
+      warrior border attack_1_0: -1714427764
+      warrior border attack_1_1: -739972350
+      warrior border attack_1_2: -2094897219
+      warrior border attack_1_3: 467836018
+      warrior border dead_0: 822488678
+      warrior border dead_1: 1742702250
+      warrior border dead_2: -2135868104
+      warrior border dead_3: 1266552931
+      warrior border defend_0: 1919711088
+      warrior border defend_1: -1043067221
+      warrior border defend_2: 1917519013
+      warrior border defend_3: 1978437191
+      warrior border defend_4: -1561206311
+      warrior border idle_0: 471737202
+      warrior border idle_1: -803515004
+      warrior border idle_2: -1136654646
+      warrior border idle_3: 675570116
+      warrior border idle_4: 3477030
+      warrior border walk_0: 1144229462
+      warrior border walk_1: -660117198
+      warrior border walk_2: -1850823504
+      warrior border walk_3: 476237975
+      warrior border walk_4: 1496251979
+      warrior border walk_5: 1726081857
+      warrior border walk_6: 1325666076
+      warrior border walk_7: -182239420
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

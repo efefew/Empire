@@ -70,12 +70,16 @@ public class Battlefield : MonoBehaviour
         toggleStand.onValueChanged.AddListener((bool on) =>
         {
             if (!on)
+            {
                 StopPatrol();
+            }
         });
         toggleRepeat.onValueChanged.AddListener((bool on) =>
         {
             if (!on)
+            {
                 StopPatrol();
+            }
         });
         pointTarget.onClick.AddListener(() =>
         {
@@ -95,10 +99,14 @@ public class Battlefield : MonoBehaviour
         }
 
         if (targetSkill == null || !targetSkill.pointCanBeTarget)
+        {
             return;
+        }
 
         if (!Input.GetKeyUp(KeyCode.Mouse0) || MyExtentions.IsPointerOverUI())
+        {
             return;
+        }
 
         CreatePointTarget(worldPosition);
     }
@@ -131,7 +139,9 @@ public class Battlefield : MonoBehaviour
         {
             armies = fractions[idFraction].armies;
             for (int idArmy = 0; idArmy < armies.Count; idArmy++)
+            {
                 SetActiveArmy(armies[idArmy], false);
+            }
         }
     }
 
@@ -196,14 +206,19 @@ public class Battlefield : MonoBehaviour
             for (int idArmy = 0; idArmy < fractions[idFraction].armies.Count; idArmy++)
             {
                 if (OnTrigger(trigger, armyInitiator, fractions[idFraction].armies[idArmy]))
+                {
                     SetActiveArmy(fractions[idFraction].armies[idArmy], true);
+                }
             }
         }
     }
     public void ActiveSkillButtons(Skill skill)
     {
         if (!(skill.collective || skill.ñanBePatrol))
+        {
             return;
+        }
+
         skillButtonsPopup = true;
         if (skill.collective)
         { }
@@ -220,7 +235,9 @@ public class Battlefield : MonoBehaviour
         if (!skillButtonsPopup)
         {
             if (patrol.gameObject.activeSelf)
+            {
                 patrol.gameObject.SetActive(false);
+            }
         }
         else
         {
