@@ -12,13 +12,14 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
     public static class EditorCoroutineUtility
     {
         /// <summary>
-        /// Starts an <see cref ="EditorCoroutine">EditorCoroutine</see> with the specified owner object. 
-        /// If the garbage collector collects the owner object, while the resulting coroutine is still executing, the coroutine will stop running.
-        /// <code>
+        ///     Starts an <see cref="EditorCoroutine">EditorCoroutine</see> with the specified owner object.
+        ///     If the garbage collector collects the owner object, while the resulting coroutine is still executing, the coroutine
+        ///     will stop running.
+        ///     <code>
         /// using System.Collections;
         /// using Unity.EditorCoroutines.Editor;
         /// using UnityEditor;
-        ///
+        /// 
         /// public class ExampleWindow : EditorWindow
         /// {
         ///     int m_Updates = 0;
@@ -26,7 +27,7 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
         ///     {
         ///         EditorCoroutineUtility.StartCoroutine(CountEditorUpdates(), this);
         ///     }
-        ///
+        /// 
         ///     IEnumerator CountEditorUpdates()
         ///     {
         ///         while (true)
@@ -41,7 +42,8 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
         /// <param name="routine"> IEnumerator to iterate over. </param>
         /// <param name="owner">Object owning the coroutine. </param>
         /// <remarks>
-        /// Only types that don't inherit from <see cref="UnityEngine.Object">UnityEngine.Object</see> will get collected the next time the GC runs instead of getting null-ed immediately.
+        ///     Only types that don't inherit from <see cref="UnityEngine.Object">UnityEngine.Object</see> will get collected the
+        ///     next time the GC runs instead of getting null-ed immediately.
         /// </remarks>
         /// <returns>A handle to an <see cref="EditorCoroutine">EditorCoroutine</see>.</returns>
         public static EditorCoroutine StartCoroutine(IEnumerator routine, object owner)
@@ -50,20 +52,22 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
         }
 
         /// <summary>
-        /// This method starts an <see cref="EditorCoroutine">EditorCoroutine</see> without an owning object. The <see cref="EditorCoroutine">EditorCoroutine</see> runs until it completes or is canceled using <see cref="StopCoroutine(EditorCoroutine)">StopCoroutine</see>.
-        /// <code>
+        ///     This method starts an <see cref="EditorCoroutine">EditorCoroutine</see> without an owning object. The
+        ///     <see cref="EditorCoroutine">EditorCoroutine</see> runs until it completes or is canceled using
+        ///     <see cref="StopCoroutine(EditorCoroutine)">StopCoroutine</see>.
+        ///     <code>
         /// using System.Collections;
         /// using Unity.EditorCoroutines.Editor;
         /// using UnityEditor;
         /// using UnityEngine;
-        ///
+        /// 
         /// public class ExampleWindow : EditorWindow
         /// {
         ///     void OnEnable()
         ///     {
         ///         EditorCoroutineUtility.StartCoroutineOwnerless(LogTimeSinceStartup());
         ///     }
-        ///
+        /// 
         ///     IEnumerator LogTimeSinceStartup()
         ///     {
         ///         while (true)
@@ -83,13 +87,14 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
         }
 
         /// <summary>
-        /// Immediately stop an <see cref="EditorCoroutine">EditorCoroutine</see>. This method is safe to call on an already completed <see cref="EditorCoroutine">EditorCoroutine</see>.
-        /// <code>
+        ///     Immediately stop an <see cref="EditorCoroutine">EditorCoroutine</see>. This method is safe to call on an already
+        ///     completed <see cref="EditorCoroutine">EditorCoroutine</see>.
+        ///     <code>
         /// using System.Collections;
         /// using Unity.EditorCoroutines.Editor;
         /// using UnityEditor;
         /// using UnityEngine;
-        ///
+        /// 
         /// public class ExampleWindow : EditorWindow
         /// {
         ///     EditorCoroutine m_LoggerCoroutine;
@@ -102,7 +107,7 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
         ///     {
         ///         EditorCoroutineUtility.StopCoroutine(m_LoggerCoroutine);
         ///     }
-        ///
+        /// 
         ///     IEnumerator LogRunning()
         ///     {
         ///         while (true)
@@ -122,6 +127,7 @@ namespace Meryel.UnityCodeAssist.Editor.EditorCoroutines
                 Debug.LogAssertion("EditorCoroutine handle is null.");
                 return;
             }
+
             coroutine.Stop();
         }
     }

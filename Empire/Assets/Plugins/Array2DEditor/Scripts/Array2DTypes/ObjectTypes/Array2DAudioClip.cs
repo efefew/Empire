@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Array2DEditor
 {
-    [System.Serializable]
+    [Serializable]
     public class Array2DAudioClip : Array2D<AudioClip>
     {
-        [SerializeField]
-        CellRowAudioClip[] cells = new CellRowAudioClip[Consts.defaultGridSize];
+        [SerializeField] private CellRowAudioClip[] cells = new CellRowAudioClip[Consts.defaultGridSize];
 
         protected override CellRow<AudioClip> GetCellRow(int idx)
         {

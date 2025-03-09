@@ -1,9 +1,17 @@
 #if UNITY_EDITOR
+
+#region
+
+using System;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
-    public class Hash128ValueWrapper : GenericValueWrapper<Hash128> { }
+    [Serializable]
+    public class Hash128ValueWrapper : GenericValueWrapper<Hash128>
+    {
+    }
 }
 #endif

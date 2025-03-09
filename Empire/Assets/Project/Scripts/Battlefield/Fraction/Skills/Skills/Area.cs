@@ -1,6 +1,9 @@
-using UnityEngine;
+#region
 
+using UnityEngine;
 using Zelude;
+
+#endregion
 
 [AddComponentMenu("Skill/Area")]
 public class Area : Skill
@@ -8,28 +11,28 @@ public class Area : Skill
     #region Fields
 
     public AreaObject area;
-    [MinMaxSlider(1, 100, "maxCountAura", "Count Area")]
-    [SerializeField]
+
+    [MinMaxSlider(1, 100, "maxCountAura", "Count Area")] [SerializeField]
     public int minCountArea;
 
-    [HideInInspector]
-    public int maxCountArea;
+    [HideInInspector] public int maxCountArea;
+
     /// <summary>
-    /// Промежуток
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    [Min(0.001f)]
-    public float gap;
-    [Min(0)]
-    public float radius;
-    [Min(0)]
-    public float scatter;
+    [Min(0.001f)] public float gap;
+
+    [Min(0)] public float radius;
+
+    [Min(0)] public float scatter;
+
     /// <summary>
-    /// Частота
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public uint frequency;
 
     ///// <summary>
-    ///// Стоять при использовании навыка?
+    ///// пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ?
     ///// </summary>
     //public bool stun;
 
@@ -49,12 +52,14 @@ public class Area : Skill
         {
             AreaObject area = Instantiate(
                 this.area,
-                new Vector2(target.transform.position.x + Random.Range(0f, scatter), target.transform.position.y + Random.Range(0f, scatter)),
+                new Vector2(target.transform.position.x + Random.Range(0f, scatter),
+                    target.transform.position.y + Random.Range(0f, scatter)),
                 Quaternion.Euler(0, 0, Random.Range(0f, 360f)),
                 initiator.transform.parent);
             area.Build(initiator, this);
         }
     }
+
     public override void Run(Person initiator, Vector3 target)
     {
         if (!pointCanBeTarget)
@@ -75,5 +80,6 @@ public class Area : Skill
             area.Build(initiator, this);
         }
     }
+
     #endregion Methods
 }

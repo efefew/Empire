@@ -1,9 +1,17 @@
 #if UNITY_EDITOR
+
+#region
+
+using System;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
-    public class Vector2ValueWrapper : GenericValueWrapper<Vector2> { }
+    [Serializable]
+    public class Vector2ValueWrapper : GenericValueWrapper<Vector2>
+    {
+    }
 }
 #endif

@@ -1,9 +1,17 @@
 #if UNITY_EDITOR
+
+#region
+
+using System;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
-    public class BoundsValueWrapper : GenericValueWrapper<Bounds> { }
+    [Serializable]
+    public class BoundsValueWrapper : GenericValueWrapper<Bounds>
+    {
+    }
 }
 #endif

@@ -6,28 +6,26 @@ using UnityEngine.AI;
 //***********************************************************************************
 namespace NavMeshPlus.Extensions
 {
-    public class RotateAgentInstantly: IAgentOverride
+    public class RotateAgentInstantly : IAgentOverride
     {
+        private NavMeshAgent agent;
+        private Vector3 nextWaypoint;
+        private AgentOverride2d owner;
 
         public RotateAgentInstantly(NavMeshAgent agent, AgentOverride2d owner)
         {
             this.agent = agent;
             this.owner = owner;
         }
-        private NavMeshAgent agent;
-        private AgentOverride2d owner;
-        private Vector3 nextWaypoint;
 
         public void UpdateAgent()
         {
             if (agent.hasPath && agent.path.corners.Length > 1)
-            {
                 if (nextWaypoint != agent.path.corners[1])
                 {
                     RotateToPoint(agent.path.corners[1], agent.transform);
                     nextWaypoint = agent.path.corners[1];
                 }
-            }
         }
 
         private static void RotateToPoint(Vector3 targetPoint, Transform transform)

@@ -1,22 +1,20 @@
+#nullable enable
+
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
-
-#nullable enable
-
+using Serilog;
 
 namespace Meryel.UnityCodeAssist.Editor.Input
 {
-
     public class Text2Yaml
     {
         public static string Convert(IEnumerable<string> textLines)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new();
             var stack = new Stack<(string typeName, string identifier, int indentation)>();
 
             sb.AppendLine(@"%YAML 1.1");
@@ -24,23 +22,23 @@ namespace Meryel.UnityCodeAssist.Editor.Input
             sb.AppendLine(@"--- !u!13 &1");
             sb.AppendLine(@"InputManager:");
 
-            var regexIndentation = new Regex("^\\s*");
+            Regex regexIndentation = new("^\\s*");
 
-            var regexString = new Regex("^(\\s+)(\\w+)\\s+\"([a-zA-Z0-9_ ]*)\"\\s+\\(string\\)$");
-            var regexValue = new Regex("^(\\s+)(\\w+)\\s+([0-9.]*)\\s+\\(((bool)|(int)|(float)|(unsigned int))\\)$");
-            var regexType = new Regex("^(\\s+)(\\w+)\\s+\\((\\w+)\\)$");
+            Regex regexString = new("^(\\s+)(\\w+)\\s+\"([a-zA-Z0-9_ ]*)\"\\s+\\(string\\)$");
+            Regex regexValue = new("^(\\s+)(\\w+)\\s+([0-9.]*)\\s+\\(((bool)|(int)|(float)|(unsigned int))\\)$");
+            Regex regexType = new("^(\\s+)(\\w+)\\s+\\((\\w+)\\)$");
 
-            var regexVectorSize = new Regex("(\\s+)size\\s+(\\d)+\\s+\\(int\\)");
+            Regex regexVectorSize = new("(\\s+)size\\s+(\\d)+\\s+\\(int\\)");
             //var regexVectorData = new Regex("(\\s+)data  \\(InputAxis\\)"); // remove InputAxis to make it more generic
 
             string curTextLine;
-            var curTextLineNo = 3;
-            var textIndentation = 1;
-            var indentationPrefix = new string(' ', textIndentation * 2);
+            int curTextLineNo = 3;
+            int textIndentation = 1;
+            string indentationPrefix = new(' ', textIndentation * 2);
             stack.Push(("InputManager", "InputManager", textIndentation));
 
 
-            foreach (var line in textLines.Skip(4))
+            foreach (string? line in textLines.Skip(4))
             {
                 curTextLine = line;
                 curTextLineNo++;
@@ -52,10 +50,10 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
                 // Check if type undeclared, scope goes down, indentation decrements
                 {
-                    var indentationMatch = regexIndentation.Match(line);
+                    Match indentationMatch = regexIndentation.Match(line);
                     if (indentationMatch.Success)
                     {
-                        var indentation = indentationMatch.Groups[0].Value.Length;
+                        int indentation = indentationMatch.Groups[0].Value.Length;
 
                         if (indentation > textIndentation)
                             Error($"indentation({indentation}) > textIndentation({textIndentation})");
@@ -64,14 +62,13 @@ namespace Meryel.UnityCodeAssist.Editor.Input
                         {
                             stack.Pop();
                             textIndentation--;
-                            var typeIndentation = textIndentation;
-                            if (stack.TryPeek(out var curType2))
+                            int typeIndentation = textIndentation;
+                            if (stack.TryPeek(out (string typeName, string identifier, int indentation) curType2))
                                 typeIndentation = curType2.indentation;
                             else if (line.Length > 0)
                                 Error("stack empty at type undeclaration");
                             indentationPrefix = new string(' ', typeIndentation * 2);
                         }
-
                     }
                     else
                     {
@@ -80,18 +77,16 @@ namespace Meryel.UnityCodeAssist.Editor.Input
                 }
 
                 // Skip size field of vectors
-                if (stack.TryPeek(out var curType1) && curType1.typeName == "vector")
+                if (stack.TryPeek(out (string typeName, string identifier, int indentation) curType1) &&
+                    curType1.typeName == "vector")
                 {
-                    var vectorSizeMatch = regexVectorSize.Match(line);
-                    if (vectorSizeMatch.Success)
-                    {
-                        continue;
-                    }
+                    Match vectorSizeMatch = regexVectorSize.Match(line);
+                    if (vectorSizeMatch.Success) continue;
                 }
 
                 // Read string fields
                 {
-                    var stringMatch = regexString.Match(line);
+                    Match stringMatch = regexString.Match(line);
                     if (stringMatch.Success)
                     {
                         AddLine(stringMatch.Groups[2] + ": " + stringMatch.Groups[3]);
@@ -101,7 +96,7 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
                 // Read bool/int/float/unsignedInt fields
                 {
-                    var valueMatch = regexValue.Match(line);
+                    Match valueMatch = regexValue.Match(line);
                     if (valueMatch.Success)
                     {
                         AddLine(valueMatch.Groups[2] + ": " + valueMatch.Groups[3]);
@@ -111,18 +106,19 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
                 // Check if new type declared, scope goes up, indentation increases
                 {
-                    var typeMatch = regexType.Match(line);
+                    Match typeMatch = regexType.Match(line);
                     if (typeMatch.Success)
                     {
-                        var identifier = typeMatch.Groups[2].Value;
-                        var typeName = typeMatch.Groups[3].Value;
+                        string identifier = typeMatch.Groups[2].Value;
+                        string typeName = typeMatch.Groups[3].Value;
 
-                        var isVectorData = false;
-                        if (stack.TryPeek(out var curType2) && curType2.typeName == "vector" && identifier == "data")
+                        bool isVectorData = false;
+                        if (stack.TryPeek(out (string typeName, string identifier, int indentation) curType2) &&
+                            curType2.typeName == "vector" && identifier == "data")
                             isVectorData = true;
 
-                        var typeIndentation = textIndentation;
-                        if (stack.TryPeek(out var curType3))
+                        int typeIndentation = textIndentation;
+                        if (stack.TryPeek(out (string typeName, string identifier, int indentation) curType3))
                             typeIndentation = curType3.indentation;
                         else if (line.Length > 0)
                             Error("stack empty at type declaration");
@@ -133,10 +129,10 @@ namespace Meryel.UnityCodeAssist.Editor.Input
                         }
                         else
                         {
-                            var customIndentation = typeIndentation - 1;
+                            int customIndentation = typeIndentation - 1;
                             if (customIndentation < 0)
                                 Error($"customIndentation({customIndentation}) < 0");
-                            var customIndentationPrefix = new string(' ', customIndentation * 2);
+                            string customIndentationPrefix = new(' ', customIndentation * 2);
                             AddLine("- serializedVersion: 3", customIndentationPrefix);
                         }
 
@@ -156,9 +152,7 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
 
                 Error("line failed to match all cases");
-
             }
-
 
 
             return sb.ToString();
@@ -167,7 +161,7 @@ namespace Meryel.UnityCodeAssist.Editor.Input
             void AddLine(string line, string? customIndentationPrefix = null)
             {
                 string suffix;
-                if (stack.TryPeek(out var top))
+                if (stack.TryPeek(out (string typeName, string identifier, int indentation) top))
                     suffix = $" # {textIndentation}, {top.indentation}, {top.typeName} {top.identifier}";
                 else
                     suffix = $" # {textIndentation}, nil";
@@ -180,14 +174,12 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
             void Error(string message)
             {
-                var errorMessage = $"Text2Yaml error '{message}' at lineNo: {curTextLineNo}, line: '{curTextLine}' at {Environment.StackTrace}";
+                string errorMessage =
+                    $"Text2Yaml error '{message}' at lineNo: {curTextLineNo}, line: '{curTextLine}' at {Environment.StackTrace}";
                 //throw new Exception(errorMessage);
-                Serilog.Log.Warning(errorMessage);
+                Log.Warning(errorMessage);
             }
-
         }
-
-
     }
 
     public static partial class Extensions
@@ -199,12 +191,9 @@ namespace Meryel.UnityCodeAssist.Editor.Input
                 result = stack.Peek();
                 return true;
             }
-            else
-            {
-                result = default!;
-                return false;
-            }
+
+            result = default!;
+            return false;
         }
     }
-
 }

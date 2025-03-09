@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Array2DEditor
 {
-    [System.Serializable]
+    [Serializable]
     public class Array2DSprite : Array2D<Sprite>
     {
-        [SerializeField]
-        CellRowSprite[] cells = new CellRowSprite[Consts.defaultGridSize];
+        [SerializeField] private CellRowSprite[] cells = new CellRowSprite[Consts.defaultGridSize];
 
         protected override CellRow<Sprite> GetCellRow(int idx)
         {

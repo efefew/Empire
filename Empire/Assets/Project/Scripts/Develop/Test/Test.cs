@@ -1,9 +1,12 @@
+#region
+
 using System;
 using System.Diagnostics;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+
+#endregion
 
 public class TestClass
 {
@@ -20,11 +23,9 @@ public class Test : MonoBehaviour
 
     private TestClass[] array = new TestClass[1000];
 
-    [Min(1)]
-    public int minCount = 1;
+    [Min(1)] public int minCount = 1;
 
-    [Min(0)]
-    public long minMilliseconds = 100;
+    [Min(0)] public long minMilliseconds = 100;
 
     #endregion Fields
 
@@ -48,7 +49,10 @@ public class Test : MonoBehaviour
     }
 
     [Button("Test", 15)]
-    public void TestTime() => TimeCheck(new Action[] { Test1, Test2 }, minCount, minMilliseconds);
+    public void TestTime()
+    {
+        TimeCheck(new Action[] { Test1, Test2 }, minCount, minMilliseconds);
+    }
 
     public void TimeCheck(Action[] actions, int minCount = 1, long minMilliseconds = 100)
     {
@@ -69,8 +73,9 @@ public class Test : MonoBehaviour
             stopWatch.Stop();
 
             TimeSpan ts = stopWatch.Elapsed;
-            string time = string.Format("{0:00}:{1:00}:{2:00}.{3:000}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds);
-            UnityEngine.Debug.Log($"<color=#1CDE6F> Тест {id + 1}: время = {time}, количество {countID} </color>");
+            string time = string.Format("{0:00}:{1:00}:{2:00}.{3:000}", ts.Hours, ts.Minutes, ts.Seconds,
+                ts.Milliseconds);
+            Debug.Log($"<color=#1CDE6F> пїЅпїЅпїЅпїЅ {id + 1}: пїЅпїЅпїЅпїЅпїЅ = {time}, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {countID} </color>");
 
             stopWatch.Reset();
         }

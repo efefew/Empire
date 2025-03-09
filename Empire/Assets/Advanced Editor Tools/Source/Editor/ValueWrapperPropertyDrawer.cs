@@ -10,8 +10,8 @@ namespace AdvancedEditorTools
         {
             if (property == null || property.objectReferenceValue == null)
                 return;
-            var targetWrapper = new SerializedObject(property.objectReferenceValue);
-            var childProp = targetWrapper.FindProperty("value");
+            SerializedObject targetWrapper = new(property.objectReferenceValue);
+            SerializedProperty childProp = targetWrapper.FindProperty("value");
 
             if (childProp != null)
             {
@@ -24,13 +24,10 @@ namespace AdvancedEditorTools
         {
             if (property != null && property.objectReferenceValue != null)
             {
-                var targetWrapper = new SerializedObject(property.objectReferenceValue);
-                var childProp = targetWrapper.FindProperty("value");
+                SerializedObject targetWrapper = new(property.objectReferenceValue);
+                SerializedProperty childProp = targetWrapper.FindProperty("value");
 
-                if (childProp != null)
-                {
-                    return EditorGUI.GetPropertyHeight(childProp, label, true);
-                }
+                if (childProp != null) return EditorGUI.GetPropertyHeight(childProp, label, true);
             }
 
             return EditorGUIUtility.singleLineHeight;

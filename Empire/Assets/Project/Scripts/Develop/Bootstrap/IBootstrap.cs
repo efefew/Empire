@@ -1,4 +1,4 @@
 public interface IBootstrap
 {
-    public abstract void StartBootstrap();
+    public void StartBootstrap();
 }

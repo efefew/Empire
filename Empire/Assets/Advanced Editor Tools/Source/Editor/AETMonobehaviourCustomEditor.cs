@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEditor;
-
 using UnityEngine;
 
 namespace AdvancedEditorTools
@@ -13,25 +11,34 @@ namespace AdvancedEditorTools
     [CustomEditor(typeof(MonoBehaviour), true)]
     public class AETMonobehaviourCustomEditor : Editor
     {
+        private readonly int FIELD_WIDTH = 40;
+        private readonly int INDENT_WIDTH = 12;
+        private readonly int LABEL_MARGIN = 5;
+        private readonly float LABEL_MAX_WIDTH_PROP = 0.70f;
+
+        private readonly float LABEL_WIDTH_PROP = 0.35f;
         private AETData _data;
+
+        private FieldInfo[] _fieldsFound;
+
+        private int rootIndentLevel;
+
         private AETData Data
         {
             get
             {
                 try
                 {
-                    if (_data == null)
-                    {
-                        _data = AETManager.Instance.RetrieveDataOrCreate((MonoBehaviour)target);
-                    }
+                    if (_data == null) _data = AETManager.Instance.RetrieveDataOrCreate((MonoBehaviour)target);
                 }
-                catch { return null; }
+                catch
+                {
+                    return null;
+                }
 
                 return _data;
             }
         }
-
-        private FieldInfo[] _fieldsFound;
 
         private FieldInfo[] FieldsFound
         {
@@ -39,7 +46,7 @@ namespace AdvancedEditorTools
             {
                 if (_fieldsFound == null)
                 {
-                    System.Type targetType = target.GetType();
+                    Type targetType = target.GetType();
                     _fieldsFound = targetType
                         .GetFields()
                         .Concat(targetType
@@ -53,11 +60,26 @@ namespace AdvancedEditorTools
             }
         }
 
-        private readonly float LABEL_WIDTH_PROP = 0.35f;
-        private readonly float LABEL_MAX_WIDTH_PROP = 0.70f;
-        private readonly int LABEL_MARGIN = 5;
-        private readonly int INDENT_WIDTH = 12;
-        private readonly int FIELD_WIDTH = 40;
+        private GUIStyle LabelStyle => EditorStyles.label;
+
+        private void Awake()
+        {
+            OnValidate();
+        }
+
+        private void OnValidate()
+        {
+            AETData data = Data;
+            // UpdateFields();
+            UpdateLayoutInfos();
+            try
+            {
+                ButtonInfo.UpdateButtonMethods(target, ref data);
+            }
+            catch
+            {
+            }
+        }
 
         public override void OnInspectorGUI()
         {
@@ -95,23 +117,6 @@ namespace AdvancedEditorTools
                 EditorUtility.SetDirty(AETManager.Instance);
         }
 
-        private void Awake() => OnValidate();
-
-        private void OnValidate()
-        {
-            AETData data = Data;
-            // UpdateFields();
-            UpdateLayoutInfos();
-            try
-            {
-                ButtonInfo.UpdateButtonMethods(target, ref data);
-            }
-            catch
-            {
-            }
-        }
-
-        private int rootIndentLevel;
         private void PaintDefaultFields()
         {
             AETData data = Data;
@@ -142,7 +147,6 @@ namespace AdvancedEditorTools
                 bool fieldHasBeenConsidered = false;
 
                 if (layoutInfo != null)
-                {
                     // while(layoutInfo.fieldName.Equals(field.fieldName) && layoutInfo.FieldType.Equals(field.Type))
                     while (layoutInfo.fieldName.Equals(property.name))
                     {
@@ -156,34 +160,36 @@ namespace AdvancedEditorTools
                                 {
                                     case BeginColumnAreaInfo beginColumnAreaInfo:
                                         columnStyles.Push(beginColumnAreaInfo.columnStyle);
-                                        _ = EditorGUILayout.BeginHorizontal(GetWindowStyle(beginColumnAreaInfo.windowStyle));
+                                        _ = EditorGUILayout.BeginHorizontal(
+                                            GetWindowStyle(beginColumnAreaInfo.windowStyle));
                                         CorrectEmptyColumnAutoWidth(layoutInfoIdx, ref data);
-                                        _ = EditorGUILayout.BeginVertical(GetContainerStyle(columnStyles.Peek(), beginColumnAreaInfo.columnWidth));
+                                        _ = EditorGUILayout.BeginVertical(GetContainerStyle(columnStyles.Peek(),
+                                            beginColumnAreaInfo.columnWidth));
                                         CompensateColumnIndent(ref columnIndentsCompensated);
                                         break;
                                     case NewColumnInfo newColumnInfo:
                                         EditorGUILayout.EndVertical();
                                         CorrectEmptyColumnAutoWidth(layoutInfoIdx, ref data);
                                         LayoutStyle columnStyle = newColumnInfo.columnStyle ?? columnStyles.Peek();
-                                        _ = EditorGUILayout.BeginVertical(GetContainerStyle(columnStyle, newColumnInfo.columnWidth));
+                                        _ = EditorGUILayout.BeginVertical(GetContainerStyle(columnStyle,
+                                            newColumnInfo.columnWidth));
 
                                         DecompensateColumnIndent(ref columnIndentsCompensated);
                                         CompensateColumnIndent(ref columnIndentsCompensated);
                                         break;
                                     case NewEmptyColumnInfo newEmptyColumnInfo:
                                         EditorGUILayout.EndVertical();
-                                        _ = EditorGUILayout.BeginVertical(GetEmptyContainerStyle(newEmptyColumnInfo.columnWidth));
+                                        _ = EditorGUILayout.BeginVertical(
+                                            GetEmptyContainerStyle(newEmptyColumnInfo.columnWidth));
                                         EditorGUILayout.Space(EditorGUIUtility.singleLineHeight);
                                         break;
                                     case EndColumnAreaInfo endColumnAreaInfo:
                                         if (endColumnAreaInfo.includeLast)
-                                        {
                                             if (!fieldHasBeenConsidered)
                                             {
                                                 PaintField(field);
                                                 fieldHasBeenConsidered = true;
                                             }
-                                        }
 
                                         _ = columnStyles.Pop();
                                         EditorGUILayout.EndVertical();
@@ -197,7 +203,8 @@ namespace AdvancedEditorTools
                             case BeginFoldoutInfo foldoutInfo:
                                 if (fieldMustBePainted)
                                 {
-                                    foldoutInfo.foldout = EditorGUILayout.Foldout(foldoutInfo.foldout, foldoutInfo.label);
+                                    foldoutInfo.foldout =
+                                        EditorGUILayout.Foldout(foldoutInfo.foldout, foldoutInfo.label);
                                     if (foldoutInfo.foldout)
                                         EditorGUI.indentLevel++;
                                     else
@@ -232,8 +239,6 @@ namespace AdvancedEditorTools
                                 }
 
                                 break;
-                            default:
-                                break;
                         }
 
                         layoutInfoIdx++;
@@ -245,14 +250,14 @@ namespace AdvancedEditorTools
 
                         layoutInfo = data.layoutInfos[layoutInfoIdx];
                     }
-                }
 
                 if (fieldMustBePainted && !fieldHasBeenConsidered)
                     PaintField(field);
             }
 
             if (EditorGUI.indentLevel != rootIndentLevel)
-                Debug.LogWarning($"Foldout scope not closed in GameObject '{target.name}'. Unexpected behaviour may occur.");
+                Debug.LogWarning(
+                    $"Foldout scope not closed in GameObject '{target.name}'. Unexpected behaviour may occur.");
             EditorGUI.indentLevel = rootIndentLevel;
 
             if (serializedObject.hasModifiedProperties)
@@ -268,9 +273,11 @@ namespace AdvancedEditorTools
             }
         }
 
-        private void DecompensateColumnIndent(ref Stack<int> columnIndentsCompensated) => EditorGUI.indentLevel = columnIndentsCompensated.Count > 0 ? columnIndentsCompensated.Pop() : rootIndentLevel;
-
-        private GUIStyle LabelStyle => EditorStyles.label;
+        private void DecompensateColumnIndent(ref Stack<int> columnIndentsCompensated)
+        {
+            EditorGUI.indentLevel =
+                columnIndentsCompensated.Count > 0 ? columnIndentsCompensated.Pop() : rootIndentLevel;
+        }
 
         private void PaintField(SerializedProperty property)
         {
@@ -309,9 +316,7 @@ namespace AdvancedEditorTools
                 EditorGUI.indentLevel++;
                 SerializedProperty endOfChildrenIteration = prop.GetEndProperty();
                 while (prop.NextVisible(false) && !SerializedProperty.EqualContents(prop, endOfChildrenIteration))
-                {
                     maxLabelSizes.Add(GetMaximumLabelSizeRec(prop));
-                }
 
                 EditorGUI.indentLevel--;
                 return maxLabelSizes.Count > 0 ? maxLabelSizes.Max() : 0;
@@ -320,8 +325,15 @@ namespace AdvancedEditorTools
             return GetLabelSize(prop);
         }
 
-        private float GetLabelSize(SerializedProperty prop) => GetLabelSize(prop.displayName);
-        private float GetLabelSize(string label) => LabelStyle.CalcSize(new GUIContent(label)).x + ((EditorGUI.indentLevel + 1) * INDENT_WIDTH);
+        private float GetLabelSize(SerializedProperty prop)
+        {
+            return GetLabelSize(prop.displayName);
+        }
+
+        private float GetLabelSize(string label)
+        {
+            return LabelStyle.CalcSize(new GUIContent(label)).x + (EditorGUI.indentLevel + 1) * INDENT_WIDTH;
+        }
 
         private void CorrectEmptyColumnAutoWidth(int layoutInfoIdx, ref AETData data)
         {
@@ -351,7 +363,7 @@ namespace AdvancedEditorTools
         private GUIStyle GetWindowStyle(LayoutStyle style)
         {
             string strStyle = style.GetString();
-            GUIStyle customWindowStyle = strStyle == null ? new() : new(strStyle);
+            GUIStyle customWindowStyle = strStyle == null ? new GUIStyle() : new GUIStyle(strStyle);
             customWindowStyle.padding = new RectOffset(2, 2, 2, 2);
             customWindowStyle.margin = new RectOffset(2, 2, 2, 2);
 
@@ -361,7 +373,7 @@ namespace AdvancedEditorTools
         private GUIStyle GetContainerStyle(LayoutStyle style, float? columnWidth)
         {
             string strStyle = style.GetString();
-            GUIStyle customBoxStyle = strStyle == null ? new() : new(strStyle);
+            GUIStyle customBoxStyle = strStyle == null ? new GUIStyle() : new GUIStyle(strStyle);
             customBoxStyle.padding = new RectOffset(1, 1, 3, 3);
             customBoxStyle.margin = new RectOffset(0, INDENT_WIDTH, 0, 0);
 
@@ -383,12 +395,15 @@ namespace AdvancedEditorTools
             return customBoxStyle;
         }
 
-        private float GetAvailableWidth() => EditorGUIUtility.currentViewWidth - ((EditorGUI.indentLevel + 1) * INDENT_WIDTH);
+        private float GetAvailableWidth()
+        {
+            return EditorGUIUtility.currentViewWidth - (EditorGUI.indentLevel + 1) * INDENT_WIDTH;
+        }
 
         private void UpdateLayoutInfos()
         {
             AETData data = Data;
-            FieldInfo[] fields = FieldsFound;
+            var fields = FieldsFound;
             List<LayoutInfo> newLayoutInfos = new();
             foreach (FieldInfo fieldInfo in fields)
             {
@@ -398,27 +413,31 @@ namespace AdvancedEditorTools
                     LayoutInfo layoutInfo = attr switch
                     {
                         FoldoutAttribute foldoutAttr =>
-                            foldoutAttr is BeginFoldoutAttribute ?
-                                new BeginFoldoutInfo() { label = (foldoutAttr as BeginFoldoutAttribute).label } :
-                                new EndFoldoutInfo() { includeLast = (foldoutAttr as EndFoldoutAttribute).includeLast },
+                            foldoutAttr is BeginFoldoutAttribute
+                                ? new BeginFoldoutInfo { label = (foldoutAttr as BeginFoldoutAttribute).label }
+                                : new EndFoldoutInfo { includeLast = (foldoutAttr as EndFoldoutAttribute).includeLast },
                         ColumnAttribute columnAttr =>
-                            columnAttr is EndColumnAreaAttribute ?
-                                new EndColumnAreaInfo() { includeLast = (columnAttr as EndColumnAreaAttribute).includeLast } :
-                            columnAttr is BeginColumnAreaAttribute ?
-                                new BeginColumnAreaInfo()
-                                {
-                                    windowStyle = (columnAttr as BeginColumnAreaAttribute).areaStyle,
-                                    columnStyle = (columnAttr as BeginColumnAreaAttribute).columnStyle,
-                                    columnWidth = (columnAttr as BeginColumnAreaAttribute).columnWidth
-                                } :
-                            columnAttr is NewColumnAttribute ?
-                                new NewColumnInfo()
-                                {
-                                    columnStyle = (columnAttr as NewColumnAttribute).columnStyle,
-                                    columnWidth = (columnAttr as NewColumnAttribute).columnWidth
-                                } :
-                                new NewEmptyColumnInfo() { columnWidth = (columnAttr as NewEmptyColumnAttribute).columnWidth },
-                        _ => throw new System.Exception("Invalid Layout Attribute found"),
+                            columnAttr is EndColumnAreaAttribute
+                                ?
+                                new EndColumnAreaInfo
+                                    { includeLast = (columnAttr as EndColumnAreaAttribute).includeLast }
+                                : columnAttr is BeginColumnAreaAttribute
+                                    ? new BeginColumnAreaInfo
+                                    {
+                                        windowStyle = (columnAttr as BeginColumnAreaAttribute).areaStyle,
+                                        columnStyle = (columnAttr as BeginColumnAreaAttribute).columnStyle,
+                                        columnWidth = (columnAttr as BeginColumnAreaAttribute).columnWidth
+                                    }
+                                    : columnAttr is NewColumnAttribute
+                                        ? new NewColumnInfo
+                                        {
+                                            columnStyle = (columnAttr as NewColumnAttribute).columnStyle,
+                                            columnWidth = (columnAttr as NewColumnAttribute).columnWidth
+                                        }
+                                        :
+                                        new NewEmptyColumnInfo
+                                            { columnWidth = (columnAttr as NewEmptyColumnAttribute).columnWidth },
+                        _ => throw new Exception("Invalid Layout Attribute found")
                     };
                     layoutInfo.fieldName = fieldInfo.Name;
                     layoutInfo.fieldTypeName = fieldInfo.FieldType.AssemblyQualifiedName;
@@ -428,11 +447,10 @@ namespace AdvancedEditorTools
 
             try
             {
-                data.layoutInfos = newLayoutInfos.MatchEnumerables(data.layoutInfos, false).ToList();
+                data.layoutInfos = newLayoutInfos.MatchEnumerables(data.layoutInfos).ToList();
             }
             catch
             {
-                return;
             }
         }
     }

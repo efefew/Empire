@@ -1,14 +1,13 @@
+#nullable enable
+
+
 using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using Serilog.Core;
 using Serilog.Events;
-using Serilog.Formatting;
-
-
-#nullable enable
-
+using Serilog.Formatting.Display;
 
 namespace Meryel.UnityCodeAssist.Editor.Logger
 {
@@ -19,15 +18,14 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
     // or maybe move it to a external process like com.unity.process-server
     public class MemorySink : ILogEventSink
     {
-        readonly ConcurrentQueue<LogEvent> logs;
-        readonly ConcurrentQueue<LogEvent[]> warningLogs;
-        readonly ConcurrentQueue<LogEvent[]> errorLogs;
+        private const int logsLimit = 30;
+        private const int warningLimit = 5;
+        private const int errorLimit = 3;
+        private readonly ConcurrentQueue<LogEvent[]> errorLogs;
+        private readonly ConcurrentQueue<LogEvent> logs;
 
-        const int logsLimit = 30;
-        const int warningLimit = 5;
-        const int errorLimit = 3;
-
-        readonly string outputTemplate;
+        private readonly string outputTemplate;
+        private readonly ConcurrentQueue<LogEvent[]> warningLogs;
 
         public MemorySink(string outputTemplate)
         {
@@ -37,6 +35,11 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
             warningLogs = new ConcurrentQueue<LogEvent[]>();
             errorLogs = new ConcurrentQueue<LogEvent[]>();
         }
+
+        public bool HasError => !errorLogs.IsEmpty;
+        public bool HasWarning => !warningLogs.IsEmpty;
+        public int ErrorCount => errorLogs.Count;
+        public int WarningCount => warningLogs.Count;
 
         public void Emit(LogEvent logEvent)
         {
@@ -64,68 +67,48 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
             }
         }
 
-        public bool HasError => !errorLogs.IsEmpty;
-        public bool HasWarning => !warningLogs.IsEmpty;
-        public int ErrorCount => errorLogs.Count;
-        public int WarningCount => warningLogs.Count;
-
         public string Export()
         {
             IFormatProvider? formatProvider = null;
-            var formatter = new Serilog.Formatting.Display.MessageTemplateTextFormatter(
+            MessageTemplateTextFormatter formatter = new(
                 outputTemplate, formatProvider);
 
-            var result = string.Empty;
+            string result = string.Empty;
 
-            using (var outputStream = new MemoryStream())
+            using (MemoryStream outputStream = new())
             {
-                var encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
-                using var output = new StreamWriter(outputStream, encoding);
+                UTF8Encoding encoding = new(false);
+                using StreamWriter output = new(outputStream, encoding);
                 if (!errorLogs.IsEmpty)
                 {
                     var errorArray = errorLogs.ToArray();
                     foreach (var error in errorArray)
-                    {
-                        foreach (var logEvent in error)
-                        {
-                            formatter.Format(logEvent, output);
-                        }
-                    }
+                    foreach (LogEvent logEvent in error)
+                        formatter.Format(logEvent, output);
                 }
 
                 if (!warningLogs.IsEmpty)
                 {
                     var warningArray = warningLogs.ToArray();
                     foreach (var warning in warningArray)
-                    {
-                        foreach (var logEvent in warning)
-                        {
-                            formatter.Format(logEvent, output);
-                        }
-                    }
+                    foreach (LogEvent logEvent in warning)
+                        formatter.Format(logEvent, output);
                 }
 
                 if (!logs.IsEmpty)
                 {
                     var logArray = logs.ToArray();
-                    foreach (var logEvent in logArray)
-                    {
-                        formatter.Format(logEvent, output);
-                    }
+                    foreach (LogEvent? logEvent in logArray) formatter.Format(logEvent, output);
                 }
 
                 output.Flush();
 
                 outputStream.Seek(0, SeekOrigin.Begin);
-                using var streamReader = new StreamReader(outputStream, encoding);
+                using StreamReader streamReader = new(outputStream, encoding);
                 result = streamReader.ReadToEnd();
-
-
             }
 
             return result;
         }
-
-
     }
 }

@@ -1,17 +1,21 @@
+#region
+
 using UnityEngine;
 
+#endregion
+
 /// <summary>
-/// Моментальный эффект
+///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 /// </summary>
 public abstract class Effect : MonoBehaviour
 {
     #region Methods
 
     /// <summary>
-    /// Запустить эффект
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="initiator">инициатор</param>
-    /// <param name="target">цель</param>
+    /// <param name="initiator">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
     public abstract void Run(Person initiator, Person target, Skill skill);
 
     #endregion Methods

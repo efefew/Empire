@@ -1,22 +1,27 @@
 #if UNITY_EDITOR
+
+#region
+
 using System;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
+    [Serializable]
     public class ArrayValueWrapper : EnumerableValueWrapper
     {
         public override ValueWrapper Init(Type type)
         {
-            this.elementTypeName = type.GetElementType().AssemblyQualifiedName;
+            elementTypeName = type.GetElementType().AssemblyQualifiedName;
             return this;
         }
 
         public override object Unwrap()
         {
             var listWrapped = ListWrapped;
-            var elementType = Type.GetType(elementTypeName);
-            var valuedList = Array.CreateInstance(elementType, listWrapped.Count);
+            Type elementType = Type.GetType(elementTypeName);
+            Array valuedList = Array.CreateInstance(elementType, listWrapped.Count);
             for (int i = 0; i < listWrapped.Count; i++)
                 valuedList.SetValue(listWrapped[i].Unwrap() ?? default, i);
 

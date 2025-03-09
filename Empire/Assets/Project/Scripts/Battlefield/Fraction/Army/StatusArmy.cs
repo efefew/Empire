@@ -1,11 +1,13 @@
+#region
+
 using System;
 using System.Collections;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEngine;
 
-public partial class Army : MonoBehaviour // Характеристики армии
+#endregion
+
+public partial class Army : MonoBehaviour // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 {
     #region Events
 
@@ -17,8 +19,9 @@ public partial class Army : MonoBehaviour // Характеристики армии
 
     private float healthArmy, manaArmy, staminaArmy, moralityArmy;
     public Status status;
+
     /// <summary>
-    /// количество воинов в начале
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public int countWarriors;
 
@@ -46,7 +49,7 @@ public partial class Army : MonoBehaviour // Характеристики армии
 
             if (!status.fraction.bot)
                 UpdateStatusUI(armyUI, armyGlobalUI);
-            // Если здоровье армии стало равным 0, вызываем событие OnDeadArmy
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 0, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ OnDeadArmy
             if (healthArmy == 0)
                 OnDeadArmy?.Invoke(this);
 
@@ -67,11 +70,13 @@ public partial class Army : MonoBehaviour // Характеристики армии
         statusUI.healthSlider.value = healthArmy;
         statusUI.countWarriors.text = persons.Count.ToString();
     }
+
     private void UpdateStatusUI(params StatusUI[] statusUI)
     {
         for (int idStatusUI = 0; idStatusUI < statusUI.Length; idStatusUI++)
             UpdateStatusUI(statusUI[idStatusUI]);
     }
+
     //[ContextMenu("Kill")]
     [Button("Kill", 15)]
     public void Kill()

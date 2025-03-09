@@ -1,10 +1,16 @@
-using AdvancedEditorTools.Attributes;
+#region
+
 using System;
+using AdvancedEditorTools.Attributes;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
     [Serializable]
-    public abstract class ColumnInfo : LayoutInfo { }
+    public abstract class ColumnInfo : LayoutInfo
+    {
+    }
 
     [Serializable]
     public class BeginColumnAreaInfo : ColumnInfo

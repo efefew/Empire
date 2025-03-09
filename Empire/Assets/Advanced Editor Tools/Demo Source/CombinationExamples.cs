@@ -1,5 +1,9 @@
+#region
+
 using AdvancedEditorTools.Attributes;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
@@ -7,41 +11,43 @@ namespace AdvancedEditorTools
     {
         // This example shows the complexity of a layout that can
         // be achieved with these attributes
-        [BeginFoldout("Coords")]
-        [BeginColumnArea(columnStyle = LayoutStyle.Bevel)]
-        [TextArea(5, 6)]
+        [BeginFoldout("Coords")] [BeginColumnArea(columnStyle = LayoutStyle.Bevel)] [TextArea(5, 6)]
         public string rules;
+
         [NewEmptyColumn]
-        [NewColumn(columnWidth: 0.4f, columnStyle: LayoutStyle.None)]
+        [NewColumn(0.4f, LayoutStyle.None)]
         [BeginColumnArea(areaStyle = LayoutStyle.BevelOrange, columnStyle = LayoutStyle.None)]
         public bool A1;
+
         public bool A2;
         public bool A3;
         public bool A4;
-        [NewColumn]
-        public bool B1;
+
+        [NewColumn] public bool B1;
+
         public bool B2;
         public bool B3;
         public bool B4;
-        [NewColumn]
-        public bool C1;
+
+        [NewColumn] public bool C1;
+
         public bool C2;
         public bool C3;
         public bool C4;
-        [NewColumn]
-        public bool D1;
+
+        [NewColumn] public bool D1;
+
         public bool D2;
         public bool D3;
         public bool D4;
+
         [EndColumnArea]
         [EndColumnArea]
         [EndFoldout]
 
-
         // #################################
         // #################################
         // #################################
-
 
         // With this precise configuration you can hide the second column
         // by wrapping it inside a foldout scope. However, beware. Mixing
@@ -50,12 +56,14 @@ namespace AdvancedEditorTools
         [BeginFoldout("Columns within foldouts")]
         [BeginColumnArea]
         public Color color1;
-        public Color color2;
-        [BeginFoldout("Second column hidden")]
 
-        [NewColumn]
+        public Color color2;
+
+        [BeginFoldout("Second column hidden")] [NewColumn]
         public Color color3;
+
         public Color color4;
+
         [EndFoldout]
         [EndColumnArea]
 
@@ -67,15 +75,13 @@ namespace AdvancedEditorTools
         [BeginColumnArea]
         [BeginFoldout("Other color sets")]
         public Color color5;
-        public Color color6;
-        [EndFoldout]
 
-        [NewColumn]
-        [BeginFoldout("More color sets")]
+        public Color color6;
+
+        [EndFoldout] [NewColumn] [BeginFoldout("More color sets")]
         public Color color7;
-        [EndFoldout(includeLast = true)]
-        [EndColumnArea(includeLast = true)]
-        [EndFoldout(includeLast = true)]
+
+        [EndFoldout(includeLast = true)] [EndColumnArea(includeLast = true)] [EndFoldout(includeLast = true)]
         public Color color8;
     }
 }

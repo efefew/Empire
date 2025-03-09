@@ -1,7 +1,12 @@
 #if UNITY_EDITOR
+
+#region
+
 using System;
 using UnityEditor;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
@@ -21,126 +26,238 @@ namespace AdvancedEditorTools
         }
 
         protected virtual void OnInspectorLayout(ref SerializedField serializedField, Rect rect)
-            => PaintField(serializedField.DisplayName, serializedField.SerializedProperty, rect);
-        protected virtual void PaintField(string label, SerializedProperty property, Rect rect)
-            => EditorGUI.PropertyField(rect, property, new GUIContent(label), true);
-        public virtual float GetPropertyFieldSize(ref SerializedField serializedField)
-            => EditorGUI.GetPropertyHeight(serializedField.SerializedProperty, true);
+        {
+            PaintField(serializedField.DisplayName, serializedField.SerializedProperty, rect);
+        }
 
-        public virtual bool CanBeCloned() => true;
+        protected virtual void PaintField(string label, SerializedProperty property, Rect rect)
+        {
+            EditorGUI.PropertyField(rect, property, new GUIContent(label), true);
+        }
+
+        public virtual float GetPropertyFieldSize(ref SerializedField serializedField)
+        {
+            return EditorGUI.GetPropertyHeight(serializedField.SerializedProperty, true);
+        }
+
+        public virtual bool CanBeCloned()
+        {
+            return true;
+        }
     }
+
     public class ByteTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<ByteValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<ByteValueWrapper>().Init(type);
+        }
     }
+
     public class CharTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<CharValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<CharValueWrapper>().Init(type);
+        }
     }
+
     public class IntTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<IntValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<IntValueWrapper>().Init(type);
+        }
     }
+
     public class FloatTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<FloatValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<FloatValueWrapper>().Init(type);
+        }
     }
+
     public class BoolTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<BoolValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<BoolValueWrapper>().Init(type);
+        }
     }
+
     public class StringTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<StringValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<StringValueWrapper>().Init(type);
+        }
     }
+
     public class ColorTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<ColorValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<ColorValueWrapper>().Init(type);
+        }
     }
+
     public class Vector2TypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<Vector2ValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<Vector2ValueWrapper>().Init(type);
+        }
     }
+
     public class Vector3TypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<Vector3ValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<Vector3ValueWrapper>().Init(type);
+        }
     }
+
     public class Vector4TypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<Vector4ValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<Vector4ValueWrapper>().Init(type);
+        }
 
         public override float GetPropertyFieldSize(ref SerializedField serializedField)
         {
-            var container = serializedField.containerTarget;
+            ValueWrapper container = serializedField.containerTarget;
             if (container != null)
                 return EditorGUI.GetPropertyHeight(container.SerializedProperty, true);
             return base.GetPropertyFieldSize(ref serializedField);
         }
     }
+
     public class BoundsTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<BoundsValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<BoundsValueWrapper>().Init(type);
+        }
     }
+
     public class RectTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<RectValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<RectValueWrapper>().Init(type);
+        }
     }
+
     public class Vector2IntTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<Vector2IntValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<Vector2IntValueWrapper>().Init(type);
+        }
     }
+
     public class Vector3IntTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<Vector3IntValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<Vector3IntValueWrapper>().Init(type);
+        }
     }
+
     public class BoundsIntTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<BoundsIntValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<BoundsIntValueWrapper>().Init(type);
+        }
     }
+
     public class RectIntTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<RectIntValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<RectIntValueWrapper>().Init(type);
+        }
     }
+
     public class Hash128TypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<Hash128ValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<Hash128ValueWrapper>().Init(type);
+        }
     }
+
     public class QuaternionTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<QuaternionValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<QuaternionValueWrapper>().Init(type);
+        }
 
-        public override float GetPropertyFieldSize(ref SerializedField serializedField) => EditorGUIUtility.singleLineHeight;
+        public override float GetPropertyFieldSize(ref SerializedField serializedField)
+        {
+            return EditorGUIUtility.singleLineHeight;
+        }
     }
+
     public class LayerMaskTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<LayerMaskValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<LayerMaskValueWrapper>().Init(type);
+        }
     }
+
     public class SortingLayerTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<SortingLayerValueWrapper>().Init(type);
-        public override float GetPropertyFieldSize(ref SerializedField serializedField) => EditorGUIUtility.singleLineHeight;
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<SortingLayerValueWrapper>().Init(type);
+        }
+
+        public override float GetPropertyFieldSize(ref SerializedField serializedField)
+        {
+            return EditorGUIUtility.singleLineHeight;
+        }
     }
 
     // #########################################
 
     public class AnimationCurveTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<AnimationCurveValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<AnimationCurveValueWrapper>().Init(type);
+        }
     }
+
     public class GradientTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<GradientValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<GradientValueWrapper>().Init(type);
+        }
     }
 
     // #########################################   
 
     public class ObjectTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<ObjectValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<ObjectValueWrapper>().Init(type);
+        }
     }
+
     public class EnumTypeMethods : TypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<EnumValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<EnumValueWrapper>().Init(type);
+        }
     }
 
     // #########################################
@@ -154,34 +271,63 @@ namespace AdvancedEditorTools
             if (serializedField.isUsingRealContainer)
                 return base.GetPropertyFieldSize(ref serializedField);
 
-            var enumerableWrapper = serializedField.containerTarget as EnumerableValueWrapper;
-            return enumerableWrapper.foldout ? enumerableWrapper.ReorderableList.GetHeight() + EditorGUIUtility.singleLineHeight : EditorGUIUtility.singleLineHeight;
+            EnumerableValueWrapper enumerableWrapper = serializedField.containerTarget as EnumerableValueWrapper;
+            return enumerableWrapper.foldout
+                ? enumerableWrapper.ReorderableList.GetHeight() + EditorGUIUtility.singleLineHeight
+                : EditorGUIUtility.singleLineHeight;
         }
     }
+
     public class ArrayTypeMethods : EnumerableTypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<ArrayValueWrapper>().Init(type);
-        protected override Type GetElementType(Type enumerableType) => enumerableType.GetElementType();
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<ArrayValueWrapper>().Init(type);
+        }
+
+        protected override Type GetElementType(Type enumerableType)
+        {
+            return enumerableType.GetElementType();
+        }
     }
+
     public class ListTypeMethods : EnumerableTypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<ListValueWrapper>().Init(type);
-        protected override Type GetElementType(Type enumerableType) => enumerableType.GetGenericArguments()[0];
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<ListValueWrapper>().Init(type);
+        }
+
+        protected override Type GetElementType(Type enumerableType)
+        {
+            return enumerableType.GetGenericArguments()[0];
+        }
     }
 
     // ##########################################
 
     public abstract class CustomTypeTypeMethods : TypeMethods
     {
-        public override bool CanBeCloned() => false;
+        public override bool CanBeCloned()
+        {
+            return false;
+        }
     }
+
     public class ClassTypeMethods : CustomTypeTypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<ClassValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<ClassValueWrapper>().Init(type);
+        }
     }
+
     public class StructTypeMethods : CustomTypeTypeMethods
     {
-        public override ValueWrapper GetValueWrapper(Type type) => ScriptableObject.CreateInstance<StructValueWrapper>().Init(type);
+        public override ValueWrapper GetValueWrapper(Type type)
+        {
+            return ScriptableObject.CreateInstance<StructValueWrapper>().Init(type);
+        }
     }
 
     /*
@@ -189,7 +335,7 @@ namespace AdvancedEditorTools
     {
         protected override void PaintTypePropertyFieldWithRect(string label, Type type, ref ValueWrapper valueWrapper, Rect rect)
         {
-                
+
 
             var wrapper = valueWrapper as CustomTypeValueWrapper;
 
@@ -247,12 +393,12 @@ namespace AdvancedEditorTools
                 EditorGUI.indentLevel--;
 
                 DefaultSerializableTypes.undoMsg1 = rootUndoMsg;
-            }                
+            }
         }
 
         protected override void PaintTypePropertyFieldWithoutRect(string label, Type type, ref ValueWrapper valueWrapper)
         {
-                
+
             var wrapper = valueWrapper as CustomTypeValueWrapper;
 
             PaintFoldout(ref wrapper, label);
@@ -272,7 +418,7 @@ namespace AdvancedEditorTools
                     customWindowStyle.padding = new RectOffset(20, 5, 5, 5);
                     customWindowStyle.margin = new RectOffset(20, 15, 5, 5);
 
-                    var manager = AEAManager.Instance; 
+                    var manager = AEAManager.Instance;
                     EditorGUILayout.BeginVertical(customWindowStyle);
                     foreach (var field in fields)
                     {
@@ -284,7 +430,7 @@ namespace AdvancedEditorTools
                 EditorGUI.indentLevel--;
 
                 DefaultSerializableTypes.undoMsg1 = rootUndoMsg;
-            }                
+            }
         }
 
         public override float GetPropertyFieldSize(ref ValueWrapper valueWrapper)
@@ -369,7 +515,7 @@ namespace AdvancedEditorTools
             base.PaintFoldout(ref wrapper, label, rect);
             rect.y += 4;
             rect.x += rect.width - 20;
-            rect.width = 20; 
+            rect.width = 20;
             if (!wrapper.isInstantiated)
             {
                 if (GUI.Button(rect, iconPlus, GUIStyle.none))
@@ -403,7 +549,7 @@ namespace AdvancedEditorTools
             var property = wrapper.SerializedProperty;
             EditorGUI.PropertyField(rect, property, new GUIContent(label));
         }
-    }    
+    }
     */
 }
 #endif

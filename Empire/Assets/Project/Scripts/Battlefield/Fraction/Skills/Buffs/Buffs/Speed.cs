@@ -1,15 +1,20 @@
+#region
+
 using UnityEngine;
+
+#endregion
+
 [AddComponentMenu("Buff/Speed")]
 [RequireComponent(typeof(Condition))]
 /// <summary>
-/// Изменение скорости
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 /// </summary>
 public class Speed : Buff
 {
     #region Fields
 
-    [Min(0.01f)]
-    public float scaleSlowdown;
+    [Min(0.01f)] public float scaleSlowdown;
+
     #endregion Fields
 
     #region Methods

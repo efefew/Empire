@@ -1,8 +1,11 @@
+#region
+
 using System.Collections.Generic;
 using System.Linq;
-
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
+#endregion
 
 public class MapCreator : MonoBehaviour
 {
@@ -10,7 +13,10 @@ public class MapCreator : MonoBehaviour
 
     private enum TypeDirection
     {
-        up, down, left, right
+        up,
+        down,
+        left,
+        right
     }
 
     #endregion Enums
@@ -24,28 +30,25 @@ public class MapCreator : MonoBehaviour
 
     #region Methods
 
-    private void OnEnable() => CreateTileArray(CreateMaze(width: 99, height: 99, new Vector2Int(0, 0)).AddBorders(true), mapStone, tileStone);
+    private void OnEnable()
+    {
+        CreateTileArray(CreateMaze(99, 99, new Vector2Int(0, 0)).AddBorders(), mapStone, tileStone);
+    }
 
     private void CreateTileArray(bool[,] points, Tilemap map, TileBase tile, int addX = 0, int addY = 0)
     {
         for (int x = 0; x < points.GetLength(0); x++)
-        {
-            for (int y = 0; y < points.GetLength(1); y++)
-            {
-                if (points[x, y])
-                    map.SetTile(new Vector3Int(x + addX, y + addY, 0), tile);
-            }
-        }
+        for (int y = 0; y < points.GetLength(1); y++)
+            if (points[x, y])
+                map.SetTile(new Vector3Int(x + addX, y + addY, 0), tile);
     }
 
     public bool[,] CreateMaze(int width, int height, Vector2Int start)
     {
         bool[,] maze = new bool[width, height];
         for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-                maze[x, y] = true;
-        }
+        for (int y = 0; y < height; y++)
+            maze[x, y] = true;
 
         bool[,] visited = new bool[width, height];
         int X = start.x, Y = start.y;

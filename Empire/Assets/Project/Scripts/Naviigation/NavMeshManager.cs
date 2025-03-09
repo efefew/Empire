@@ -1,22 +1,26 @@
+#region
+
 using System.Collections;
-
 using NavMeshPlus.Components;
-
 using UnityEngine;
+
+#endregion
 
 [RequireComponent(typeof(NavMeshSurface))]
 public class NavMeshManager : MonoBehaviour
 {
     #region Fields
 
-    [SerializeField]
-    private NavMeshSurface Surface2D;
+    [SerializeField] private NavMeshSurface Surface2D;
 
     #endregion Fields
 
     #region Methods
 
-    private void Start() => StartCoroutine(IBuild());
+    private void Start()
+    {
+        StartCoroutine(IBuild());
+    }
 
     [ContextMenu("Build")]
     public IEnumerator IBuild()

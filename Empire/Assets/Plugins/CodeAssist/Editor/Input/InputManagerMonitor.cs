@@ -1,37 +1,37 @@
-using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
-
-
 #nullable enable
 
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Serilog;
+using UnityEditor;
+
 namespace Meryel.UnityCodeAssist.Editor.Input
 {
-
     public class InputManagerMonitor
     {
-        private static readonly Lazy<InputManagerMonitor> _instance = new Lazy<InputManagerMonitor>(() => new InputManagerMonitor());
-        public static InputManagerMonitor Instance => _instance.Value;
+        private static readonly Lazy<InputManagerMonitor> _instance = new(() => new InputManagerMonitor());
 
         //UnityInputManager inputManager;
-        readonly string inputManagerFilePath;
-        DateTime previousTagManagerLastWrite;
+        private readonly string inputManagerFilePath;
+        private DateTime previousTagManagerLastWrite;
 
         public InputManagerMonitor()
         {
             EditorApplication.update += Update;
             inputManagerFilePath = CommonTools.GetInputManagerFilePath();
 
-            previousTagManagerLastWrite = System.IO.File.GetLastWriteTime(inputManagerFilePath);
+            previousTagManagerLastWrite = File.GetLastWriteTime(inputManagerFilePath);
         }
 
-        void Update()
+        public static InputManagerMonitor Instance => _instance.Value;
+
+        private void Update()
         {
-            var currentInputManagerLastWrite = System.IO.File.GetLastWriteTime(inputManagerFilePath);
+            DateTime currentInputManagerLastWrite = File.GetLastWriteTime(inputManagerFilePath);
             if (currentInputManagerLastWrite != previousTagManagerLastWrite)
             {
                 previousTagManagerLastWrite = currentInputManagerLastWrite;
@@ -41,13 +41,12 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
         public void Bump()
         {
-            Serilog.Log.Debug("InputMonitor {Event}", nameof(Bump));
+            Log.Debug("InputMonitor {Event}", nameof(Bump));
 
-            var inputManager = new UnityInputManager();
+            UnityInputManager inputManager = new();
             inputManager.ReadFromPath(inputManagerFilePath);
             inputManager.SendData();
         }
-
     }
 
 
@@ -63,49 +62,48 @@ namespace Meryel.UnityCodeAssist.Editor.Input
 
             int threshold = 80;
 
-            var sb = new System.Text.StringBuilder();
+            StringBuilder sb = new();
 
-            foreach (var axis in axesWithName)
+            foreach (InputAxis? axis in axesWithName)
                 if (!string.IsNullOrEmpty(axis.descriptiveName))
                     sb.Append($"{axis.descriptiveName} ");
 
             if (sb.Length > threshold)
                 return sb.ToString();
 
-            foreach (var axis in axesWithName)
+            foreach (InputAxis? axis in axesWithName)
                 if (!string.IsNullOrEmpty(axis.descriptiveNegativeName))
                     sb.Append($"{axis.descriptiveNegativeName} ");
 
             if (sb.Length > threshold)
                 return sb.ToString();
 
-            foreach (var axis in axesWithName)
+            foreach (InputAxis? axis in axesWithName)
                 if (!string.IsNullOrEmpty(axis.positiveButton))
                     sb.Append($"[{axis.positiveButton}] ");
 
             if (sb.Length > threshold)
                 return sb.ToString();
 
-            foreach (var axis in axesWithName)
+            foreach (InputAxis? axis in axesWithName)
                 if (!string.IsNullOrEmpty(axis.altPositiveButton))
                     sb.Append($"{{{axis.altPositiveButton}}} ");
 
             if (sb.Length > threshold)
                 return sb.ToString();
 
-            foreach (var axis in axesWithName)
+            foreach (InputAxis? axis in axesWithName)
                 if (!string.IsNullOrEmpty(axis.negativeButton))
                     sb.Append($"-[{axis.negativeButton}] ");
 
             if (sb.Length > threshold)
                 return sb.ToString();
 
-            foreach (var axis in axesWithName)
+            foreach (InputAxis? axis in axesWithName)
                 if (!string.IsNullOrEmpty(axis.altNegativeButton))
                     sb.Append($"-{{{axis.altNegativeButton}}} ");
 
             return sb.ToString();
         }
     }
-
 }

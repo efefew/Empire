@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
@@ -21,12 +22,12 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
         //public static string ToJson(this object item)
         public static string ToJson(object item)
         {
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             AppendValue(stringBuilder, item);
             return stringBuilder.ToString();
         }
 
-        static void AppendValue(StringBuilder stringBuilder, object item)
+        private static void AppendValue(StringBuilder stringBuilder, object item)
         {
             if (item == null)
             {
@@ -47,54 +48,57 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
                         if (j >= 0)
                             stringBuilder.Append("\"\\nrtbf"[j]);
                         else
-                            stringBuilder.AppendFormat("u{0:X4}", (UInt32)str[i]);
+                            stringBuilder.AppendFormat("u{0:X4}", (uint)str[i]);
                     }
                     else
+                    {
                         stringBuilder.Append(str[i]);
+                    }
+
                 stringBuilder.Append('"');
             }
             else if (type == typeof(byte) || type == typeof(sbyte))
             {
-                stringBuilder.Append(item.ToString());
+                stringBuilder.Append(item);
             }
             else if (type == typeof(short) || type == typeof(ushort))
             {
-                stringBuilder.Append(item.ToString());
+                stringBuilder.Append(item);
             }
             else if (type == typeof(int) || type == typeof(uint))
             {
-                stringBuilder.Append(item.ToString());
+                stringBuilder.Append(item);
             }
             else if (type == typeof(long) || type == typeof(ulong))
             {
-                stringBuilder.Append(item.ToString());
+                stringBuilder.Append(item);
             }
             else if (type == typeof(float))
             {
-                stringBuilder.Append(((float)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                stringBuilder.Append(((float)item).ToString(CultureInfo.InvariantCulture));
             }
             else if (type == typeof(double))
             {
-                stringBuilder.Append(((double)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                stringBuilder.Append(((double)item).ToString(CultureInfo.InvariantCulture));
             }
             else if (type == typeof(decimal))
             {
-                stringBuilder.Append(((decimal)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                stringBuilder.Append(((decimal)item).ToString(CultureInfo.InvariantCulture));
             }
             else if (type == typeof(bool))
             {
-                stringBuilder.Append(((bool)item) ? "true" : "false");
+                stringBuilder.Append((bool)item ? "true" : "false");
             }
             else if (type == typeof(DateTime))
             {
                 stringBuilder.Append('"');
-                stringBuilder.Append(((DateTime)item).ToString(System.Globalization.CultureInfo.InvariantCulture));
+                stringBuilder.Append(((DateTime)item).ToString(CultureInfo.InvariantCulture));
                 stringBuilder.Append('"');
             }
             else if (type.IsEnum)
             {
                 stringBuilder.Append('"');
-                stringBuilder.Append(item.ToString());
+                stringBuilder.Append(item);
                 stringBuilder.Append('"');
             }
             else if (item is IList)
@@ -110,6 +114,7 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
                         stringBuilder.Append(',');
                     AppendValue(stringBuilder, list[i]);
                 }
+
                 stringBuilder.Append(']');
             }
             else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
@@ -137,6 +142,7 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
                     stringBuilder.Append("\":");
                     AppendValue(stringBuilder, dict[key]);
                 }
+
                 stringBuilder.Append('}');
             }
             else
@@ -144,7 +150,8 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
                 stringBuilder.Append('{');
 
                 bool isFirst = true;
-                FieldInfo[] fieldInfos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+                var fieldInfos =
+                    type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
                 for (int i = 0; i < fieldInfos.Length; i++)
                 {
                     if (fieldInfos[i].IsDefined(typeof(IgnoreDataMemberAttribute), true))
@@ -163,7 +170,9 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
                         AppendValue(stringBuilder, value);
                     }
                 }
-                PropertyInfo[] propertyInfo = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+
+                var propertyInfo =
+                    type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
                 for (int i = 0; i < propertyInfo.Length; i++)
                 {
                     if (!propertyInfo[i].CanRead || propertyInfo[i].IsDefined(typeof(IgnoreDataMemberAttribute), true))
@@ -187,11 +196,12 @@ namespace Meryel.UnityCodeAssist.Editor.TinyJson
             }
         }
 
-        static string GetMemberName(MemberInfo member)
+        private static string GetMemberName(MemberInfo member)
         {
             if (member.IsDefined(typeof(DataMemberAttribute), true))
             {
-                DataMemberAttribute dataMemberAttribute = (DataMemberAttribute)Attribute.GetCustomAttribute(member, typeof(DataMemberAttribute), true);
+                DataMemberAttribute dataMemberAttribute =
+                    (DataMemberAttribute)Attribute.GetCustomAttribute(member, typeof(DataMemberAttribute), true);
                 if (!string.IsNullOrEmpty(dataMemberAttribute.Name))
                     return dataMemberAttribute.Name;
             }

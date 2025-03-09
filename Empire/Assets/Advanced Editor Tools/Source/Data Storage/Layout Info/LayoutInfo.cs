@@ -1,18 +1,36 @@
+#region
+
 using System;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
+    [Serializable]
     public abstract class LayoutInfo : IEnumerableMatcheable<LayoutInfo>
     {
         public string fieldName;
         public string fieldTypeName;
         public Type FieldType => Type.GetType(fieldTypeName);
 
-        public virtual bool Matches(LayoutInfo obj) => LayoutTypeMatches(obj) && this.fieldName.Equals(obj.fieldName) && this.fieldTypeName.Equals(obj.fieldTypeName);
-        public virtual bool PartiallyMatches(LayoutInfo obj) => LayoutTypeMatches(obj) && this.fieldName.Equals(obj.fieldName);
-        public virtual LayoutInfo UpdateWith(LayoutInfo obj) => this;
+        public virtual bool Matches(LayoutInfo obj)
+        {
+            return LayoutTypeMatches(obj) && fieldName.Equals(obj.fieldName) && fieldTypeName.Equals(obj.fieldTypeName);
+        }
 
-        protected bool LayoutTypeMatches(LayoutInfo obj) => this.GetType().Equals(obj.GetType());
+        public virtual bool PartiallyMatches(LayoutInfo obj)
+        {
+            return LayoutTypeMatches(obj) && fieldName.Equals(obj.fieldName);
+        }
+
+        public virtual LayoutInfo UpdateWith(LayoutInfo obj)
+        {
+            return this;
+        }
+
+        protected bool LayoutTypeMatches(LayoutInfo obj)
+        {
+            return GetType().Equals(obj.GetType());
+        }
     }
 }

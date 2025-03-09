@@ -1,10 +1,16 @@
+#region
+
 using System;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools.Attributes
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
-    public abstract class LayoutAttribute : PropertyAttribute { }
+    public abstract class LayoutAttribute : PropertyAttribute
+    {
+    }
 
     public enum LayoutStyle
     {
@@ -23,7 +29,7 @@ namespace AdvancedEditorTools.Attributes
         BoxDark,
         BoxLight,
         BoxOutline,
-        BoxRound,
+        BoxRound
     }
 
     public static class LayoutStyleMethods
@@ -47,7 +53,7 @@ namespace AdvancedEditorTools.Attributes
                 LayoutStyle.BoxLight => "hostview",
                 LayoutStyle.BoxOutline => "Wizard Box",
                 LayoutStyle.BoxRound => "NotificationBackground",
-                _ => null,
+                _ => null
             };
         }
     }

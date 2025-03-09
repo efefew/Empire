@@ -1,9 +1,17 @@
 #if UNITY_EDITOR
+
+#region
+
+using System;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
-    public class RectValueWrapper : GenericValueWrapper<Rect> { }
+    [Serializable]
+    public class RectValueWrapper : GenericValueWrapper<Rect>
+    {
+    }
 }
 #endif

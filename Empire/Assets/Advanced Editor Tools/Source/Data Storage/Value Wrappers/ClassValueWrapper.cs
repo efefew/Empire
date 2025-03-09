@@ -4,7 +4,7 @@ namespace AdvancedEditorTools
 {
     public class ClassValueWrapper : GenericValueWrapperReference<object>
     {
-        public bool isInstantiated = false;
+        public bool isInstantiated;
     }
 }
 #endif

@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿#region
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
-
 using TMPro;
-
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+
+#endregion
 
 [RequireComponent(typeof(Button))]
 public class ButtonSkill : MonoBehaviour
@@ -33,11 +36,9 @@ public class ButtonSkill : MonoBehaviour
     private Battlefield battlefield;
     private float timerSkillReload;
 
-    [SerializeField]
-    private Image imageLoad, imagePatrol;
+    [SerializeField] private Image imageLoad, imagePatrol;
 
-    [SerializeField]
-    private TMP_Text textLoad;
+    [SerializeField] private TMP_Text textLoad;
 
     private bool silence;
     public bool waitCastSkill;
@@ -47,7 +48,10 @@ public class ButtonSkill : MonoBehaviour
 
     #region Methods
 
-    private void Awake() => button = GetComponent<Button>();
+    private void Awake()
+    {
+        button = GetComponent<Button>();
+    }
 
     private void FixedUpdate()
     {
@@ -59,10 +63,10 @@ public class ButtonSkill : MonoBehaviour
         UpdateColdownSkill();
     }
 
-    private void UpdateWaitCastSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
+    private void UpdateWaitCastSkill() //.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
     {
         waitCastSkill = false;
-        foreach (KeyValuePair<Army, UnityAction> initiatorArmy in initiatorArmies)
+        foreach (var initiatorArmy in initiatorArmies)
             CheckWaitCastSkill(initiatorArmy.Key);
 
         button.enabled = !waitCastSkill;
@@ -70,11 +74,11 @@ public class ButtonSkill : MonoBehaviour
         textLoad.text = waitCastSkill ? "∞" : "";
     }
 
-    private void UpdateColdownSkill()//.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
+    private void UpdateColdownSkill() //.ПОМЕНЯТЬ НА СОБЫТИЯ!!!
     {
         button.enabled = !Silence && timerSkillReload == 0;
         imageLoad.fillAmount = targetSkill.timeCooldown == 0 ? 0 : timerSkillReload / targetSkill.timeCooldown;
-        textLoad.text = timerSkillReload == 0 ? "" : System.Math.Round(timerSkillReload, 1).ToString();
+        textLoad.text = timerSkillReload == 0 ? "" : Math.Round(timerSkillReload, 1).ToString();
     }
 
     private void CheckWaitCastSkill(Army army)
@@ -86,22 +90,27 @@ public class ButtonSkill : MonoBehaviour
     private void AddTimerSkillReload(Army army)
     {
         if (army.status.timersSkillReload.ContainsKey(targetSkill))
-            timerSkillReload = army.status.timersSkillReload[targetSkill] > timerSkillReload ? army.status.timersSkillReload[targetSkill] : timerSkillReload;
+            timerSkillReload = army.status.timersSkillReload[targetSkill] > timerSkillReload
+                ? army.status.timersSkillReload[targetSkill]
+                : timerSkillReload;
     }
 
     public void Build(Army army, Skill skillTarget)
     {
-        battlefield = Battlefield.singleton;
-        this.targetSkill = skillTarget;
+        battlefield = Battlefield.Singleton;
+        targetSkill = skillTarget;
         AddTimerSkillReload(army);
         CheckWaitCastSkill(army);
         prefabID = skillTarget.buttonSkillPrefab.GetInstanceID();
     }
 
     /// <summary>
-    /// Перезарядка
+    ///     Перезарядка
     /// </summary>
-    public void Reload() => timerSkillReload = targetSkill.timeCooldown;
+    public void Reload()
+    {
+        timerSkillReload = targetSkill.timeCooldown;
+    }
 
     public void Add(Army army)
     {
@@ -114,7 +123,7 @@ public class ButtonSkill : MonoBehaviour
             battlefield.OnSetTargetPoint -= army.TargetForUseSkill;
             battlefield.OnSetTargetArmy += army.TargetForUseSkill;
             battlefield.OnSetTargetPoint += army.TargetForUseSkill;
-            battlefield.targetSkill = targetSkill;
+            battlefield._targetSkill = targetSkill;
             battlefield.ActiveArmies(targetSkill.triggerTarget, army);
             battlefield.ActiveSkillButtons(targetSkill);
             battlefield.StopPatrol();
@@ -126,11 +135,11 @@ public class ButtonSkill : MonoBehaviour
         initiatorArmies.Add(army, skillRunner);
         button.onClick.AddListener(skillRunner);
     }
+
     public void UpdatePatrolUI()
     {
         bool anyArmyPatrol = false;
-        foreach (KeyValuePair<Army, UnityAction> army in initiatorArmies)
-        {
+        foreach (var army in initiatorArmies)
             if (targetSkill == army.Key.PatrolSkill)
             {
                 imagePatrol.fillAmount = 1f;
@@ -141,7 +150,6 @@ public class ButtonSkill : MonoBehaviour
                 imagePatrol.fillAmount = 1 / 2f;
                 break;
             }
-        }
 
         imagePatrol.gameObject.SetActive(anyArmyPatrol);
     }
@@ -150,7 +158,7 @@ public class ButtonSkill : MonoBehaviour
     {
         battlefield.OnSetTargetArmy -= army.TargetForUseSkill;
         battlefield.OnSetTargetPoint -= army.TargetForUseSkill;
-        UnityAction skillRunner = initiatorArmies.First((KeyValuePair<Army, UnityAction> initiatorArmy) => army == initiatorArmy.Key).Value;
+        UnityAction skillRunner = initiatorArmies.First(initiatorArmy => army == initiatorArmy.Key).Value;
 
         battlefield.OnStartPatrol -= army.StartPatrol;
         battlefield.OnStopPatrol -= army.StopPatrol;
@@ -160,7 +168,7 @@ public class ButtonSkill : MonoBehaviour
         if (timerSkillReload == 0)
             return;
         timerSkillReload = 0;
-        foreach (KeyValuePair<Army, UnityAction> initiatorArmy in initiatorArmies)
+        foreach (var initiatorArmy in initiatorArmies)
         {
             AddTimerSkillReload(initiatorArmy.Key);
             CheckWaitCastSkill(initiatorArmy.Key);

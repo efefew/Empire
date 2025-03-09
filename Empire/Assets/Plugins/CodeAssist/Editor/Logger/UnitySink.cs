@@ -1,13 +1,10 @@
-using System;
-using System.Linq;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Configuration;
-
-
 #nullable enable
 
+
+using System;
+using Serilog.Core;
+using Serilog.Events;
+using UnityEngine;
 
 namespace Meryel.UnityCodeAssist.Editor.Logger
 {
@@ -22,26 +19,23 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
 
         public void Emit(LogEvent logEvent)
         {
-            var message = logEvent.RenderMessage(_formatProvider);
+            string? message = logEvent.RenderMessage(_formatProvider);
 
             switch (logEvent.Level)
             {
                 case LogEventLevel.Verbose:
                 case LogEventLevel.Debug:
                 case LogEventLevel.Information:
-                    UnityEngine.Debug.Log(message);
+                    Debug.Log(message);
                     break;
                 case LogEventLevel.Warning:
-                    UnityEngine.Debug.LogWarning(message);
+                    Debug.LogWarning(message);
                     break;
                 case LogEventLevel.Error:
                 case LogEventLevel.Fatal:
-                    UnityEngine.Debug.LogError(message);
-                    break;
-                default:
+                    Debug.LogError(message);
                     break;
             }
         }
     }
-
 }

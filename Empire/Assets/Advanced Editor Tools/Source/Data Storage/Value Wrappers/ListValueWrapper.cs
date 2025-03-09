@@ -1,11 +1,16 @@
 #if UNITY_EDITOR
+
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 
+#endregion
+
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
+    [Serializable]
     public class ListValueWrapper : EnumerableValueWrapper
     {
         public override ValueWrapper Init(Type type)
@@ -13,12 +18,13 @@ namespace AdvancedEditorTools
             elementTypeName = type.GetGenericArguments()[0].AssemblyQualifiedName;
             return this;
         }
+
         public override object Unwrap()
         {
-            var elementType = Type.GetType(elementTypeName);
-            var listType = typeof(List<>).MakeGenericType(elementType);
-            var valuedList = (IList)Activator.CreateInstance(listType);
-            foreach (var wrapper in ListWrapped)
+            Type elementType = Type.GetType(elementTypeName);
+            Type listType = typeof(List<>).MakeGenericType(elementType);
+            IList valuedList = (IList)Activator.CreateInstance(listType);
+            foreach (ValueWrapper wrapper in ListWrapped)
                 valuedList.Add(wrapper.Unwrap());
             return valuedList;
         }

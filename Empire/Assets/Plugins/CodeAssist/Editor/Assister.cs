@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using UnityEditor;
-
-
 #nullable enable
 
+
+using System.Collections;
+using System.Linq;
+using Meryel.UnityCodeAssist.Editor.EditorCoroutines;
+using Serilog;
+using UnityEditor;
+using UnityEditorInternal;
+using UnityEngine;
 
 namespace Meryel.UnityCodeAssist.Editor
 {
@@ -21,16 +22,16 @@ namespace Meryel.UnityCodeAssist.Editor
 #endif
 
         [MenuItem("Tools/" + Title + "/Status", false, 1)]
-        static void DisplayStatusWindow()
+        private static void DisplayStatusWindow()
         {
             StatusWindow.Display();
         }
 
 
         [MenuItem("Tools/" + Title + "/Synchronize", false, 2)]
-        static void Sync()
+        private static void Sync()
         {
-            EditorCoroutines.EditorCoroutineUtility.StartCoroutine(SyncAux(), NetMQInitializer.Publisher);
+            EditorCoroutineUtility.StartCoroutine(SyncAux(), NetMQInitializer.Publisher);
 
             //NetMQInitializer.Publisher.SendConnect();
             //Serilog.Log.Information("Code Assist is looking for more IDEs to connect to...");
@@ -40,20 +41,20 @@ namespace Meryel.UnityCodeAssist.Editor
 
 
         [MenuItem("Tools/" + Title + "/Report error", false, 51)]
-        static void DisplayFeedbackWindow()
+        private static void DisplayFeedbackWindow()
         {
             FeedbackWindow.Display();
         }
 
         [MenuItem("Tools/" + Title + "/About", false, 52)]
-        static void DisplayAboutWindow()
+        private static void DisplayAboutWindow()
         {
             AboutWindow.Display();
         }
 
 #if MERYEL_UCA_LITE_VERSION
         [MenuItem("Tools/" + Title + "/Compare versions", false, 31)]
-        static void CompareVersions()
+        private static void CompareVersions()
         {
             Application.OpenURL("http://unitycodeassist.netlify.app/compare");
 
@@ -61,7 +62,7 @@ namespace Meryel.UnityCodeAssist.Editor
         }
 
         [MenuItem("Tools/" + Title + "/Get full version", false, 32)]
-        static void GetFullVersion()
+        private static void GetFullVersion()
         {
             Application.OpenURL("http://u3d.as/2N2H");
 
@@ -70,27 +71,26 @@ namespace Meryel.UnityCodeAssist.Editor
 #endif // MERYEL_UCA_LITE_VERSION
 
 
-        static IEnumerator SyncAux()
+        private static IEnumerator SyncAux()
         {
-            var clientCount = NetMQInitializer.Publisher?.clients.Count ?? 0;
+            int clientCount = NetMQInitializer.Publisher?.clients.Count ?? 0;
             NetMQInitializer.Publisher?.SendConnect();
-            Serilog.Log.Information("Code Assist is looking for more IDEs to connect to...");
+            Log.Information("Code Assist is looking for more IDEs to connect to...");
 
             //yield return new WaitForSeconds(3);
-            yield return new EditorCoroutines.EditorWaitForSeconds(3);
+            yield return new EditorWaitForSeconds(3);
 
-            var newClientCount = NetMQInitializer.Publisher?.clients.Count ?? 0;
+            int newClientCount = NetMQInitializer.Publisher?.clients.Count ?? 0;
 
-            var dif = newClientCount - clientCount;
+            int dif = newClientCount - clientCount;
 
             if (dif <= 0)
-                Serilog.Log.Information("Code Assist couldn't find any new IDE to connect to.");
+                Log.Information("Code Assist couldn't find any new IDE to connect to.");
             else
-                Serilog.Log.Information("Code Assist is connected to {Dif} new IDE(s).", dif);
+                Log.Information("Code Assist is connected to {Dif} new IDE(s).", dif);
         }
 
 #if MERYEL_DEBUG
-
         [MenuItem("Code Assist/Binary2Text")]
         static void Binary2Text()
         {
@@ -243,21 +243,20 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public static void SendTagsAndLayers()
         {
-            Serilog.Log.Debug(nameof(SendTagsAndLayers));
+            Log.Debug(nameof(SendTagsAndLayers));
 
-            var tags = UnityEditorInternal.InternalEditorUtility.tags;
+            string[]? tags = InternalEditorUtility.tags;
             NetMQInitializer.Publisher?.SendTags(tags);
 
-            var names = UnityEditorInternal.InternalEditorUtility.layers;
-            var indices = names.Select(l => LayerMask.NameToLayer(l).ToString()).ToArray();
+            string[]? names = InternalEditorUtility.layers;
+            string[]? indices = names.Select(l => LayerMask.NameToLayer(l).ToString()).ToArray();
             NetMQInitializer.Publisher?.SendLayers(indices, names);
 
             var sls = SortingLayer.layers;
-            var sortingNames = sls.Select(sl => sl.name).ToArray();
-            var sortingIds = sls.Select(sl => sl.id.ToString()).ToArray();
-            var sortingValues = sls.Select(sl => sl.value.ToString()).ToArray();
+            string[]? sortingNames = sls.Select(sl => sl.name).ToArray();
+            string[]? sortingIds = sls.Select(sl => sl.id.ToString()).ToArray();
+            string[]? sortingValues = sls.Select(sl => sl.value.ToString()).ToArray();
             NetMQInitializer.Publisher?.SendSortingLayers(sortingNames, sortingIds, sortingValues);
         }
-
     }
 }

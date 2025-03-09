@@ -1,5 +1,9 @@
+#region
+
 using UnityEngine;
 using UnityEngine.UI;
+
+#endregion
 
 public class StatusUI : MonoBehaviour
 {

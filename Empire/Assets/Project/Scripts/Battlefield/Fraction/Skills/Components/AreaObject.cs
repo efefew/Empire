@@ -1,43 +1,53 @@
-using System.Collections;
+#region
 
+using System.Collections;
 using UnityEngine;
+
+#endregion
 
 public class AreaObject : MonoBehaviour
 {
-    private Transform tr;
-    private Area skill;
     private Person initiator;
-    private void Start() => tr = transform;
+    private Area skill;
+    private Transform tr;
+
+    private void Start()
+    {
+        tr = transform;
+    }
+
     public void Build(Person initiator, Area skill)
     {
         this.initiator = initiator;
         this.skill = skill;
         _ = StartCoroutine(IRun());
     }
+
     private IEnumerator IRun()
     {
         Person target;
         for (int ID = 0; ID < skill.frequency; ID++)
         {
-            // Находим все коллайдеры в радиусе действия умения
-            Collider2D[] colliders2D = Physics2D.OverlapCircleAll(tr.position, skill.radius, LayerMask.GetMask("Person"));
-            // Счетчик целей, пораженных умением
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            var colliders2D = Physics2D.OverlapCircleAll(tr.position, skill.radius, LayerMask.GetMask("Person"));
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             int countCatch = 0;
             for (int i = 0; i < colliders2D.Length; i++)
             {
                 if (!colliders2D[i].GetComponent<Person>())
                     continue;
                 target = colliders2D[i].GetComponent<Person>();
-                // Если у цели нет здоровья, переходим к следующей цели
+                // пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
                 if (target.health <= 0)
                     continue;
-                // Наносим урон и применяем эффекты умения
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 if (Skill.OnTrigger(skill.triggerTarget, initiator, target))
                 {
                     countCatch++;
                     skill.SetEffectsAndBuffs(initiator, target);
                 }
-                // Если количество пораженных целей достигло максимального значения и это значение не равно 0, то оставшиеся цели не поражаются
+
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 0, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 if (countCatch >= skill.maxCountCatch && skill.maxCountCatch != 0)
                     yield break;
             }

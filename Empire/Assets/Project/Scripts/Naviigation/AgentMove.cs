@@ -1,7 +1,10 @@
-using NavMeshPlus.Extensions;
+#region
 
+using NavMeshPlus.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
+
+#endregion
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(AgentOverride2d))]
@@ -12,17 +15,19 @@ public class AgentMove : MonoBehaviour
     public const float
         MIN_DISTANCE = 0.1f,
         MIN_DISTANCE_ENEMY_CONTACT = 1f;
-    [SerializeField]
-    private Transform target;
+
+    [SerializeField] private Transform target;
+
     public Transform tempTarget;
     private LineRenderer line;
     public Vector3? tempPointTarget;
-    [HideInInspector]
-    public NavMeshAgent agent;
+
+    [HideInInspector] public NavMeshAgent agent;
 
     #endregion Fields
 
     #region Methods
+
     private void Awake()
     {
         tempPointTarget = null;
@@ -31,7 +36,7 @@ public class AgentMove : MonoBehaviour
     }
 
     /// <summary>
-    /// Обновление пути существа
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public void UpdateAgent(bool stun, float speed)
     {
@@ -49,15 +54,17 @@ public class AgentMove : MonoBehaviour
         _ = agent.SetDestination(point);
         agent.stoppingDistance = tempTarget ? MIN_DISTANCE_ENEMY_CONTACT : MIN_DISTANCE;
     }
+
     public void UpdateLine()
     {
         if (!target.gameObject.activeSelf)
             return;
-        Vector3[] corners = agent.path.corners;
+        var corners = agent.path.corners;
         if (corners.Length < 2)
             return;
         line.positionCount = corners.Length;
         line.SetPositions(corners);
     }
+
     #endregion Methods
 }

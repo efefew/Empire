@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿#region
+
+using UnityEngine;
+
+#endregion
 
 public class LayerPeople : MonoBehaviour
 {
@@ -6,11 +10,11 @@ public class LayerPeople : MonoBehaviour
 
     public string nameLayerPeople;
 
-    [SerializeField]
-    public LayerPeopleDictionary nameLayersPeople = new();
+    [SerializeField] public LayerPeopleDictionary nameLayersPeople = new();
 
     #endregion Fields
 }
 
 public class LayerPeopleDictionary : SerializableDictionary<string, float>
-{ }
+{
+}

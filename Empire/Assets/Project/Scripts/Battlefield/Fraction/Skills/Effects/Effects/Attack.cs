@@ -1,8 +1,11 @@
+#region
+
 using System;
-
 using UnityEngine;
-
+using UnityEngine.Serialization;
 using static Attack;
+
+#endregion
 
 [AddComponentMenu("Effect/Attack")]
 public class Attack : Effect
@@ -10,86 +13,46 @@ public class Attack : Effect
     #region Enums
 
     /// <summary>
-    /// Тип повреждения
+    ///     РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ
     /// </summary>
     public enum DamageType
     {
-        [Tooltip("Тип повреждения от пореза")]
-        /// <summary>
-        /// Тип повреждения от пореза
-        /// </summary>
-        Сutting,
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ РїРѕСЂРµР·Р°")] 
+        РЎutting,
 
-        [Tooltip("Тип повреждения от прокалывания")]
-        /// <summary>
-        /// Тип повреждения от прокалывания
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ РїСЂРѕРєР°Р»С‹РІР°РЅРёСЏ")]
         Pricking,
 
-        [Tooltip("Тип повреждения от удара")]
-        /// <summary>
-        /// Тип повреждения от удара
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ СѓРґР°СЂР°")] 
         Punch,
 
-        [Tooltip("Тип повреждения от взрыва")]
-        /// <summary>
-        /// Тип повреждения от взрыва
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ РІР·СЂС‹РІР°")] 
         Explosion,
 
-        [Tooltip("Тип повреждения от выстрела")]
-        /// <summary>
-        /// Тип повреждения от выстрела
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ РІС‹СЃС‚СЂРµР»Р°")]
         Shooting,
 
-        [Tooltip("Тип повреждения от перегрева")]
-        /// <summary>
-        /// Тип повреждения от перегрева
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ РїРµСЂРµРіСЂРµРІР°")]
         Overheat,
 
-        [Tooltip("Тип повреждения от обморожения")]
-        /// <summary>
-        /// Тип повреждения от обморожения
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ РѕР±РјРѕСЂРѕР¶РµРЅРёСЏ")]
         Frostbite,
 
-        [Tooltip("Тип повреждения от электрического разряда")]
-        /// <summary>
-        /// Тип повреждения от электрического разряда
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ СЌР»РµРєС‚СЂРёС‡РµСЃРєРѕРіРѕ СЂР°Р·СЂСЏРґР°")]
         ElectricShock,
 
-        [Tooltip("Тип повреждения от растворения в кислоте")]
-        /// <summary>
-        /// Тип повреждения от растворения в кислоте
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ СЂР°СЃС‚РІРѕСЂРµРЅРёСЏ РІ РєРёСЃР»РѕС‚Рµ")]
         DissolutionInAcid,
 
-        [Tooltip("Тип повреждения от яда")]
-        /// <summary>
-        /// Тип повреждения от яда
-        /// </summary>
-        Poison,
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ СЏРґР°")] Poison,
 
-        [Tooltip("Тип лечения")]
-        /// <summary>
-        /// Тип лечения
-        /// </summary>
+        [Tooltip("РўРёРї Р»РµС‡РµРЅРёСЏ")]
         Healing,
 
-        [Tooltip("Тип повреждения от чистой магии")]
-        /// <summary>
-        /// Тип повреждения от чистой магии
-        /// </summary>
+        [Tooltip("РўРёРї РїРѕРІСЂРµР¶РґРµРЅРёСЏ РѕС‚ С‡РёСЃС‚РѕР№ РјР°РіРёРё")]
         ClearMagic,
 
-        [Tooltip("Тип абсолютного повреждения (например, отдельный тип для оружия, которое наносит неизбежный урон)")]
-        /// <summary>
-        /// Тип абсолютного повреждения (например, отдельный тип для оружия, которое наносит неизбежный урон)
-        /// </summary>
+        [Tooltip("РўРёРї Р°Р±СЃРѕР»СЋС‚РЅРѕРіРѕ РїРѕРІСЂРµР¶РґРµРЅРёСЏ (РЅР°РїСЂРёРјРµСЂ, РѕС‚РґРµР»СЊРЅС‹Р№ С‚РёРї РґР»СЏ РѕСЂСѓР¶РёСЏ, РєРѕС‚РѕСЂРѕРµ РЅР°РЅРѕСЃРёС‚ РЅРµРёР·Р±РµР¶РЅС‹Р№ СѓСЂРѕРЅ)")]
         Absolute
     }
 
@@ -97,18 +60,21 @@ public class Attack : Effect
 
     #region Fields
 
-    [SerializeField]
-    public DamageTypeDictionary attacks = new();
+    [FormerlySerializedAs("attacks")] [SerializeField] public DamageTypeDictionary Attacks = new();
 
     #endregion Fields
 
     #region Methods
 
-    public override void Run(Person initiator, Person target, Skill skill) => initiator.GiveDamage(target, attacks, skill);
+    public override void Run(Person initiator, Person target, Skill skill)
+    {
+        initiator.GiveDamage(target, Attacks, skill);
+    }
 
     #endregion Methods
 }
 
 [Serializable]
 public class DamageTypeDictionary : SerializableDictionary<DamageType, float>
-{ }
+{
+}

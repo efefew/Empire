@@ -1,7 +1,15 @@
+#region
+
+using System;
+
+#endregion
+
 #if UNITY_EDITOR
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
-    public class FloatValueWrapper : GenericValueWrapper<float> { }
+    [Serializable]
+    public class FloatValueWrapper : GenericValueWrapper<float>
+    {
+    }
 }
 #endif

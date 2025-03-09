@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
+using Meryel.UnityCodeAssist.Synchronizer.Model;
 using UnityEditor;
+using UnityEngine;
+using GameObject = UnityEngine.GameObject;
+using Object = UnityEngine.Object;
 
 
 #nullable enable
@@ -13,25 +16,24 @@ namespace Meryel.UnityCodeAssist.Editor
 {
     internal static class UnityClassExtensions
     {
-        static GameObject? GetParentGO(GameObject go)
+        private static GameObject? GetParentGO(GameObject go)
         {
             if (!go)
                 return null;
 
-            var parentTransform = go.transform.parent;
+            Transform? parentTransform = go.transform.parent;
 
             if (parentTransform && parentTransform.gameObject)
                 return parentTransform.gameObject;
-            else
-                return null;
+            return null;
         }
 
-        static string GetId(UnityEngine.Object? obj)
+        private static string GetId(Object? obj)
         {
             // obj can be null
 
-            var globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(obj);
-            var objectGuid = globalObjectId.ToString();
+            GlobalObjectId globalObjectId = GlobalObjectId.GetGlobalObjectIdSlow(obj);
+            string? objectGuid = globalObjectId.ToString();
             return objectGuid;
         }
 
@@ -40,7 +42,7 @@ namespace Meryel.UnityCodeAssist.Editor
             if (!go)
                 return null;
 
-            var data = new Synchronizer.Model.GameObject()
+            Synchronizer.Model.GameObject data = new()
             {
                 Id = GetId(go),
 
@@ -54,14 +56,14 @@ namespace Meryel.UnityCodeAssist.Editor
 
                 Components = getComponents(go),
 
-                Priority = priority,
+                Priority = priority
             };
             return data;
 
             static string[] getChildrenIds(GameObject g)
             {
                 var ids = new List<string>();
-                var limit = 10;//**--
+                int limit = 10; //**--
                 foreach (Transform child in g.transform)
                 {
                     if (!child || !child.gameObject)
@@ -72,12 +74,15 @@ namespace Meryel.UnityCodeAssist.Editor
                     if (--limit <= 0)
                         break;
                 }
+
                 return ids.ToArray();
             }
 
             //**--limit/10
-            static string[] getComponents(GameObject g) =>
-              g.GetComponents<Component>().Where(c => c).Select(c => c.GetType().FullName).Take(10).ToArray();
+            static string[] getComponents(GameObject g)
+            {
+                return g.GetComponents<Component>().Where(c => c).Select(c => c.GetType().FullName).Take(10).ToArray();
+            }
             /*(string[] componentNames, Synchronizer.Model.ComponentData[] componentData) getComponents(GameObject g)
             {
                 var components = g.GetComponents<Component>();
@@ -88,7 +93,7 @@ namespace Meryel.UnityCodeAssist.Editor
                 {
                     var name = comp.name;
 
-                    
+
                 }
 
                 return (names, data.ToArray());
@@ -102,10 +107,10 @@ namespace Meryel.UnityCodeAssist.Editor
 
             var list = new List<Synchronizer.Model.GameObject>();
 
-            var parent = GetParentGO(go);
+            GameObject? parent = GetParentGO(go);
             if (parent != null && parent)
             {
-                var parentModel = parent.ToSyncModel();
+                Synchronizer.Model.GameObject? parentModel = parent.ToSyncModel();
                 if (parentModel != null)
                     list.Add(parentModel);
             }
@@ -116,7 +121,7 @@ namespace Meryel.UnityCodeAssist.Editor
                 if (!child || !child.gameObject)
                     continue;
 
-                var childModel = child.gameObject.ToSyncModel();
+                Synchronizer.Model.GameObject? childModel = child.gameObject.ToSyncModel();
                 if (childModel == null)
                     continue;
 
@@ -129,13 +134,14 @@ namespace Meryel.UnityCodeAssist.Editor
             return list.ToArray();
         }
 
-        internal static Synchronizer.Model.ComponentData[]? ToSyncModelOfComponents(this GameObject go)
+        internal static ComponentData[]? ToSyncModelOfComponents(this GameObject go)
         {
             if (!go)
                 return null;
 
-            var limit = 10;//**--
-            return go.GetComponents<Component>().Where(c => c).Select(c => c.ToSyncModel(go)).Where(cd => cd != null).Take(limit).ToArray()!;
+            int limit = 10; //**--
+            return go.GetComponents<Component>().Where(c => c).Select(c => c.ToSyncModel(go)).Where(cd => cd != null)
+                .Take(limit).ToArray()!;
 
             /*
             var components = go.GetComponents<Component>();
@@ -160,7 +166,7 @@ namespace Meryel.UnityCodeAssist.Editor
             */
         }
 
-        internal static Synchronizer.Model.ComponentData? ToSyncModel(this Component component, GameObject go)
+        internal static ComponentData? ToSyncModel(this Component component, GameObject go)
         {
             if (!component || !go)
                 return null;
@@ -169,17 +175,17 @@ namespace Meryel.UnityCodeAssist.Editor
             var list = new List<(string, string)>();
             ShowFieldInfo(type, component, list);
 
-            var data = new Synchronizer.Model.ComponentData()
+            ComponentData data = new()
             {
                 GameObjectId = GetId(go),
                 Component = component.GetType().FullName,
-                Type = Synchronizer.Model.ComponentData.DataType.Component,
-                Data = list.ToArray(),
+                Type = ComponentData.DataType.Component,
+                Data = list.ToArray()
             };
             return data;
         }
 
-        internal static Synchronizer.Model.ComponentData? ToSyncModel(this ScriptableObject so)
+        internal static ComponentData? ToSyncModel(this ScriptableObject so)
         {
             if (!so)
                 return null;
@@ -188,33 +194,37 @@ namespace Meryel.UnityCodeAssist.Editor
             var list = new List<(string, string)>();
             ShowFieldInfo(type, so, list);
 
-            var data = new Synchronizer.Model.ComponentData()
+            ComponentData data = new()
             {
                 GameObjectId = GetId(so),
                 Component = so.GetType().FullName,
-                Type = Synchronizer.Model.ComponentData.DataType.ScriptableObject,
-                Data = list.ToArray(),
+                Type = ComponentData.DataType.ScriptableObject,
+                Data = list.ToArray()
             };
             return data;
         }
 
 
-        static bool IsTypeCompatible(Type type)
+        private static bool IsTypeCompatible(Type type)
         {
-            if (type == null || !(type.IsSubclassOf(typeof(MonoBehaviour)) || type.IsSubclassOf(typeof(ScriptableObject))))
+            if (type == null ||
+                !(type.IsSubclassOf(typeof(MonoBehaviour)) || type.IsSubclassOf(typeof(ScriptableObject))))
                 return false;
             return true;
         }
 
-        static void ShowFieldInfo(Type type)//, MonoImporter importer, List<string> names, List<Object> objects, ref bool didModify)
+        private static void
+            ShowFieldInfo(
+                Type type) //, MonoImporter importer, List<string> names, List<Object> objects, ref bool didModify)
         {
             // Only show default properties for types that support it (so far only MonoBehaviour derived types)
             if (!IsTypeCompatible(type))
                 return;
 
-            ShowFieldInfo(type.BaseType);//, importer, names, objects, ref didModify);
+            ShowFieldInfo(type.BaseType); //, importer, names, objects, ref didModify);
 
-            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
+                                               BindingFlags.DeclaredOnly);
             foreach (FieldInfo field in infos)
             {
                 if (!field.IsPublic)
@@ -240,16 +250,16 @@ namespace Meryel.UnityCodeAssist.Editor
 
                 if (field.FieldType.IsValueType && field.FieldType.IsPrimitive && !field.FieldType.IsEnum)
                 {
-
                 }
                 else if (field.FieldType == typeof(string))
                 {
-
                 }
             }
         }
 
-        static void ShowFieldInfo(Type type, UnityEngine.Object unityObjectInstance, List<(string, string)> fields)//, MonoImporter importer, List<string> names, List<Object> objects, ref bool didModify)
+        private static void
+            ShowFieldInfo(Type type, Object unityObjectInstance,
+                List<(string, string)> fields) //, MonoImporter importer, List<string> names, List<Object> objects, ref bool didModify)
         {
             // Only show default properties for types that support it (so far only MonoBehaviour derived types)
             if (!IsTypeCompatible(type))
@@ -258,9 +268,10 @@ namespace Meryel.UnityCodeAssist.Editor
             if (!unityObjectInstance)
                 return;
 
-            ShowFieldInfo(type.BaseType, unityObjectInstance, fields);//, importer, names, objects, ref didModify);
+            ShowFieldInfo(type.BaseType, unityObjectInstance, fields); //, importer, names, objects, ref didModify);
 
-            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic |
+                                               BindingFlags.DeclaredOnly);
             foreach (FieldInfo field in infos)
             {
                 if (!field.IsPublic)
@@ -298,16 +309,15 @@ namespace Meryel.UnityCodeAssist.Editor
 
                 if (field.FieldType.IsValueType && field.FieldType.IsPrimitive && !field.FieldType.IsEnum)
                 {
-                    var val = field.GetValue(unityObjectInstance);
-                    fields.Add((field.Name, val.ToString()));//**--culture
+                    object? val = field.GetValue(unityObjectInstance);
+                    fields.Add((field.Name, val.ToString())); //**--culture
                 }
                 else if (field.FieldType == typeof(string))
                 {
-                    var val = (string)field.GetValue(unityObjectInstance);
+                    string? val = (string)field.GetValue(unityObjectInstance);
                     fields.Add((field.Name, val));
                 }
             }
         }
-
     }
 }

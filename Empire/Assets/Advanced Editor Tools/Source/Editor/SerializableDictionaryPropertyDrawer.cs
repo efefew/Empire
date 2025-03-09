@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace AdvancedEditorTools
 {
-    [CustomPropertyDrawer(typeof(AdvancedEditorTools.AETDataDictionary))]
+    [CustomPropertyDrawer(typeof(AETDataDictionary))]
     public class SerializableDictionaryPropertyDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var prevStatus = GUI.enabled;
+            bool prevStatus = GUI.enabled;
             GUI.enabled = false;
             EditorGUI.PropertyField(position, property, label, true);
             GUI.enabled = prevStatus;

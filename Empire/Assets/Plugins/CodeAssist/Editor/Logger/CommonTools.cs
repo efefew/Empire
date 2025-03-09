@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using UnityEngine;
 using static System.IO.Path;
 
 
@@ -14,37 +13,37 @@ namespace Meryel.UnityCodeAssist.Editor
     {
         public static string GetTagManagerFilePath()
         {
-            var projectPath = GetProjectPathRaw();
-            var tagManagerPath = Combine(projectPath, "ProjectSettings/TagManager.asset");
+            string? projectPath = GetProjectPathRaw();
+            string? tagManagerPath = Combine(projectPath, "ProjectSettings/TagManager.asset");
             return tagManagerPath;
         }
 
         public static string GetInputManagerFilePath()
         {
-            var projectPath = GetProjectPathRaw();
-            var inputManagerPath = Combine(projectPath, "ProjectSettings/InputManager.asset");
+            string? projectPath = GetProjectPathRaw();
+            string? inputManagerPath = Combine(projectPath, "ProjectSettings/InputManager.asset");
             return inputManagerPath;
         }
 
         public static string GetProjectPath()
         {
-            var rawPath = GetProjectPathRaw();
-            var osPath = new OSPath(rawPath);
-            var unixPath = osPath.Unix;
-            var trimmed = unixPath.TrimEnd('\\', '/');
+            string rawPath = GetProjectPathRaw();
+            OSPath osPath = new(rawPath);
+            string unixPath = osPath.Unix;
+            string trimmed = unixPath.TrimEnd('\\', '/');
             return trimmed;
         }
 
         /// <summary>
-        /// Get the path to the project folder.
+        ///     Get the path to the project folder.
         /// </summary>
         /// <returns>The project folder path</returns>
-        static string GetProjectPathRaw()
+        private static string GetProjectPathRaw()
         {
             // Application.dataPath returns the path including /Assets, which we need to strip off
-            var path = UnityEngine.Application.dataPath;
-            var directory = new DirectoryInfo(path);
-            var parent = directory.Parent;
+            string? path = Application.dataPath;
+            DirectoryInfo directory = new(path);
+            DirectoryInfo? parent = directory.Parent;
             if (parent != null)
                 return parent.FullName;
 
@@ -53,10 +52,10 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public static int GetHashOfPath(string path)
         {
-            var osPath = new OSPath(path);
-            var unixPath = osPath.Unix;
-            var trimmed = unixPath.TrimEnd('\\', '/');
-            var hash = trimmed.GetHashCode();
+            OSPath osPath = new(path);
+            string unixPath = osPath.Unix;
+            string trimmed = unixPath.TrimEnd('\\', '/');
+            int hash = trimmed.GetHashCode();
 
             if (hash < 0) // Get rid of the negative values, so there will be no '-' char in file names
             {
@@ -73,21 +72,19 @@ namespace Meryel.UnityCodeAssist.Editor
     {
         public static readonly OSPath Empty = "";
 
-        public static bool IsWindows => DirectorySeparatorChar == '\\';
-
         public OSPath(string text)
         {
             Text = text.Trim();
         }
 
-        public static implicit operator OSPath(string text) => new OSPath(text);
-        public static implicit operator string(OSPath path) => path.Normalized;
-        public override string ToString() => Normalized;
+        public static bool IsWindows => DirectorySeparatorChar == '\\';
 
         protected string Text { get; }
 
         public string Normalized => IsWindows ? Windows : Unix;
+
         public string Windows => Text.Replace('/', '\\');
+
         //public string Unix => Simplified.Text.Replace('\\', '/');
         public string Unix => Text.Replace('\\', '/');
 
@@ -101,15 +98,36 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public OSPath Parent => GetDirectoryName(Text);
 
-        public bool Contains(OSPath path) =>
-            Normalized.StartsWith(path);
+        public static implicit operator OSPath(string text)
+        {
+            return new OSPath(text);
+        }
 
-        public static OSPath operator +(OSPath left, OSPath right) =>
-            new OSPath(Combine(left, right.Relative));
+        public static implicit operator string(OSPath path)
+        {
+            return path.Normalized;
+        }
 
-        public static OSPath operator -(OSPath left, OSPath right) =>
-            left.Contains(right)
-            ? new OSPath(left.Normalized.Substring(right.Normalized.Length)).Relative
-            : left;
+        public override string ToString()
+        {
+            return Normalized;
+        }
+
+        public bool Contains(OSPath path)
+        {
+            return Normalized.StartsWith(path);
+        }
+
+        public static OSPath operator +(OSPath left, OSPath right)
+        {
+            return new OSPath(Combine(left, right.Relative));
+        }
+
+        public static OSPath operator -(OSPath left, OSPath right)
+        {
+            return left.Contains(right)
+                ? new OSPath(left.Normalized.Substring(right.Normalized.Length)).Relative
+                : left;
+        }
     }
 }

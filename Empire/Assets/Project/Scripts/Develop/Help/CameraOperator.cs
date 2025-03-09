@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿#region
 
+using System.Collections;
 using UnityEngine;
 
+#endregion
+
 /// <summary>
-/// Оператор камеры
+///     Оператор камеры
 /// </summary>
 public class CameraOperator : MonoBehaviour
 {
@@ -39,10 +42,20 @@ public class CameraOperator : MonoBehaviour
             CamTr.position = new Vector3(TargetTr.position.x, TargetTr.position.y, HEIGHT);
     }
 
-    private void FixedUpdate() => CameraControler();
-    private void Update() => Zoom();
+    private void FixedUpdate()
+    {
+        CameraControler();
+    }
 
-    private void NormalizePos(Transform trNorm, float height = HEIGHT) => trNorm.position = new Vector3(trNorm.position.x, trNorm.position.y, height);
+    private void Update()
+    {
+        Zoom();
+    }
+
+    private void NormalizePos(Transform trNorm, float height = HEIGHT)
+    {
+        trNorm.position = new Vector3(trNorm.position.x, trNorm.position.y, height);
+    }
 
     private void SquareLimit()
     {
@@ -111,7 +124,8 @@ public class CameraOperator : MonoBehaviour
 
     private void Zoom()
     {
-        if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range < 0) || */Input.GetAxis("Mouse ScrollWheel") >= 0.1)
+        if ( /*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range < 0) || */
+            Input.GetAxis("Mouse ScrollWheel") >= 0.1)
         {
             MyCam.orthographicSize -= SpeedScale * (MyCam.orthographicSize / MaxZoom);
             if (MyCam.orthographicSize < MinZoom)
@@ -119,7 +133,8 @@ public class CameraOperator : MonoBehaviour
             conteinerUI.SetActive(zoomWhenHideUI < MyCam.orthographicSize);
         }
 
-        if (/*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range > 0) || */Input.GetAxis("Mouse ScrollWheel") <= -0.1)
+        if ( /*(AndroidInput.touchCountSecondary > 1 && AndroidInput.GetSecondaryTouch(1).range > 0) || */
+            Input.GetAxis("Mouse ScrollWheel") <= -0.1)
         {
             MyCam.orthographicSize += SpeedScale * (MyCam.orthographicSize / MaxZoom);
             if (MyCam.orthographicSize > MaxZoom)
@@ -127,6 +142,7 @@ public class CameraOperator : MonoBehaviour
             conteinerUI.SetActive(zoomWhenHideUI < MyCam.orthographicSize);
         }
     }
+
     private void FixedZoom()
     {
         if (Input.GetKey(KeyCode.E) && !(limit == Limits.point))
@@ -143,6 +159,7 @@ public class CameraOperator : MonoBehaviour
                 MyCam.orthographicSize = MaxZoom;
         }
     }
+
     private void CameraControler()
     {
         switch (limit)
@@ -158,14 +175,11 @@ public class CameraOperator : MonoBehaviour
             case Limits.point:
                 PointLimit();
                 break;
-
-            default:
-                break;
         }
     }
 
     /// <summary>
-    /// Куротин тряски камеры
+    ///     Куротин тряски камеры
     /// </summary>
     /// <param name="duration">длительность тряски</param>
     /// <param name="magnitude">расстояние от состояния покоя</param>
@@ -175,8 +189,8 @@ public class CameraOperator : MonoBehaviour
         //Инициализируем счётчиков прошедшего времени
         float elapsed = 0f;
         //Генерируем две точки на "текстуре" шума Перлина
-        Vector2 noizeStartPoint0 = UnityEngine.Random.insideUnitCircle * noize;
-        Vector2 noizeStartPoint1 = UnityEngine.Random.insideUnitCircle * noize;
+        Vector2 noizeStartPoint0 = Random.insideUnitCircle * noize;
+        Vector2 noizeStartPoint1 = Random.insideUnitCircle * noize;
 
         //Выполняем код до тех пор пока не иссякнет время
         while (elapsed < duration)
@@ -185,7 +199,8 @@ public class CameraOperator : MonoBehaviour
             Vector2 currentNoizePoint0 = Vector2.Lerp(noizeStartPoint0, Vector2.zero, elapsed / duration);
             Vector2 currentNoizePoint1 = Vector2.Lerp(noizeStartPoint1, Vector2.zero, elapsed / duration);
             //Создаём новую дельту для камеры и умножаем её на длину дабы учесть желаемый разброс
-            Vector2 cameraPostionDelta = new(Mathf.PerlinNoise(currentNoizePoint0.x, currentNoizePoint0.y), Mathf.PerlinNoise(currentNoizePoint1.x, currentNoizePoint1.y));
+            Vector2 cameraPostionDelta = new(Mathf.PerlinNoise(currentNoizePoint0.x, currentNoizePoint0.y),
+                Mathf.PerlinNoise(currentNoizePoint1.x, currentNoizePoint1.y));
             cameraPostionDelta *= magnitude * (duration - elapsed);
 
             //Перемещаем камеру в нувую координату
@@ -216,15 +231,18 @@ public class CameraOperator : MonoBehaviour
     }
 
     /// <summary>
-    /// Тряска камеры
+    ///     Тряска камеры
     /// </summary>
     /// <param name="duration">длительность тряски</param>
     /// <param name="magnitude">расстояние от состояния покоя</param>
     /// <param name="noize">сила тряски</param>
-    public void ShakeCamera(float duration, float magnitude, float noize) => StartCoroutine(ShakeCameraCoroutine(duration, magnitude * 5, noize * 800));
+    public void ShakeCamera(float duration, float magnitude, float noize)
+    {
+        StartCoroutine(ShakeCameraCoroutine(duration, magnitude * 5, noize * 800));
+    }
 
     /// <summary>
-    /// Тряска камеры
+    ///     Тряска камеры
     /// </summary>
     /// <param name="duration">длительность тряски</param>
     /// <param name="magnitude">расстояние от состояния покоя</param>

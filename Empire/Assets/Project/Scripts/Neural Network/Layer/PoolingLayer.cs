@@ -1,6 +1,12 @@
+#region
+
+using System;
 using UnityEngine;
+
+#endregion
+
 /// <summary>
-/// Слой подвыборки
+///     пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 /// </summary>
 public class PoolingLayer : ConvolutionalNetworkLayer
 {
@@ -8,8 +14,8 @@ public class PoolingLayer : ConvolutionalNetworkLayer
     {
         if (inWidth != matrix.GetLength(0) || inHeight != matrix.GetLength(1))
         {
-            Debug.LogError("условия изменились!");
-            throw new System.Exception();
+            Debug.LogError("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
+            throw new Exception();
         }
 
         double max;
@@ -20,13 +26,9 @@ public class PoolingLayer : ConvolutionalNetworkLayer
             {
                 max = double.MinValue;
                 for (int xIn = idStepX; xIn < size + idStepX; xIn++)
-                {
-                    for (int yIn = idStepY; yIn < size + idStepY; yIn++)
-                    {
-                        if (matrix[xIn, yIn] > max)
-                            max = matrix[xIn, yIn];
-                    }
-                }
+                for (int yIn = idStepY; yIn < size + idStepY; yIn++)
+                    if (matrix[xIn, yIn] > max)
+                        max = matrix[xIn, yIn];
 
                 outMatrix[xOut, yOut] = max;
                 idStepY += step;

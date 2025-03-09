@@ -10,162 +10,149 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using OmniSARTechnologies.Helper;
 
-namespace OmniSARTechnologies.Helper {
-    public static class EditorGUIHelper {
-        public static class Attributes {
-            public static PropertyAttribute[] GetFieldAttributes<PropertyAttribute>(FieldInfo field, bool inherit = true) {
-                if (null == field) {
-                    return default(PropertyAttribute[]);
-                }
+namespace OmniSARTechnologies.Helper
+{
+    public static class EditorGUIHelper
+    {
+        public static class Attributes
+        {
+            public static PropertyAttribute[] GetFieldAttributes<PropertyAttribute>(FieldInfo field,
+                bool inherit = true)
+            {
+                if (null == field) return default;
 
                 return field.GetCustomAttributes(typeof(PropertyAttribute), inherit) as PropertyAttribute[];
             }
 
-            public static PropertyAttribute GetFieldFirstAttribute<PropertyAttribute>(FieldInfo field, bool inherit = true) {
-                if (null == field) {
-                    return default(PropertyAttribute);
-                }
+            public static PropertyAttribute GetFieldFirstAttribute<PropertyAttribute>(FieldInfo field,
+                bool inherit = true)
+            {
+                if (null == field) return default;
 
-                PropertyAttribute[] attributes = GetFieldAttributes<PropertyAttribute>(field, inherit);
+                var attributes = GetFieldAttributes<PropertyAttribute>(field, inherit);
 
-                if (attributes.Length < 1) {
-                    return default(PropertyAttribute);
-                }
+                if (attributes.Length < 1) return default;
 
                 return attributes[0];
             }
 
-            public static PropertyAttribute[] GetSerializedPropertyAttributes<Type, PropertyAttribute>(SerializedProperty serializedProperty, bool inherit = true) {
-                if (null == serializedProperty) {
-                    return default(PropertyAttribute[]);
-                }
+            public static PropertyAttribute[] GetSerializedPropertyAttributes<Type, PropertyAttribute>(
+                SerializedProperty serializedProperty, bool inherit = true)
+            {
+                if (null == serializedProperty) return default;
 
                 FieldInfo field = typeof(Type).GetField(serializedProperty.name);
 
-                if (null == field) {
-                    return default(PropertyAttribute[]);
-                }
+                if (null == field) return default;
 
                 return GetFieldAttributes<PropertyAttribute>(field, inherit);
             }
 
-            public static PropertyAttribute GetSerializedPropertyFirstAttribute<Type, PropertyAttribute>(SerializedProperty serializedProperty, bool inherit = true) {
-                if (null == serializedProperty) {
-                    return default(PropertyAttribute);
-                }
+            public static PropertyAttribute GetSerializedPropertyFirstAttribute<Type, PropertyAttribute>(
+                SerializedProperty serializedProperty, bool inherit = true)
+            {
+                if (null == serializedProperty) return default;
 
-                PropertyAttribute[] attributes = GetSerializedPropertyAttributes<Type, PropertyAttribute>(serializedProperty, inherit);
+                var attributes = GetSerializedPropertyAttributes<Type, PropertyAttribute>(serializedProperty, inherit);
 
-                if (default(PropertyAttribute[]) == attributes) { 
-                    return default(PropertyAttribute);
-                }
-                    
+                if (default(PropertyAttribute[]) == attributes) return default;
 
-                if (attributes.Length < 1) {
-                    return default(PropertyAttribute);
-                }
+
+                if (attributes.Length < 1) return default;
 
                 return attributes[0];
             }
 
-            public static string GetFieldDisplayName(FieldInfo field, bool inherit = true) {
-                if (null == field) {
-                    return default(string);
-                }
+            public static string GetFieldDisplayName(FieldInfo field, bool inherit = true)
+            {
+                if (null == field) return default;
 
                 DisplayNameAttribute attribute = GetFieldFirstAttribute<DisplayNameAttribute>(field, inherit);
 
-                if (null == attribute) {
-                    return default(string);
-                }
+                if (null == attribute) return default;
 
                 return attribute.displayName;
             }
 
-            public static string GetSerializedPropertyDisplayName<Type>(SerializedProperty serializedProperty, bool inherit = true) {
-                if (null == serializedProperty) {
-                    return default(string);
-                }
+            public static string GetSerializedPropertyDisplayName<Type>(SerializedProperty serializedProperty,
+                bool inherit = true)
+            {
+                if (null == serializedProperty) return default;
 
                 FieldInfo field = typeof(Type).GetField(serializedProperty.name);
 
-                if (null == field) {
-                    return default(string);
-                }
+                if (null == field) return default;
 
                 return GetFieldDisplayName(field, inherit);
             }
 
-            public static string GetFieldTooltip(FieldInfo field, bool inherit = true) {
-                if (null == field) {
-                    return default(string);
-                }
+            public static string GetFieldTooltip(FieldInfo field, bool inherit = true)
+            {
+                if (null == field) return default;
 
                 TooltipAttribute attribute = GetFieldFirstAttribute<TooltipAttribute>(field, inherit);
 
-                if (null == attribute) {
-                    return default(string);
-                }
+                if (null == attribute) return default;
 
                 return attribute.tooltip;
             }
 
-            public static string GetSerializedPropertyTooltip<Type>(SerializedProperty serializedProperty, bool inherit = true) {
-                if (null == serializedProperty) {
-                    return default(string);
-                }
+            public static string GetSerializedPropertyTooltip<Type>(SerializedProperty serializedProperty,
+                bool inherit = true)
+            {
+                if (null == serializedProperty) return default;
 
                 FieldInfo field = typeof(Type).GetField(serializedProperty.name);
 
-                if (null == field) {
-                    return default(string);
-                }
+                if (null == field) return default;
 
                 return GetFieldTooltip(field, inherit);
             }
 
-            public static Vector2 GetFieldFloatRange(FieldInfo field, bool inherit = true) {
-                if (null == field) {
-                    return default(Vector2);
-                }
+            public static Vector2 GetFieldFloatRange(FieldInfo field, bool inherit = true)
+            {
+                if (null == field) return default;
 
                 RangeAttribute attribute = GetFieldFirstAttribute<RangeAttribute>(field, inherit);
 
-                if (null == attribute) {
-                    return default(Vector2);
-                }
+                if (null == attribute) return default;
 
                 return new Vector2(attribute.min, attribute.max);
             }
 
-            public static Vector2 GetSerializedPropertyFloatRange<Type>(SerializedProperty serializedProperty, bool inherit = true) {
-                if (null == serializedProperty) {
-                    return default(Vector2);
-                }
+            public static Vector2 GetSerializedPropertyFloatRange<Type>(SerializedProperty serializedProperty,
+                bool inherit = true)
+            {
+                if (null == serializedProperty) return default;
 
                 FieldInfo field = typeof(Type).GetField(serializedProperty.name);
 
-                if (null == field) {
-                    return default(Vector2);
-                }
+                if (null == field) return default;
 
                 return GetFieldFloatRange(field, inherit);
             }
         }
 
-        public static class Styles {
-            public static GUIStyle boldFoldout = new GUIStyle(EditorStyles.foldout) {
+        public static class Styles
+        {
+            public static GUIStyle boldFoldout = new(EditorStyles.foldout)
+            {
                 fontStyle = FontStyle.Bold
             };
         }
 
-        public static class GUIContentHelper {
-            public static GUIContent GetSerializedPropertyGUIContent<Type>(SerializedProperty serializedProperty, string displayName = default(string)) {
-                if (default(string) == displayName) {
+        public static class GUIContentHelper
+        {
+            public static GUIContent GetSerializedPropertyGUIContent<Type>(SerializedProperty serializedProperty,
+                string displayName = default)
+            {
+                if (default == displayName)
+                {
                     string attributeDisplayName = Attributes.GetSerializedPropertyDisplayName<Type>(serializedProperty);
-                    displayName = default(string) == attributeDisplayName ? serializedProperty.displayName : attributeDisplayName;
+                    displayName = default == attributeDisplayName
+                        ? serializedProperty.displayName
+                        : attributeDisplayName;
                 }
 
                 string tooltip = Attributes.GetSerializedPropertyTooltip<Type>(serializedProperty);
@@ -173,9 +160,11 @@ namespace OmniSARTechnologies.Helper {
             }
         }
 
-        public static class Drawing {
-            public static GUIStyle MakeLabelGUIStyle(FontStyle fontStyle, int fontSizeIncrement) {
-                GUIStyle guiStyle = new GUIStyle();
+        public static class Drawing
+        {
+            public static GUIStyle MakeLabelGUIStyle(FontStyle fontStyle, int fontSizeIncrement)
+            {
+                GUIStyle guiStyle = new();
 
                 guiStyle.font = GUI.skin.font;
                 guiStyle.fontStyle = fontStyle;
@@ -184,8 +173,10 @@ namespace OmniSARTechnologies.Helper {
                 return guiStyle;
             }
 
-            public static void DrawLabel(GUIContent content, Vector2 position, Vector2 pivot = default(Vector2), Color fontColor = default(Color), FontStyle fontStyle = default(FontStyle), bool dropShadow = true) {
-                GUIStyle labelStyle = new GUIStyle();
+            public static void DrawLabel(GUIContent content, Vector2 position, Vector2 pivot = default,
+                Color fontColor = default, FontStyle fontStyle = default, bool dropShadow = true)
+            {
+                GUIStyle labelStyle = new();
                 labelStyle.normal.textColor = fontColor;
                 labelStyle.font = GUI.skin.font;
                 labelStyle.fontStyle = fontStyle;
@@ -195,14 +186,14 @@ namespace OmniSARTechnologies.Helper {
                 pivot.Scale(size);
                 position -= pivot;
 
-                if (dropShadow) {
+                if (dropShadow)
                     EditorGUI.DropShadowLabel(new Rect(position, size), textContent, labelStyle);
-                } else {
+                else
                     EditorGUI.LabelField(new Rect(position, size), textContent, labelStyle);
-                }
             }
 
-            public static void DrawPreviewLabel(GUIContent content, Vector2 position, Color fontColor) {
+            public static void DrawPreviewLabel(GUIContent content, Vector2 position, Color fontColor)
+            {
                 DrawLabel(
                     content,
                     position,
@@ -212,30 +203,36 @@ namespace OmniSARTechnologies.Helper {
                 );
             }
 
-            public static bool DrawMultiValueEnumPopup<Type>(SerializedProperty serializedProperty, string displayName = default(string), bool enumItemsTooltips = true) {
-                GUIContent label = GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
+            public static bool DrawMultiValueEnumPopup<Type>(SerializedProperty serializedProperty,
+                string displayName = default, bool enumItemsTooltips = true)
+            {
+                GUIContent label =
+                    GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
 
-                GUIContent[] names = new GUIContent[serializedProperty.enumDisplayNames.Length];
-                for (int i = 0; i < names.Length; i++) {
+                var names = new GUIContent[serializedProperty.enumDisplayNames.Length];
+                for (int i = 0; i < names.Length; i++)
                     names[i] = new GUIContent(
                         serializedProperty.enumDisplayNames[i],
-                        enumItemsTooltips ? serializedProperty.enumDisplayNames[i] + " " + displayName : default(string)
+                        enumItemsTooltips ? serializedProperty.enumDisplayNames[i] + " " + displayName : default
                     );
-                }
 
                 serializedProperty.serializedObject.Update();
                 EditorGUI.BeginChangeCheck();
-                var newValue = serializedProperty.enumValueIndex;
+                int newValue = serializedProperty.enumValueIndex;
 
-                if (serializedProperty.hasMultipleDifferentValues) {
+                if (serializedProperty.hasMultipleDifferentValues)
+                {
                     EditorGUI.showMixedValue = true;
                     newValue = EditorGUILayout.Popup(label, 0, names);
                     EditorGUI.showMixedValue = false;
-                } else {
+                }
+                else
+                {
                     newValue = EditorGUILayout.Popup(label, newValue, names);
                 }
 
-                if (EditorGUI.EndChangeCheck()) {
+                if (EditorGUI.EndChangeCheck())
+                {
                     serializedProperty.enumValueIndex = newValue;
                     serializedProperty.serializedObject.ApplyModifiedProperties();
                 }
@@ -244,22 +241,29 @@ namespace OmniSARTechnologies.Helper {
                 return !serializedProperty.hasMultipleDifferentValues;
             }
 
-            public static bool DrawMultiValueColorField<Type>(SerializedProperty serializedProperty, string displayName = default(string)) {
-                GUIContent label = GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
+            public static bool DrawMultiValueColorField<Type>(SerializedProperty serializedProperty,
+                string displayName = default)
+            {
+                GUIContent label =
+                    GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
 
                 serializedProperty.serializedObject.Update();
                 EditorGUI.BeginChangeCheck();
-                var newValue = serializedProperty.colorValue;
+                Color newValue = serializedProperty.colorValue;
 
-                if (serializedProperty.hasMultipleDifferentValues) {
+                if (serializedProperty.hasMultipleDifferentValues)
+                {
                     EditorGUI.showMixedValue = true;
-                    newValue = EditorGUILayout.ColorField(label, default(Color));
+                    newValue = EditorGUILayout.ColorField(label, default);
                     EditorGUI.showMixedValue = false;
-                } else {
+                }
+                else
+                {
                     newValue = EditorGUILayout.ColorField(label, newValue);
                 }
 
-                if (EditorGUI.EndChangeCheck()) {
+                if (EditorGUI.EndChangeCheck())
+                {
                     serializedProperty.colorValue = newValue;
                     serializedProperty.serializedObject.ApplyModifiedProperties();
                 }
@@ -268,30 +272,35 @@ namespace OmniSARTechnologies.Helper {
                 return !serializedProperty.hasMultipleDifferentValues;
             }
 
-            public static bool DrawMultiValueToggle<Type>(SerializedProperty serializedProperty, bool left = false, string displayName = default(string)) {
-                GUIContent label = GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
+            public static bool DrawMultiValueToggle<Type>(SerializedProperty serializedProperty, bool left = false,
+                string displayName = default)
+            {
+                GUIContent label =
+                    GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
 
                 serializedProperty.serializedObject.Update();
                 EditorGUI.BeginChangeCheck();
-                var newValue = serializedProperty.boolValue;
+                bool newValue = serializedProperty.boolValue;
 
-                if (serializedProperty.hasMultipleDifferentValues) {
+                if (serializedProperty.hasMultipleDifferentValues)
+                {
                     EditorGUI.showMixedValue = true;
-                    if (left) {
-                        newValue = EditorGUILayout.ToggleLeft(label, default(bool));
-                    } else {
-                        newValue = EditorGUILayout.Toggle(label, default(bool));
-                    }
+                    if (left)
+                        newValue = EditorGUILayout.ToggleLeft(label, default);
+                    else
+                        newValue = EditorGUILayout.Toggle(label, default);
                     EditorGUI.showMixedValue = false;
-                } else {
-                    if (left) {
+                }
+                else
+                {
+                    if (left)
                         newValue = EditorGUILayout.ToggleLeft(label, newValue);
-                    } else {
+                    else
                         newValue = EditorGUILayout.Toggle(label, newValue);
-                    }
                 }
 
-                if (EditorGUI.EndChangeCheck()) {
+                if (EditorGUI.EndChangeCheck())
+                {
                     serializedProperty.boolValue = newValue;
                     serializedProperty.serializedObject.ApplyModifiedProperties();
                 }
@@ -300,16 +309,22 @@ namespace OmniSARTechnologies.Helper {
                 return !serializedProperty.hasMultipleDifferentValues;
             }
 
-            public static bool DrawMultiValueObjectField<Type>(SerializedProperty serializedProperty, string displayName = default(string), bool allowSceneObjects = true) {
-                GUIContent label = GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
+            public static bool DrawMultiValueObjectField<Type>(SerializedProperty serializedProperty,
+                string displayName = default, bool allowSceneObjects = true)
+            {
+                GUIContent label =
+                    GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
 
                 serializedProperty.serializedObject.Update();
 
-                if (serializedProperty.hasMultipleDifferentValues) {
+                if (serializedProperty.hasMultipleDifferentValues)
+                {
                     EditorGUI.showMixedValue = true;
                     EditorGUILayout.ObjectField(serializedProperty, label);
                     EditorGUI.showMixedValue = false;
-                } else {
+                }
+                else
+                {
                     EditorGUILayout.ObjectField(serializedProperty, label);
                 }
 
@@ -318,32 +333,37 @@ namespace OmniSARTechnologies.Helper {
                 return !serializedProperty.hasMultipleDifferentValues;
             }
 
-            public static bool DrawMultiValueSlider<Type>(SerializedProperty serializedProperty, string displayName = default(string)) {
-                GUIContent label = GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
+            public static bool DrawMultiValueSlider<Type>(SerializedProperty serializedProperty,
+                string displayName = default)
+            {
+                GUIContent label =
+                    GUIContentHelper.GetSerializedPropertyGUIContent<Type>(serializedProperty, displayName);
 
                 serializedProperty.serializedObject.Update();
                 EditorGUI.BeginChangeCheck();
-                var newValue = serializedProperty.floatValue;
+                float newValue = serializedProperty.floatValue;
 
-                var range = Attributes.GetSerializedPropertyFloatRange<Type>(serializedProperty);
+                Vector2 range = Attributes.GetSerializedPropertyFloatRange<Type>(serializedProperty);
 
-                if (serializedProperty.hasMultipleDifferentValues) {
+                if (serializedProperty.hasMultipleDifferentValues)
+                {
                     EditorGUI.showMixedValue = true;
-                    if (default(Vector2) != range) {
-                        newValue = EditorGUILayout.Slider(label, default(float), range.x, range.y);
-                    } else {
-                        newValue = EditorGUILayout.FloatField(label, default(float));
-                    }
+                    if (default != range)
+                        newValue = EditorGUILayout.Slider(label, default, range.x, range.y);
+                    else
+                        newValue = EditorGUILayout.FloatField(label, default);
                     EditorGUI.showMixedValue = false;
-                } else {
-                    if (default(Vector2) != range) {
+                }
+                else
+                {
+                    if (default != range)
                         newValue = EditorGUILayout.Slider(label, newValue, range.x, range.y);
-                    } else {
+                    else
                         newValue = EditorGUILayout.FloatField(label, newValue);
-                    }
                 }
 
-                if (EditorGUI.EndChangeCheck()) {
+                if (EditorGUI.EndChangeCheck())
+                {
                     serializedProperty.floatValue = newValue;
                     serializedProperty.serializedObject.ApplyModifiedProperties();
                 }
@@ -352,29 +372,24 @@ namespace OmniSARTechnologies.Helper {
                 return !serializedProperty.hasMultipleDifferentValues;
             }
 
-            public static bool DrawWhatsThisSections<Type>(SerializedProperty serializedProperty) {
-                WhatsThisAttribute[] attributes = Attributes.GetSerializedPropertyAttributes<Type, WhatsThisAttribute>(serializedProperty);
+            public static bool DrawWhatsThisSections<Type>(SerializedProperty serializedProperty)
+            {
+                var attributes =
+                    Attributes.GetSerializedPropertyAttributes<Type, WhatsThisAttribute>(serializedProperty);
 
-                if (null == attributes) {
-                    return false;
-                }
+                if (null == attributes) return false;
 
-                if (0 == attributes.Length) {
-                    return false;
-                }
+                if (0 == attributes.Length) return false;
 
                 bool result = false;
 
-                for (int i = 0; i < attributes.Length; i++) {
+                for (int i = 0; i < attributes.Length; i++)
+                {
                     WhatsThisAttribute attribute = attributes[i];
 
-                    if (null == attribute) {
-                        continue;
-                    }
+                    if (null == attribute) continue;
 
-                    if (0 == attribute.message.Length) {
-                        continue;
-                    }
+                    if (0 == attribute.message.Length) continue;
 
                     EditorGUILayout.HelpBox(attribute.message, attribute.messageType);
 
@@ -384,12 +399,12 @@ namespace OmniSARTechnologies.Helper {
                 return result;
             }
 
-            public static bool DrawWhatsThisFoldout<Type>(ref bool folded, SerializedProperty serializedProperty, GUIContent foldoutLabel) {
+            public static bool DrawWhatsThisFoldout<Type>(ref bool folded, SerializedProperty serializedProperty,
+                GUIContent foldoutLabel)
+            {
                 folded = EditorGUILayout.Foldout(folded, foldoutLabel);
 
-                if (!folded) {
-                    return false;
-                }
+                if (!folded) return false;
 
                 return DrawWhatsThisSections<Type>(serializedProperty);
             }

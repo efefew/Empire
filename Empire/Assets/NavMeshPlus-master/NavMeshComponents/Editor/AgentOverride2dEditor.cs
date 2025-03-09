@@ -1,9 +1,4 @@
 ﻿using NavMeshPlus.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 
 namespace NavMeshPlus.Editors.Extensions
@@ -16,7 +11,7 @@ namespace NavMeshPlus.Editors.Extensions
         //SerializedProperty m_UseMeshPrefab;
         //SerializedProperty m_CompressBounds;
         //SerializedProperty m_OverrideVector;
-        void OnEnable()
+        private void OnEnable()
         {
             //m_OverrideByGrid = serializedObject.FindProperty("m_OverrideByGrid");
             //m_UseMeshPrefab = serializedObject.FindProperty("m_UseMeshPrefab");
@@ -28,7 +23,7 @@ namespace NavMeshPlus.Editors.Extensions
         {
             serializedObject.Update();
 
-            var agent = target as AgentOverride2d;
+            AgentOverride2d agent = target as AgentOverride2d;
             EditorGUILayout.LabelField("Agent Override", agent.agentOverride?.GetType().Name);
         }
     }

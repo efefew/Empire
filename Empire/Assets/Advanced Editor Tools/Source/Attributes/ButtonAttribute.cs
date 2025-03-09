@@ -1,4 +1,8 @@
+#region
+
 using System;
+
+#endregion
 
 namespace AdvancedEditorTools.Attributes
 {
@@ -13,7 +17,7 @@ namespace AdvancedEditorTools.Attributes
         public ButtonAttribute(string buttonName, int fontSize = 12)
         {
             this.buttonName = buttonName;
-            this.buttonSize = fontSize;
+            buttonSize = fontSize;
         }
     }
 }

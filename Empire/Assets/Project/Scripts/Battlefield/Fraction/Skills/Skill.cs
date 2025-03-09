@@ -1,9 +1,12 @@
-using AdvancedEditorTools.Attributes;
+#region
 
+using AdvancedEditorTools.Attributes;
 using UnityEngine;
 
+#endregion
+
 /// <summary>
-/// Навык
+///     Навык
 /// </summary>
 public abstract class Skill : MonoBehaviour
 {
@@ -11,13 +14,13 @@ public abstract class Skill : MonoBehaviour
 
     public enum TriggerType
     {
-        enemy,
-        self,
-        friend,
-        selfAndFriend,
-        enemyAndFriend,
-        selfAndEnemy,
-        all
+        Enemy,
+        Self,
+        Friend,
+        SelfAndFriend,
+        EnemyAndFriend,
+        SelfAndEnemy,
+        All
     }
 
     #endregion Enums
@@ -46,17 +49,15 @@ public abstract class Skill : MonoBehaviour
     public float timeCooldown;
 
     /// <summary>
-    /// время преследования
+    ///     время преследования
     /// </summary>
-    [Min(0)]
-    [Tooltip("время преследования")]
+    [Min(0)] [Tooltip("время преследования")]
     public float timeTargetMove;
 
     /// <summary>
-    /// время заряда навыка
+    ///     время заряда навыка
     /// </summary>
-    [Min(0)]
-    [Tooltip("время заряда навыка")]
+    [Min(0)] [Tooltip("время заряда навыка")]
     public float timeCast;
 
     [EndColumnArea]
@@ -65,14 +66,12 @@ public abstract class Skill : MonoBehaviour
     [Min(0)]
     public float mana;
 
-    [Min(0)]
-    public float stamina;
+    [Min(0)] public float stamina;
 
-    [Min(0)]
-    public float range;
+    [Min(0)] public float range;
 
-    [Min(0)]
-    public float maxAmountSkill;
+    [Min(0)] public float maxAmountSkill;
+
     public bool pointCanBeTarget;
     public bool сanBePatrol;
     public TriggerType triggerTarget;
@@ -83,27 +82,26 @@ public abstract class Skill : MonoBehaviour
     public bool consumable;
 
     /// <summary>
-    /// Преследовать припопадании
+    ///     Преследовать припопадании
     /// </summary>
     public bool targetMove;
 
     /// <summary>
-    /// Коллективный навык
+    ///     Коллективный навык
     /// </summary>
     public bool collective;
 
-    [Min(1)]
-    public int maxCountCatch;
+    [Min(1)] public int maxCountCatch;
 
-    [SerializeField]
-    public TriggerType triggerDanger;
+    [SerializeField] public TriggerType triggerDanger;
 
     public Buff[] buffs;
     public Effect[] effects;
 
-    [EndColumnArea]
-    public string nameAnimation;
+    [EndColumnArea] public string nameAnimation;
+
     public const float LIMIT_CLOSE_RANGE = 0.7f;
+
     #endregion Fields
 
     #region Methods
@@ -112,14 +110,14 @@ public abstract class Skill : MonoBehaviour
     {
         return trigger switch
         {
-            TriggerType.enemy => IsEnemy(initiator, target),
-            TriggerType.self => IsMe(initiator, target),
-            TriggerType.friend => IsFriend(initiator, target),
-            TriggerType.selfAndFriend => !IsEnemy(initiator, target),
-            TriggerType.enemyAndFriend => !IsMe(initiator, target),
-            TriggerType.selfAndEnemy => !IsFriend(initiator, target),
-            TriggerType.all => true,
-            _ => false,
+            TriggerType.Enemy => IsEnemy(initiator, target),
+            TriggerType.Self => IsMe(initiator, target),
+            TriggerType.Friend => IsFriend(initiator, target),
+            TriggerType.SelfAndFriend => !IsEnemy(initiator, target),
+            TriggerType.EnemyAndFriend => !IsMe(initiator, target),
+            TriggerType.SelfAndEnemy => !IsFriend(initiator, target),
+            TriggerType.All => true,
+            _ => false
         };
     }
 
@@ -127,28 +125,46 @@ public abstract class Skill : MonoBehaviour
     {
         return trigger switch
         {
-            TriggerType.enemy => IsEnemy(initiator, target),
-            TriggerType.self => IsMe(initiator, target),
-            TriggerType.friend => IsFriend(initiator, target),
-            TriggerType.selfAndFriend => !IsEnemy(initiator, target),
-            TriggerType.enemyAndFriend => !IsMe(initiator, target),
-            TriggerType.selfAndEnemy => !IsFriend(initiator, target),
-            TriggerType.all => true,
-            _ => false,
+            TriggerType.Enemy => IsEnemy(initiator, target),
+            TriggerType.Self => IsMe(initiator, target),
+            TriggerType.Friend => IsFriend(initiator, target),
+            TriggerType.SelfAndFriend => !IsEnemy(initiator, target),
+            TriggerType.EnemyAndFriend => !IsMe(initiator, target),
+            TriggerType.SelfAndEnemy => !IsFriend(initiator, target),
+            TriggerType.All => true,
+            _ => false
         };
     }
 
-    public static bool IsMe(Person initiator, Person target) => initiator == target;
+    public static bool IsMe(Person initiator, Person target)
+    {
+        return initiator == target;
+    }
 
-    public static bool IsEnemy(Person initiator, Person target) => target.status.sideID != initiator.status.sideID;
+    public static bool IsEnemy(Person initiator, Person target)
+    {
+        return target.status.sideID != initiator.status.sideID;
+    }
 
-    public static bool IsFriend(Person initiator, Person target) => target.status.sideID == initiator.status.sideID && target != initiator;
+    public static bool IsFriend(Person initiator, Person target)
+    {
+        return target.status.sideID == initiator.status.sideID && target != initiator;
+    }
 
-    public static bool IsMe(Army initiator, Army target) => initiator == target;
+    public static bool IsMe(Army initiator, Army target)
+    {
+        return initiator == target;
+    }
 
-    public static bool IsEnemy(Army initiator, Army target) => target.status.sideID != initiator.status.sideID;
+    public static bool IsEnemy(Army initiator, Army target)
+    {
+        return target.status.sideID != initiator.status.sideID;
+    }
 
-    public static bool IsFriend(Army initiator, Army target) => target.status.sideID == initiator.status.sideID && target != initiator;
+    public static bool IsFriend(Army initiator, Army target)
+    {
+        return target.status.sideID == initiator.status.sideID && target != initiator;
+    }
 
     public static (bool, bool, bool) GetTrigger(TriggerType trigger)
     {
@@ -158,34 +174,34 @@ public abstract class Skill : MonoBehaviour
 
         switch (trigger)
         {
-            case TriggerType.enemy:
+            case TriggerType.Enemy:
                 enemy = true;
                 break;
 
-            case TriggerType.self:
+            case TriggerType.Self:
                 self = true;
                 break;
 
-            case TriggerType.friend:
+            case TriggerType.Friend:
                 friend = true;
                 break;
 
-            case TriggerType.selfAndFriend:
+            case TriggerType.SelfAndFriend:
                 self = true;
                 friend = true;
                 break;
 
-            case TriggerType.enemyAndFriend:
+            case TriggerType.EnemyAndFriend:
                 enemy = true;
                 friend = true;
                 break;
 
-            case TriggerType.selfAndEnemy:
+            case TriggerType.SelfAndEnemy:
                 self = true;
                 enemy = true;
                 break;
 
-            case TriggerType.all:
+            case TriggerType.All:
                 enemy = true;
                 self = true;
                 friend = true;
@@ -197,31 +213,27 @@ public abstract class Skill : MonoBehaviour
 
     public void SetEffectsAndBuffs(Person initiator, Person target)
     {
-        foreach (Effect effect in effects)
-        {
-            effect.Run(initiator, target, this);
-        }
+        foreach (Effect effect in effects) effect.Run(initiator, target, this);
 
-        foreach (Buff buff in buffs)
-        {
-            buff.Run(initiator, target);
-        }
+        foreach (Buff buff in buffs) buff.Run(initiator, target);
     }
 
     /// <summary>
-    /// Реализация навыка
+    ///     Реализация навыка
     /// </summary>
     /// <param name="initiator">реализующий навык</param>
     /// <param name="target">цель навыка</param>
     public abstract void Run(Person initiator, Person target = null);
+
     /// <summary>
-    /// Реализация навыка
+    ///     Реализация навыка
     /// </summary>
     /// <param name="initiator">реализующий навык</param>
     /// <param name="target">цель навыка</param>
     public abstract void Run(Person initiator, Vector3 target);
+
     /// <summary>
-    /// Проверяет возможность реализации навыка
+    ///     Проверяет возможность реализации навыка
     /// </summary>
     /// <param name="initiator">реализующий навык</param>
     /// <param name="target">цель навыка</param>
@@ -230,7 +242,7 @@ public abstract class Skill : MonoBehaviour
         if (initiator == null)
             return false;
         // Проверяем, может ли персонаж использовать это умение
-        if ((consumable && (initiator.amountSkill[this] - 1) < 0) || !initiator.CanUseSkill(this))
+        if ((consumable && initiator.amountSkill[this] - 1 < 0) || !initiator.CanUseSkill(this))
         {
             initiator.RemoveStateAnimation(nameAnimation);
             return false;
@@ -240,7 +252,7 @@ public abstract class Skill : MonoBehaviour
     }
 
     /// <summary>
-    /// Проверяем, может ли персонаж дотянуться до врага этим умением
+    ///     Проверяем, может ли персонаж дотянуться до врага этим умением
     /// </summary>
     /// <param name="initiator">персонаж</param>
     /// <param name="target">врага</param>

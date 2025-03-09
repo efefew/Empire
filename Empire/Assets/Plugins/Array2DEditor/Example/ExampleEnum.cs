@@ -5,5 +5,5 @@
         Empty,
         Moving,
         Normal
-    };
+    }
 }

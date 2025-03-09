@@ -1,15 +1,24 @@
 #if UNITY_EDITOR
+
+#region
+
+using System;
 using UnityEditor;
 using UnityEngine;
 
+#endregion
+
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
+    [Serializable]
     public abstract class ValueWrapper : ScriptableObject
     {
         public SerializedField SerializedField;
 
         private SerializedObject _serializedObject;
+
+        private SerializedProperty _serializedProperty;
+
         public SerializedObject SerializedObject
         {
             get
@@ -20,7 +29,6 @@ namespace AdvancedEditorTools
             }
         }
 
-        private SerializedProperty _serializedProperty;
         public SerializedProperty SerializedProperty
         {
             get
@@ -32,9 +40,13 @@ namespace AdvancedEditorTools
             set => _serializedProperty = value;
         }
 
-        public virtual ValueWrapper Init(System.Type type) => this;
+        public virtual ValueWrapper Init(Type type)
+        {
+            return this;
+        }
 
         public abstract object GetValue();
+
         public virtual object Unwrap()
         {
             if (SerializedField != null && SerializedField.isUsingRealTarget)
@@ -45,7 +57,10 @@ namespace AdvancedEditorTools
 
         public abstract void SetValue(object obj);
 
-        public virtual object Clone() => GetValue();
+        public virtual object Clone()
+        {
+            return GetValue();
+        }
 
         public void OnInspector(Rect rect)
         {
@@ -61,11 +76,12 @@ namespace AdvancedEditorTools
 
         public ValueWrapper UpdateWrapper(ValueWrapper oldWrapper)
         {
-            oldWrapper.SerializedField = this.SerializedField;
+            oldWrapper.SerializedField = SerializedField;
             return oldWrapper;
         }
     }
-    [System.Serializable]
+
+    [Serializable]
     public class GenericValueWrapper<T> : ValueWrapper
     {
         public T value;
@@ -82,16 +98,17 @@ namespace AdvancedEditorTools
             else value = default;
         }
     }
-    [System.Serializable]
+
+    [Serializable]
     public class GenericValueWrapperReference<T> : ValueWrapper
     {
-        [SerializeReference]
-        public T value;
+        [SerializeReference] public T value;
 
         public override object GetValue()
         {
             return value;
         }
+
         public override void SetValue(object obj)
         {
             if (obj != null)
@@ -123,7 +140,7 @@ namespace AdvancedEditorTools
         {
             if (obj is null || obj.Equals(null))
             {
-                fields = null; 
+                fields = null;
                 isInstantiated = false;
             }
             else if (obj.GetType().Equals(typeof(List<SerializedField>)))
@@ -139,7 +156,7 @@ namespace AdvancedEditorTools
                 {
                     fields =  newFields.MatchEnumerables(oldFields, true).ToList();
                     isInstantiated = true;
-                }                
+                }
             }
             else
             {
@@ -147,7 +164,7 @@ namespace AdvancedEditorTools
                 foreach (var fieldInfo in GetFields())
                     fields.Add(new SerializedField(fieldInfo.Name, fieldInfo.FieldType, fieldInfo.GetValue(obj)));
                 isInstantiated = true;
-            }            
+            }
         }
 
         public List<SerializedField> GenerateDefaultFields()
@@ -175,9 +192,9 @@ namespace AdvancedEditorTools
 
         public override object GetValue()
         {
-            if (fields is null || fields.Count == 0 && !isInstantiated) return null; 
+            if (fields is null || fields.Count == 0 && !isInstantiated) return null;
 
-            var instance = Activator.CreateInstance(Type);            
+            var instance = Activator.CreateInstance(Type);
             var newFieldsInfos = GetFields();
             var matchedFields = GenerateDefaultFields().MatchEnumerables(fields, true).ToList();
             var i = 0;
@@ -193,7 +210,7 @@ namespace AdvancedEditorTools
 
         public List<SerializedField> GetFieldsUpdated()
         {
-            if (fields is null) return new List<SerializedField>(); 
+            if (fields is null) return new List<SerializedField>();
             fields = GenerateDefaultFields().MatchEnumerables(fields, true).ToList();
             return fields;
         }
@@ -202,7 +219,7 @@ namespace AdvancedEditorTools
         {
             if (fields == null) return null;
 
-            var instance = Activator.CreateInstance(Type);            
+            var instance = Activator.CreateInstance(Type);
             var newFieldsInfos = GetFields();
             var matchedFields = GenerateDefaultFields().MatchEnumerables(fields, true).ToList();
             var manager = AEAManager.Instance;
@@ -241,7 +258,7 @@ namespace AdvancedEditorTools
     [System.Serializable]
     public class ClassValueWrapper : CustomTypeValueWrapper
     { public ClassValueWrapper(Type type, object classValue) : base(type, classValue) { } }
-    
+
     */
 }
 #endif

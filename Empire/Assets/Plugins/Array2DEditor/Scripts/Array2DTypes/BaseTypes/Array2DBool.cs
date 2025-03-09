@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Array2DEditor
 {
-    [System.Serializable]
+    [Serializable]
     public class Array2DBool : Array2D<bool>
     {
-        [SerializeField]
-        CellRowBool[] cells = new CellRowBool[Consts.defaultGridSize];
+        [SerializeField] private CellRowBool[] cells = new CellRowBool[Consts.defaultGridSize];
 
         protected override CellRow<bool> GetCellRow(int idx)
         {

@@ -1,7 +1,12 @@
-using AdvancedEditorTools.Attributes;
-using System.Collections.Generic;
+#region
+
 using System.Linq;
+using System.Threading.Tasks;
+using AdvancedEditorTools.Attributes;
 using UnityEngine;
+using Random = System.Random;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
@@ -17,54 +22,27 @@ namespace AdvancedEditorTools
         /// Non UnityEngine.Object classes and structs are not supported yet.
         /// If you require one of these invalid types you can extract them from the method
         /// and add them as a class field like so:
-
-        ///     ### This invalid parameter
+        /// ### This invalid parameter
         ///     
-        ///     public void MyMethod(MyInvalidParamType param1){
-        ///         ...
-        ///     } 
-
-        ///     ### Can be extracted like this
+        /// public void MyMethod(MyInvalidParamType param1){
+        /// ...
+        /// } 
+        /// ### Can be extracted like this
         /// 
-        ///     [SerializeField]
-        ///     private MyInvalidParamType param1;
-        ///     public void MyMethod(){
-        ///         ...
-        ///     } 
-
+        /// [SerializeField]
+        /// private MyInvalidParamType param1;
+        /// public void MyMethod(){
+        /// ...
+        /// }
 
         // #################################
         // #################################
         // #################################
-
 
         // Buttons can be useful to run code from the editor without
         // including them in the main flow of the program, and without
         // adding the [ExecuteInEditMode] attribute to the class.
         public int[] listExample = new int[0];
-
-        [Button("Create Random List", 15)]
-        public void RandomizeList(int listSize)
-        {
-            if (listSize < 0 || listSize > 1000)
-            {
-                Debug.Log("List size readjusted to range [0,1000]");
-                listSize = Mathf.Clamp(listSize, 0, 1000);
-            }
-
-            listExample = new int[listSize];
-            for (int i = 0; i < listSize; i++)
-                listExample[i] = i;
-
-            var rnd = new System.Random();
-            listExample = listExample.OrderBy(x => rnd.Next(1, listSize)).ToArray();
-        }
-
-        [Button("Sort List", 25)]
-        public void SortList()
-        {
-            listExample = listExample.OrderBy(x => x).ToArray();
-        }
 
 
         // #################################
@@ -75,26 +53,6 @@ namespace AdvancedEditorTools
         // Buttons can come quite handy to run algorithms or test how some code may
         // behave under certain conditions...
         public Gradient gradientExample;
-
-        [Button("Randomize Gradient", 25)]
-        public void GenerateRandomGradient()
-        {
-            gradientExample = new();
-            var keyCount = Random.Range(2, 7);
-            var colorKeys = new GradientColorKey[keyCount];
-            var timeInterval = 1.0f / (keyCount - 1);
-            for (int i = 0; i < keyCount; i++)
-            {
-                colorKeys[i] = new GradientColorKey()
-                {
-                    color = Random.ColorHSV(0, 1, 0.7f, 1, 0.8f, 1),
-                    time = i * timeInterval
-                };
-            }
-
-            gradientExample.colorKeys = colorKeys.ToArray();
-            gradientExample.alphaKeys = new GradientAlphaKey[] { new GradientAlphaKey { alpha = 1 } };
-        }
 
 
         // #################################
@@ -109,6 +67,48 @@ namespace AdvancedEditorTools
         // This example method will modify the value of the color variable asynchronously
         // by lerping through the colors provided in the array parameter
         public Color delayedColor;
+
+        [Button("Create Random List", 15)]
+        public void RandomizeList(int listSize)
+        {
+            if (listSize < 0 || listSize > 1000)
+            {
+                Debug.Log("List size readjusted to range [0,1000]");
+                listSize = Mathf.Clamp(listSize, 0, 1000);
+            }
+
+            listExample = new int[listSize];
+            for (int i = 0; i < listSize; i++)
+                listExample[i] = i;
+
+            Random rnd = new();
+            listExample = listExample.OrderBy(x => rnd.Next(1, listSize)).ToArray();
+        }
+
+        [Button("Sort List", 25)]
+        public void SortList()
+        {
+            listExample = listExample.OrderBy(x => x).ToArray();
+        }
+
+        [Button("Randomize Gradient", 25)]
+        public void GenerateRandomGradient()
+        {
+            gradientExample = new Gradient();
+            int keyCount = UnityEngine.Random.Range(2, 7);
+            var colorKeys = new GradientColorKey[keyCount];
+            float timeInterval = 1.0f / (keyCount - 1);
+            for (int i = 0; i < keyCount; i++)
+                colorKeys[i] = new GradientColorKey
+                {
+                    color = UnityEngine.Random.ColorHSV(0, 1, 0.7f, 1, 0.8f, 1),
+                    time = i * timeInterval
+                };
+
+            gradientExample.colorKeys = colorKeys.ToArray();
+            gradientExample.alphaKeys = new[] { new GradientAlphaKey { alpha = 1 } };
+        }
+
         [Button("Lerp color delayed")]
         public async void LerpColorsAsync(int stepsPerColor, Color[] colors)
         {
@@ -120,12 +120,12 @@ namespace AdvancedEditorTools
 
             for (int i = 1; i < colors.Length; i++)
             {
-                var prevColor = delayedColor;
-                var newColor = colors[i];
+                Color prevColor = delayedColor;
+                Color newColor = colors[i];
                 float stepCount = 0;
                 while (stepCount < stepsPerColor)
                 {
-                    await System.Threading.Tasks.Task.Delay(1);
+                    await Task.Delay(1);
                     stepCount++;
                     delayedColor = Color.Lerp(prevColor, newColor, stepCount / stepsPerColor);
                 }

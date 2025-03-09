@@ -1,27 +1,28 @@
+#region
+
 using System.Collections;
-
 using UnityEngine;
-
 using static Skill;
+
+#endregion
 
 public class ProjectileObject : MonoBehaviour
 {
     #region Fields
 
-    [SerializeField]
-    private ProjectileObject nextProjectile;
+    [SerializeField] private ProjectileObject nextProjectile;
 
     private Vector3 targetPoint;
     private Person targetPerson, initiator;
 
-    [SerializeField]
-    private float timeAnimationDead;
+    [SerializeField] private float timeAnimationDead;
 
     private Transform tr;
-    private bool danger = false;
+    private bool danger;
     private Projectile skill;
     public string animationDead;
     private int countCatch;
+
     #endregion Fields
 
     #region Methods
@@ -76,7 +77,10 @@ public class ProjectileObject : MonoBehaviour
         _ = StartCoroutine(DestroySelf());
     }
 
-    private void FixedUpdate() => tr.position += tr.right * skill.speed;
+    private void FixedUpdate()
+    {
+        tr.position += tr.right * skill.speed;
+    }
 
     public void Build(Person initiator, Projectile skill, Person targetPerson = null)
     {
@@ -85,5 +89,6 @@ public class ProjectileObject : MonoBehaviour
         this.skill = skill;
         countCatch = skill.maxCountCatch;
     }
+
     #endregion Methods
 }

@@ -1,15 +1,23 @@
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEngine;
-
 using static Attack;
+using Random = UnityEngine.Random;
 
-public partial class Person : MonoBehaviour // Характеристики существа
+#endregion
+
+public partial class Person : MonoBehaviour // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
+    #region Delegates
+
+    public delegate void OnDamageHandler(Person friend, Person enemy, DamageType type, Skill attackType, float damage);
+
+    #endregion Delegates
+
     #region Events
 
     public event Action<Person> OnDeadPerson;
@@ -20,12 +28,6 @@ public partial class Person : MonoBehaviour // Характеристики существа
 
     #endregion Events
 
-    #region Delegates
-
-    public delegate void OnDamageHandler(Person friend, Person enemy, DamageType type, Skill attackType, float damage);
-
-    #endregion Delegates
-
     #region Properties
 
     public float health { get; private set; }
@@ -33,13 +35,13 @@ public partial class Person : MonoBehaviour // Характеристики существа
     public float stamina { get; private set; }
     public float morality { get; private set; }
 
-    [Min(0)]
-    public float speedScale = 1;
+    [Min(0)] public float speedScale = 1;
 
-    public bool repeat = false;
+    public bool repeat;
     public bool needTarget = true;
-    public bool collective = false;
-    public bool distracted = false;
+    public bool collective;
+    public bool distracted;
+
     #endregion Properties
 
     #region Fields
@@ -48,23 +50,25 @@ public partial class Person : MonoBehaviour // Характеристики существа
     private const float UPDATE_REGEN = 1.5f;
 
     /// <summary>
-    /// Наложенные эффекты
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public List<Buff> buffs;
+
     public Dictionary<Skill, float> amountSkill = new();
 
-    [ReadOnly]
-    public Melee tempMelee;
+    [ReadOnly] public Melee tempMelee;
+
     #endregion Fields
 
     #region Methods
+
     private IEnumerator IRegenUpdate()
     {
         while (true)
         {
             yield return new WaitForSeconds(UPDATE_REGEN);
 
-            // Если здоровье персоны стало равным 0, вызываем событие OnDeadArmy
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 0, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ OnDeadArmy
             if (health == 0)
             {
                 OnDeadPerson?.Invoke(this);
@@ -79,7 +83,8 @@ public partial class Person : MonoBehaviour // Характеристики существа
             if (!isStoped && stamina >= status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f)
             {
                 stamina -= status.regenStamina / 10;
-                stamina = Mathf.Clamp(stamina, status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f, stamina + (status.regenStamina / 10));
+                stamina = Mathf.Clamp(stamina, status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f,
+                    stamina + status.regenStamina / 10);
             }
             else
             {
@@ -93,70 +98,70 @@ public partial class Person : MonoBehaviour // Характеристики существа
     }
 
     /// <summary>
-    /// Получение урона
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="enemy">тот, кто наносит урон</param>
-    /// <param name="type">тип урона</param>
-    /// <param name="damage">урон</param>
+    /// <param name="enemy">пїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</param>
+    /// <param name="type">пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="damage">пїЅпїЅпїЅпїЅ</param>
     public void TakeDamage(Person enemy, DamageType type, Skill attackType, float damage)
     {
-        // Проверяем, есть ли у армии масштабирование урона для данного типа урона
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (status.scaleTakeDamage.ContainsKey(type))
             damage *= status.scaleTakeDamage[type];
 
-        // Проверяем, есть ли у армии щит для данного типа урона
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (status.shield.ContainsKey(type) && status.shield[type] + damage != 0)
             damage = damage * damage / (status.shield[type] + damage);
 
-        // Вызываем событие OnDamageTaken, чтобы уведомить о полученном уроне
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ OnDamageTaken, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         OnDamageTaken?.Invoke(this, enemy, type, attackType, damage);
 
-        // Изменяем здоровье персоны на основе типа урона
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         health += type == DamageType.Healing ? damage : -damage;
 
-        // Ограничиваем здоровье персоны максимальным значением
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         health = Mathf.Clamp(health, 0, status.maxHealth);
 
-        // Если здоровье персоны стало равным 0, вызываем событие OnDeadArmy
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 0, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ OnDeadArmy
         if (health == 0)
             OnDeadPerson?.Invoke(this);
     }
 
     /// <summary>
-    /// Нанесение урона
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="enemy">тот, кому наносят урон</param>
-    /// <param name="attacks">атаки</param>
-    /// <param name="skill">навык атаки</param>
+    /// <param name="enemy">пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</param>
+    /// <param name="attacks">пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</param>
     public void GiveDamage(Person enemy, DamageTypeDictionary attacks, Skill skill)
     {
-        foreach (KeyValuePair<DamageType, float> attack in attacks)
+        foreach (var attack in attacks)
         {
-            // Гарантируем, что урон является положительным значением
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             float damage = Mathf.Abs(attack.Value);
 
-            // Проверяем, есть ли у армии масштабирование урона для данного типа урона
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (status.scaleGiveDamage.ContainsKey(attack.Key))
                 damage *= status.scaleGiveDamage[attack.Key];
 
-            // Проверяем, является ли атака критическим ударом на основе шанса критического удара армии
-            damage = UnityEngine.Random.Range(0, 100f) <= status.critChance ? damage * status.crit : damage;
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+            damage = Random.Range(0, 100f) <= status.critChance ? damage * status.crit : damage;
 
-            // Вызываем событие OnDamageGiven, чтобы уведомить его о нанесённом уроне
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ OnDamageGiven, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             OnDamageGiven?.Invoke(this, enemy, attack.Key, skill, damage);
 
-            // Наносим урон врагу
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             enemy.TakeDamage(this, attack.Key, skill, damage);
         }
     }
 
     public bool CanUseSkill(Skill skill)
     {
-        // Проверяем, достаточно ли у нас стамины и маны для атаки
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (stamina < skill.stamina || mana < skill.mana)
             return false;
 
-        // Вычитаем стоимость стамины и маны для выполнения навыка
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         stamina -= skill.stamina;
         mana -= skill.mana;
         return true;
@@ -169,7 +174,10 @@ public partial class Person : MonoBehaviour // Характеристики существа
     }
 
     [Button("Kill", 15)]
-    public void Kill() => TakeDamage(null, DamageType.Absolute, new Melee(), status.maxHealth);
+    public void Kill()
+    {
+        TakeDamage(null, DamageType.Absolute, new Melee(), status.maxHealth);
+    }
 
     #endregion Methods
 }

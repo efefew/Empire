@@ -1,5 +1,9 @@
+#region
+
 using System;
 using UnityEngine;
+
+#endregion
 
 namespace AdvancedEditorTools.Attributes
 {
@@ -8,7 +12,13 @@ namespace AdvancedEditorTools.Attributes
     {
         public int spacing;
 
-        /// <param name="spacing">Space in pixels between the previous property and the next one. The line will be painted in the middle.</param>
-        public LineSeparatorAttribute(int spacing = 10) { this.spacing = spacing; }
+        /// <param name="spacing">
+        ///     Space in pixels between the previous property and the next one. The line will be painted in the
+        ///     middle.
+        /// </param>
+        public LineSeparatorAttribute(int spacing = 10)
+        {
+            this.spacing = spacing;
+        }
     }
 }

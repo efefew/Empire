@@ -1,11 +1,14 @@
+#region
+
 using UnityEngine;
 
-public partial class Person : MonoBehaviour// Анимация существа
+#endregion
+
+public partial class Person : MonoBehaviour // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
     #region Fields
 
-    [SerializeField]
-    private Animator animator;
+    [SerializeField] private Animator animator;
 
     private string currentStateAnimation;
     private uint currentPriorityStateAnimation;

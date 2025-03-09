@@ -1,12 +1,17 @@
 #if UNITY_EDITOR
+
+#region
+
 using System;
 using System.Collections.Generic;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
     public static class DefaultSerializableTypes
     {
-        public static readonly string[] typeNames = new[]
+        public static readonly string[] typeNames =
         {
             "Char",
             "Byte",

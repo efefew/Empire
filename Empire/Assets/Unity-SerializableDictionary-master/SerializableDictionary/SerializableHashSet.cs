@@ -1,80 +1,99 @@
 ﻿#if NET_4_6 || NET_STANDARD_2_0
+
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using UnityEngine;
 
+#endregion
+
 public abstract class SerializableHashSetBase
 {
-	public abstract class Storage {}
+    public abstract class Storage
+    {
+    }
 
-	protected class HashSet<TValue> : System.Collections.Generic.HashSet<TValue>
-	{
-		public HashSet() {}
-		public HashSet(ISet<TValue> set) : base(set) {}
-		public HashSet(SerializationInfo info, StreamingContext context) : base(info, context) {}
-	}
+    protected class HashSet<TValue> : System.Collections.Generic.HashSet<TValue>
+    {
+        public HashSet()
+        {
+        }
+
+        public HashSet(ISet<TValue> set) : base(set)
+        {
+        }
+
+        public HashSet(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
 }
 
 [Serializable]
-public abstract class SerializableHashSet<T> : SerializableHashSetBase, ISet<T>, ISerializationCallbackReceiver, IDeserializationCallback, ISerializable
+public abstract class SerializableHashSet<T> : SerializableHashSetBase, ISet<T>, ISerializationCallbackReceiver,
+    IDeserializationCallback, ISerializable
 {
-	HashSet<T> m_hashSet;
-	[SerializeField]
-	T[] m_keys;
+    [SerializeField] private T[] m_keys;
 
-	public SerializableHashSet()
-	{
-		m_hashSet = new HashSet<T>();
-	}
+    private HashSet<T> m_hashSet;
 
-	public SerializableHashSet(ISet<T> set)
-	{	
-		m_hashSet = new HashSet<T>(set);
-	}
+    public SerializableHashSet()
+    {
+        m_hashSet = new HashSet<T>();
+    }
 
-	public void CopyFrom(ISet<T> set)
-	{
-		m_hashSet.Clear();
-		foreach (var value in set)
-		{
-			m_hashSet.Add(value);
-		}
-	}
+    public SerializableHashSet(ISet<T> set)
+    {
+        m_hashSet = new HashSet<T>(set);
+    }
 
-	public void OnAfterDeserialize()
-	{
-		if(m_keys != null)
-		{
-			m_hashSet.Clear();
-			int n = m_keys.Length;
-			for(int i = 0; i < n; ++i)
-			{
-				m_hashSet.Add(m_keys[i]);
-			}
+    #region IDeserializationCallback
 
-			m_keys = null;
-		}
-	}
+    public void OnDeserialization(object sender)
+    {
+        ((IDeserializationCallback)m_hashSet).OnDeserialization(sender);
+    }
 
-	public void OnBeforeSerialize()
-	{
-		int n = m_hashSet.Count;
-		m_keys = new T[n];
+    #endregion
 
-		int i = 0;
-		foreach(var value in m_hashSet)
-		{
-			m_keys[i] = value;
-			++i;
-		}
-	}
+    public void OnAfterDeserialize()
+    {
+        if (m_keys != null)
+        {
+            m_hashSet.Clear();
+            int n = m_keys.Length;
+            for (int i = 0; i < n; ++i) m_hashSet.Add(m_keys[i]);
+
+            m_keys = null;
+        }
+    }
+
+    public void OnBeforeSerialize()
+    {
+        int n = m_hashSet.Count;
+        m_keys = new T[n];
+
+        int i = 0;
+        foreach (T value in m_hashSet)
+        {
+            m_keys[i] = value;
+            ++i;
+        }
+    }
+
+    public void CopyFrom(ISet<T> set)
+    {
+        m_hashSet.Clear();
+        foreach (T value in set) m_hashSet.Add(value);
+    }
 
     #region ISet<TValue>
 
-    public int Count { get { return ((ISet<T>)m_hashSet).Count; } }
-    public bool IsReadOnly { get { return  ((ISet<T>)m_hashSet).IsReadOnly; } }
+    public int Count => ((ISet<T>)m_hashSet).Count;
+    public bool IsReadOnly => ((ISet<T>)m_hashSet).IsReadOnly;
 
     public bool Add(T item)
     {
@@ -168,26 +187,17 @@ public abstract class SerializableHashSet<T> : SerializableHashSetBase, ISet<T>,
 
     #endregion
 
-	#region IDeserializationCallback
+    #region ISerializable
 
-	public void OnDeserialization(object sender)
-	{
-		((IDeserializationCallback)m_hashSet).OnDeserialization(sender);
-	}
+    protected SerializableHashSet(SerializationInfo info, StreamingContext context)
+    {
+        m_hashSet = new HashSet<T>(info, context);
+    }
 
-	#endregion
-
-	#region ISerializable
-
-	protected SerializableHashSet(SerializationInfo info, StreamingContext context) 
-	{
-		m_hashSet = new HashSet<T>(info, context);
-	}
-
-	public void GetObjectData(SerializationInfo info, StreamingContext context)
-	{
-		((ISerializable)m_hashSet).GetObjectData(info, context);
-	}
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        ((ISerializable)m_hashSet).GetObjectData(info, context);
+    }
 
     #endregion
 }

@@ -9,7 +9,7 @@ namespace AdvancedEditorTools
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var status = GUI.enabled;
+            bool status = GUI.enabled;
             GUI.enabled = false;
             EditorGUI.PropertyField(position, property, label);
             GUI.enabled = status;

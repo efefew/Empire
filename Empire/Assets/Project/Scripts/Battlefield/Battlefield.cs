@@ -1,13 +1,22 @@
+#region
+
 using System;
 using System.Collections.Generic;
-
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
-
 using static Skill;
+
+#endregion
 
 public class Battlefield : MonoBehaviour
 {
+    #region Properties
+
+    public static Battlefield Singleton { get; private set; }
+
+    #endregion Properties
+
     #region Events
 
     public event Action<Skill> OnStartPatrol;
@@ -18,76 +27,78 @@ public class Battlefield : MonoBehaviour
 
     #endregion Events
 
-    #region Properties
-
-    public static Battlefield singleton { get; private set; }
-
-    #endregion Properties
-
     #region Fields
 
-    public Vector3 screenPosition { get; private set; }
+    private Vector3 ScreenPosition { get; set; }
 
-    public Vector3 worldPosition { get; private set; }
+    public Vector3 WorldPosition { get; private set; }
 
-    [SerializeField]
-    private Color selfColor, friendColor, enemyColor;
+    [FormerlySerializedAs("selfColor")] [SerializeField] private Color _selfColor;
+    [FormerlySerializedAs("friendColor")] [SerializeField] private Color _friendColor;
+    [FormerlySerializedAs("enemyColor")] [SerializeField] private Color _enemyColor;
 
-    internal Skill targetSkill;
-    public FractionBattlefield[] fractions;
+    internal Skill _targetSkill;
+    [FormerlySerializedAs("fractions")] public FractionBattlefield[] Fractions;
 
-    public ConteinerButtonSkills conteinerSkill;
-    public FractionBattlefield playerFraction;
-    private bool skillButtonsPopup;
-    public Button pointTarget, patrol;
-    public Toggle toggleArmyGroup, toggleStand, toggleRepeat;
+    [FormerlySerializedAs("conteinerSkill")] public ConteinerButtonSkills ConteinerSkill;
+    [FormerlySerializedAs("playerFraction")] public FractionBattlefield PlayerFraction;
+    private bool _skillButtonsPopup;
+    [FormerlySerializedAs("pointTarget")] public Button PointTarget;
+    [FormerlySerializedAs("patrol")] public Button Patrol;
+    [FormerlySerializedAs("toggleArmyGroup")] public Toggle ToggleArmyGroup;
+    [FormerlySerializedAs("toggleStand")] public Toggle ToggleStand;
+    [FormerlySerializedAs("toggleRepeat")] public Toggle ToggleRepeat;
+    private Camera _c;
+
+    public Battlefield(Vector3 screenPosition)
+    {
+        ScreenPosition = screenPosition;
+    }
 
     #endregion Fields
 
     #region Methods
 
+    private void Start()
+    {
+        _c = Camera.main;
+    }
+
     private void OnGUI()
     {
-        Camera c = Camera.main;
         Event e = Event.current;
 
         Vector2 mousePos = new()
         {
             x = e.mousePosition.x,
-            y = c.pixelHeight - e.mousePosition.y
+            y = _c.pixelHeight - e.mousePosition.y
         };
 
-        screenPosition = new Vector3(mousePos.x, mousePos.y, c.nearClipPlane);
+        ScreenPosition = new Vector3(mousePos.x, mousePos.y, _c.nearClipPlane);
 
-        worldPosition = c.ScreenToWorldPoint(screenPosition);
+        WorldPosition = _c.ScreenToWorldPoint(ScreenPosition);
     }
 
     private void Awake()
     {
         InitializeSingleton();
-        skillButtonsPopup = false;
+        _skillButtonsPopup = false;
         DeactiveAllArmies();
-        toggleStand.onValueChanged.AddListener((bool on) =>
+        ToggleStand.onValueChanged.AddListener(on =>
         {
-            if (!on)
-            {
-                StopPatrol();
-            }
+            if (!on) StopPatrol();
         });
-        toggleRepeat.onValueChanged.AddListener((bool on) =>
+        ToggleRepeat.onValueChanged.AddListener(on =>
         {
-            if (!on)
-            {
-                StopPatrol();
-            }
+            if (!on) StopPatrol();
         });
-        pointTarget.onClick.AddListener(() =>
+        PointTarget.onClick.AddListener(() =>
         {
-            SetTargetPoint(pointTarget.transform.position);
-            pointTarget.gameObject.SetActive(false);
-            targetSkill = null;
+            SetTargetPoint(PointTarget.transform.position);
+            PointTarget.gameObject.SetActive(false);
+            _targetSkill = null;
         });
-        pointTarget.gameObject.SetActive(false);
+        PointTarget.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -98,31 +109,25 @@ public class Battlefield : MonoBehaviour
             return;
         }
 
-        if (targetSkill == null || !targetSkill.pointCanBeTarget)
-        {
-            return;
-        }
+        if (_targetSkill == null || !_targetSkill.pointCanBeTarget) return;
 
-        if (!Input.GetKeyUp(KeyCode.Mouse0) || MyExtentions.IsPointerOverUI())
-        {
-            return;
-        }
+        if (!Input.GetKeyUp(KeyCode.Mouse0) || MyExtentions.IsPointerOverUI()) return;
 
-        CreatePointTarget(worldPosition);
+        CreatePointTarget(WorldPosition);
     }
 
     /// <summary>
-    /// Активировать армию для нажатия
+    ///     РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ Р°СЂРјРёСЋ РґР»СЏ РЅР°Р¶Р°С‚РёСЏ
     /// </summary>
-    /// <param name="army">армия</param>
-    /// <param name="on">активировать?</param>
+    /// <param name="army">Р°СЂРјРёСЏ</param>
+    /// <param name="on">РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ?</param>
     private void SetActiveArmy(Army army, bool on)
     {
         army.buttonArmy.interactable = on;
 
-        // Если это наша фракция, скрываем глобальный UI армии
-        // (только в нашей фракции есть глобальный UI для выбора армии)
-        if (playerFraction == army.status.fraction)
+        // Р•СЃР»Рё СЌС‚Рѕ РЅР°С€Р° С„СЂР°РєС†РёСЏ, СЃРєСЂС‹РІР°РµРј РіР»РѕР±Р°Р»СЊРЅС‹Р№ UI Р°СЂРјРёРё
+        // (С‚РѕР»СЊРєРѕ РІ РЅР°С€РµР№ С„СЂР°РєС†РёРё РµСЃС‚СЊ РіР»РѕР±Р°Р»СЊРЅС‹Р№ UI РґР»СЏ РІС‹Р±РѕСЂР° Р°СЂРјРёРё)
+        if (PlayerFraction == army.status.fraction)
         {
             army.buttonArmy.gameObject.SetActive(on);
             army.armyGlobalUI.gameObject.SetActive(!on);
@@ -130,47 +135,44 @@ public class Battlefield : MonoBehaviour
     }
 
     /// <summary>
-    /// Деактивировать все армии для нажатия
+    ///     Р”РµР°РєС‚РёРІРёСЂРѕРІР°С‚СЊ РІСЃРµ Р°СЂРјРёРё РґР»СЏ РЅР°Р¶Р°С‚РёСЏ
     /// </summary>
     public void DeactiveAllArmies()
     {
         List<Army> armies;
-        for (int idFraction = 0; idFraction < fractions.Length; idFraction++)
+        for (int idFraction = 0; idFraction < Fractions.Length; idFraction++)
         {
-            armies = fractions[idFraction].armies;
-            for (int idArmy = 0; idArmy < armies.Count; idArmy++)
-            {
-                SetActiveArmy(armies[idArmy], false);
-            }
+            armies = Fractions[idFraction].armies;
+            for (int idArmy = 0; idArmy < armies.Count; idArmy++) SetActiveArmy(armies[idArmy], false);
         }
     }
 
     public void InitializeSingleton()
     {
-        if (singleton != null)
+        if (Singleton != null)
         {
             Debug.LogError("singleton > 1");
             return;
         }
 
-        singleton = this;
+        Singleton = this;
     }
 
     /// <summary>
-    /// Выбор цели
+    ///     Р’С‹Р±РѕСЂ С†РµР»Рё
     /// </summary>
-    /// <param name="target">цель</param>
+    /// <param name="target">С†РµР»СЊ</param>
     public void SetTargetArmy(Army target)
     {
         OnSetTargetArmy?.Invoke(target);
-        targetSkill = null;
+        _targetSkill = null;
         DeactiveAllArmies();
     }
 
     /// <summary>
-    /// Выбор точки
+    ///     Р’С‹Р±РѕСЂ С‚РѕС‡РєРё
     /// </summary>
-    /// <param name="target">точка</param>
+    /// <param name="target">С‚РѕС‡РєР°</param>
     public void SetTargetPoint(Vector3 target)
     {
         OnSetTargetPoint?.Invoke(target);
@@ -178,88 +180,91 @@ public class Battlefield : MonoBehaviour
     }
 
     /// <summary>
-    /// Патрулировать
+    ///     РџР°С‚СЂСѓР»РёСЂРѕРІР°С‚СЊ
     /// </summary>
-    public void StartPatrol(Skill skill)
+    private void StartPatrol(Skill skill)
     {
-        targetSkill = null;
+        _targetSkill = null;
         DeactiveAllArmies();
-        toggleStand.isOn = true;
-        toggleRepeat.isOn = true;
-        // реализовать иникатор на кнопке навыка
-        // патрулировать
-        OnStartPatrol.Invoke(skill);
+        ToggleStand.isOn = true;
+        ToggleRepeat.isOn = true;
+        // СЂРµР°Р»РёР·РѕРІР°С‚СЊ РёРЅРґРёРєР°С‚РѕСЂ РЅР° РєРЅРѕРїРєРµ РЅР°РІС‹РєР°
+        // РїР°С‚СЂСѓР»РёСЂРѕРІР°С‚СЊ
+        OnStartPatrol?.Invoke(skill);
     }
-    public void StopPatrol() => OnStopPatrol?.Invoke();
+
+    public void StopPatrol()
+    {
+        OnStopPatrol?.Invoke();
+    }
+
     /// <summary>
-    /// Активировать армии для нажатия с ограничением в виде триггера
+    ///     РђРєС‚РёРІРёСЂРѕРІР°С‚СЊ Р°СЂРјРёРё РґР»СЏ РЅР°Р¶Р°С‚РёСЏ СЃ РѕРіСЂР°РЅРёС‡РµРЅРёРµРј РІ РІРёРґРµ С‚СЂРёРіРіРµСЂР°
     /// </summary>
-    /// <param name="trigger">триггер</param>
-    /// <param name="armyInitiator">армия - инициатор</param>
-    /// <returns>Активированые армии</returns>
+    /// <param name="trigger">С‚СЂРёРіРіРµСЂ</param>
+    /// <param name="armyInitiator">РђСЂРјРёСЏ - РёРЅРёС†РёР°С‚РѕСЂ</param>
+    /// <returns>РђРєС‚РёРІРёСЂРѕРІР°РЅРЅС‹Рµ Р°СЂРјРёРё</returns>
     public void ActiveArmies(TriggerType trigger, Army armyInitiator)
     {
         DeactiveAllArmies();
 
-        for (int idFraction = 0; idFraction < fractions.Length; idFraction++)
-        {
-            for (int idArmy = 0; idArmy < fractions[idFraction].armies.Count; idArmy++)
-            {
-                if (OnTrigger(trigger, armyInitiator, fractions[idFraction].armies[idArmy]))
-                {
-                    SetActiveArmy(fractions[idFraction].armies[idArmy], true);
-                }
-            }
-        }
+        for (int idFraction = 0; idFraction < Fractions.Length; idFraction++)
+        for (int idArmy = 0; idArmy < Fractions[idFraction].armies.Count; idArmy++)
+            if (OnTrigger(trigger, armyInitiator, Fractions[idFraction].armies[idArmy]))
+                SetActiveArmy(Fractions[idFraction].armies[idArmy], true);
     }
+
     public void ActiveSkillButtons(Skill skill)
     {
-        if (!(skill.collective || skill.сanBePatrol))
+        if (!(skill.collective || skill.СЃanBePatrol)) return;
+
+        _skillButtonsPopup = true;
+        if (skill.collective)
         {
-            return;
         }
 
-        skillButtonsPopup = true;
-        if (skill.collective)
-        { }
-
-        if (skill.сanBePatrol)
+        if (skill.СЃanBePatrol)
         {
-            patrol.gameObject.SetActive(true);
-            patrol.onClick.RemoveAllListeners();
-            patrol.onClick.AddListener(() => StartPatrol(skill));
+            Patrol.gameObject.SetActive(true);
+            Patrol.onClick.RemoveAllListeners();
+            Patrol.onClick.AddListener(() => StartPatrol(skill));
         }
     }
+
     public void RemoveSkillAditionalUI()
     {
-        if (!skillButtonsPopup)
+        if (!_skillButtonsPopup)
         {
-            if (patrol.gameObject.activeSelf)
-            {
-                patrol.gameObject.SetActive(false);
-            }
+            if (Patrol.gameObject.activeSelf) Patrol.gameObject.SetActive(false);
         }
         else
         {
-            skillButtonsPopup = false;
+            _skillButtonsPopup = false;
         }
 
-        if (pointTarget.gameObject.activeSelf && !MyExtentions.IsPointerOverUI(pointTarget.gameObject))
+        if (PointTarget.gameObject.activeSelf && !MyExtentions.IsPointerOverUI(PointTarget.gameObject))
         {
-            targetSkill = null;
+            _targetSkill = null;
             DeactiveAllArmies();
-            pointTarget.gameObject.SetActive(false);
+            PointTarget.gameObject.SetActive(false);
         }
     }
 
     public void CreatePointTarget(Vector3 point)
     {
         DeactiveAllArmies();
-        pointTarget.gameObject.SetActive(true);
-        pointTarget.transform.position = point;
+        PointTarget.gameObject.SetActive(true);
+        PointTarget.transform.position = point;
     }
 
-    public Color GetColorFraction(FractionBattlefield fraction) => fraction.sideID != playerFraction.sideID ? enemyColor : playerFraction == fraction ? selfColor : friendColor;
+    public Color GetColorFraction(FractionBattlefield fraction)
+    {
+        return fraction.sideID != PlayerFraction.sideID
+            ? _enemyColor
+            : PlayerFraction == fraction
+                ? _selfColor
+                : _friendColor;
+    }
 
     #endregion Methods
 }

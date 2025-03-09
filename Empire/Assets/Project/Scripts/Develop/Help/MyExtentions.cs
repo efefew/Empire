@@ -1,12 +1,16 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using B83.Image.BMP;
-
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
+using Random = System.Random;
+
+#endregion
 
 public static class MyExtentions
 {
@@ -20,10 +24,10 @@ public static class MyExtentions
 
     #region Methods
 
-    private static System.Random random = new((int)DateTime.Now.Ticks & 0x0000FFFF);
+    private static Random random = new((int)DateTime.Now.Ticks & 0x0000FFFF);
 
     /// <summary>
-    /// Нормализовать массив
+    ///     Нормализовать массив
     /// </summary>
     /// <param name="array">массив</param>
     public static void Normalize(this double[] array, double min = 0, double max = 1)
@@ -33,10 +37,7 @@ public static class MyExtentions
         if (minInArray == maxInArray)
         {
             double value = maxInArray > 0 ? 1 : 0;
-            for (int id = 0; id < array.Length; id++)
-            {
-                array[id] = value;
-            }
+            for (int id = 0; id < array.Length; id++) array[id] = value;
 
             return;
         }
@@ -44,13 +45,13 @@ public static class MyExtentions
         double relativeValue;
         for (int id = 0; id < array.Length; id++)
         {
-            relativeValue = (array[id] - minInArray) / (maxInArray - minInArray);//от 0 до 1
-            array[id] = (relativeValue * (max - min)) + min;
+            relativeValue = (array[id] - minInArray) / (maxInArray - minInArray); //от 0 до 1
+            array[id] = relativeValue * (max - min) + min;
         }
     }
 
     /// <summary>
-    /// Перемешивание списка
+    ///     Перемешивание списка
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list">список</param>
@@ -66,7 +67,7 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Перемешивание массива
+    ///     Перемешивание массива
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="array">массив</param>
@@ -82,17 +83,14 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Перемешивание двух списков однаково
+    ///     Перемешивание двух списков однаково
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="list1">список 1</param>
     /// <param name="list2">список 2</param>
     public static void MixingTwoLists<T>(IList<T> list1, IList<T> list2)
     {
-        if (list1.Count != list2.Count)
-        {
-            throw new Exception("списки должны иметь одинаковый размер");
-        }
+        if (list1.Count != list2.Count) throw new Exception("списки должны иметь одинаковый размер");
 
         int n = list1.Count;
         while (n > 1)
@@ -106,15 +104,13 @@ public static class MyExtentions
 
     public static T[] ToArray<T>(this T[,] matrix)
     {
-        T[] array = new T[matrix.GetLength(0) * matrix.GetLength(1)];
+        var array = new T[matrix.GetLength(0) * matrix.GetLength(1)];
         int id = 0;
         for (int x = 0; x < matrix.GetLength(0); x++)
+        for (int y = 0; y < matrix.GetLength(1); y++)
         {
-            for (int y = 0; y < matrix.GetLength(1); y++)
-            {
-                array[id] = matrix[x, y];
-                id++;
-            }
+            array[id] = matrix[x, y];
+            id++;
         }
 
         return array;
@@ -124,10 +120,7 @@ public static class MyExtentions
     {
         writer.Write(arr.Length);
 
-        for (int id = 0; id < arr.Length; id++)
-        {
-            writer.Write(arr[id]);
-        }
+        for (int id = 0; id < arr.Length; id++) writer.Write(arr[id]);
     }
 
     public static void WriteArray2D(this BinaryWriter writer, double[,] arr)
@@ -136,12 +129,8 @@ public static class MyExtentions
         writer.Write(arr.GetLength(0));
 
         for (int y = 0; y < arr.GetLength(1); y++)
-        {
-            for (int x = 0; x < arr.GetLength(0); x++)
-            {
-                writer.Write(arr[x, y]);
-            }
-        }
+        for (int x = 0; x < arr.GetLength(0); x++)
+            writer.Write(arr[x, y]);
     }
 
     public static double[] ReadArray(this BinaryReader reader)
@@ -149,10 +138,7 @@ public static class MyExtentions
         int length = reader.ReadInt32();
         double[] array = new double[length];
 
-        for (int id = 0; id < length; id++)
-        {
-            array[id] = reader.ReadDouble();
-        }
+        for (int id = 0; id < length; id++) array[id] = reader.ReadDouble();
 
         return array;
     }
@@ -163,12 +149,8 @@ public static class MyExtentions
         int xCount = reader.ReadInt32();
         double[,] array = new double[xCount, yCount];
         for (int y = 0; y < yCount; y++)
-        {
-            for (int x = 0; x < xCount; x++)
-            {
-                array[x, y] = reader.ReadDouble();
-            }
-        }
+        for (int x = 0; x < xCount; x++)
+            array[x, y] = reader.ReadDouble();
 
         return array;
     }
@@ -197,7 +179,10 @@ public static class MyExtentions
         binaryReader.Close();
     }
 
-    public static Sprite ToSprite(this Texture2D tex) => Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+    public static Sprite ToSprite(this Texture2D tex)
+    {
+        return Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+    }
 
     public static Texture2D LoadBmpTexture(string filePath)
     {
@@ -230,30 +215,34 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Очистить объект от вложенных объектов
+    ///     Очистить объект от вложенных объектов
     /// </summary>
     /// <param name="transform">объект</param>
     public static void Clear(this Transform transform)
     {
-        if (transform.childCount == 0)
-        {
-            return;
-        }
+        if (transform.childCount == 0) return;
 
         for (int idChild = 0; idChild < transform.childCount; idChild++)
-        {
-            UnityEngine.Object.Destroy(transform.GetChild(idChild).gameObject);
-        }
+            Object.Destroy(transform.GetChild(idChild).gameObject);
     }
 
-    public static Vector3 X(this Vector3 vector, float value) => new(value, vector.y, vector.z);
+    public static Vector3 X(this Vector3 vector, float value)
+    {
+        return new Vector3(value, vector.y, vector.z);
+    }
 
-    public static Vector3 Y(this Vector3 vector, float value) => new(vector.x, value, vector.z);
+    public static Vector3 Y(this Vector3 vector, float value)
+    {
+        return new Vector3(vector.x, value, vector.z);
+    }
 
-    public static Vector3 Z(this Vector3 vector, float value) => new(vector.x, vector.y, value);
+    public static Vector3 Z(this Vector3 vector, float value)
+    {
+        return new Vector3(vector.x, vector.y, value);
+    }
 
     /// <summary>
-    /// Следить за целью (2D версия)
+    ///     Следить за целью (2D версия)
     /// </summary>
     /// <param name="transform">следящий</param>
     /// <param name="target">цель</param>
@@ -265,7 +254,7 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Проверяет, находится ли указатель мыши над объектом UI.
+    ///     Проверяет, находится ли указатель мыши над объектом UI.
     /// </summary>
     /// <returns>находится ли указатель мыши над объектом UI</returns>
     public static bool IsPointerOverUI()
@@ -287,7 +276,7 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Проверяет, находится ли указатель мыши над конкретным объектом UI.
+    ///     Проверяет, находится ли указатель мыши над конкретным объектом UI.
     /// </summary>
     /// <param name="targetUI">цель</param>
     /// <returns>находится ли указатель мыши над объектом UI</returns>
@@ -307,17 +296,15 @@ public static class MyExtentions
         foreach (RaycastResult result in results)
         {
             GameObject objectUI = result.module.gameObject;
-            if (objectUI == targetUI)
-            {
-                return true;
-            }
+            if (objectUI == targetUI) return true;
         }
+
         // Если количество результатов больше нуля, значит указатель мыши находится над объектом UI.
         return false;
     }
 
     /// <summary>
-    /// Нарастить границы массиву заполнив значением value
+    ///     Нарастить границы массиву заполнив значением value
     /// </summary>
     /// <param name="arr">массив</param>
     /// <param name="value">значение</param>
@@ -338,39 +325,29 @@ public static class MyExtentions
         }
 
         for (int x = 0; x < arr.GetLength(0); x++)
-        {
-            for (int y = 0; y < arr.GetLength(1); y++)
-            {
-                newArr[x + 1, y + 1] = arr[x, y];
-            }
-        }
+        for (int y = 0; y < arr.GetLength(1); y++)
+            newArr[x + 1, y + 1] = arr[x, y];
 
         return newArr;
     }
 
     /// <summary>
-    /// Таймер
+    ///     Таймер
     /// </summary>
     /// <param name="timer">значение таймера</param>
     /// <returns>значение таймера равно нулю и не изменилось?</returns>
     public static bool Timer(this ref float timer)
     {
-        if (timer == 0)
-        {
-            return true;
-        }
+        if (timer == 0) return true;
 
         timer -= Time.fixedDeltaTime;
-        if (timer < 0)
-        {
-            timer = 0;
-        }
+        if (timer < 0) timer = 0;
 
         return false;
     }
 
     /// <summary>
-    /// Попробовать получить значение другого типа
+    ///     Попробовать получить значение другого типа
     /// </summary>
     /// <typeparam name="T">другой тип</typeparam>
     /// <param name="obj">исходное значение</param>
@@ -400,37 +377,25 @@ public static class MyExtentions
     }
 
     /// <summary>
-    /// Ищет min x, min y, max x, max y
+    ///     Ищет min x, min y, max x, max y
     /// </summary>
     /// <param name="points">точки</param>
     /// <returns>min x, min y, max x, max y</returns>
     public static (float, float, float, float) MinMax(this Vector2[] points)
     {
         Vector2 minPoint = new()
-        { x = points[0].x, y = points[0].y };
+            { x = points[0].x, y = points[0].y };
         Vector2 maxPoint = new()
-        { x = points[0].x, y = points[0].y };
+            { x = points[0].x, y = points[0].y };
         for (int id = 0; id < points.Length; id++)
         {
-            if (points[id].x < minPoint.x)
-            {
-                minPoint.x = points[id].x;
-            }
+            if (points[id].x < minPoint.x) minPoint.x = points[id].x;
 
-            if (points[id].y < minPoint.y)
-            {
-                minPoint.y = points[id].y;
-            }
+            if (points[id].y < minPoint.y) minPoint.y = points[id].y;
 
-            if (points[id].x > maxPoint.x)
-            {
-                maxPoint.x = points[id].x;
-            }
+            if (points[id].x > maxPoint.x) maxPoint.x = points[id].x;
 
-            if (points[id].y > maxPoint.y)
-            {
-                maxPoint.y = points[id].y;
-            }
+            if (points[id].y > maxPoint.y) maxPoint.y = points[id].y;
         }
 
         return (minPoint.x, minPoint.y, maxPoint.x, maxPoint.y);

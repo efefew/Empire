@@ -1,4 +1,8 @@
+#region
+
 using UnityEngine;
+
+#endregion
 
 [AddComponentMenu("Skill/Target")]
 public class Target : Skill
@@ -16,7 +20,11 @@ public class Target : Skill
         if (OnTrigger(triggerTarget, initiator, target))
             SetEffectsAndBuffs(initiator, target);
     }
-    public override void Run(Person initiator, Vector3 target) => Debug.LogError("Эта способность не может быть направлена на точку");
+
+    public override void Run(Person initiator, Vector3 target)
+    {
+        Debug.LogError("пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ");
+    }
 
     #endregion Methods
 }

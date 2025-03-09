@@ -1,13 +1,5 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
-using UnityEngine;
-
 namespace Meryel.UnityCodeAssist.Editor
 {
-
     //**--remove this
 #if MY_FOCUS_UTIL
     //[InitializeOnLoad]
@@ -106,5 +98,4 @@ namespace Meryel.UnityCodeAssist.Editor
 
     }
 #endif
-
 }

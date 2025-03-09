@@ -1,15 +1,18 @@
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEngine;
-[DisallowMultipleComponent()]
+
+#endregion
+
+[DisallowMultipleComponent]
 /// <summary>
-/// Нейроная сеть
+/// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 /// https://habr.com/ru/articles/556076/
 /// https://programforyou.ru/poleznoe/convolutional-network-from-scratch-part-zero-introduction
 /// https://ru.stackoverflow.com/questions/834750/
@@ -18,55 +21,60 @@ using UnityEngine;
 public class NeuralNetwork : MonoBehaviour
 {
     public Action<double> OnEndOfTheLearningEra;
+
     #region Enums
+
     /// <summary>
-    ///  Тип функции потерь
+    ///     пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public enum LossFunctionType
     {
         /// <summary>
-        /// средняя абсолютная ошибка
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         MAE,
+
         /// <summary>
-        /// среднеквадратичная функция потерь
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         MSE,
+
         /// <summary>
-        /// среднеквадратичное отклонение
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         RMSE
     }
 
     /// <summary>
-    /// Тип оценки результатов (метрика) Метрика Критерий/Оценка используется после обучения для измерения общей производительности.
-    /// https://habr.com/ru/articles/722628/
-    /// https://skine.ru/articles/559485/
+    ///     пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅ) пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+    ///     https://habr.com/ru/articles/722628/
+    ///     https://skine.ru/articles/559485/
     /// </summary>
     public enum EvaluationOfResultsType
     {
         /// <summary>
-        /// Метрика "Правильность"
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
         /// </summary>
         Accuracy,
 
         /// <summary>
-        /// Метрика "Полнота"
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
         /// </summary>
         Recall,
 
         /// <summary>
-        /// Метрика " Доля ложно-положительных (False Positive Rate)"
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ " пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (False Positive Rate)"
         /// </summary>
         FPR,
 
         /// <summary>
-        /// Метрика "Точность"
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"
         /// </summary>
         Precision,
 
         /// <summary>
-        /// Метрика "F-мера"
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ "F-пїЅпїЅпїЅпїЅ"
         /// </summary>
         F_score
     }
@@ -76,39 +84,39 @@ public class NeuralNetwork : MonoBehaviour
     #region Fields
 
     /// <summary>
-    /// значение, подбираемое экспериментально, от которого зависит скорость обучения нейросети
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    [SerializeField]
-    [Range(0f, 1f)]
-    private double learningRate = 0.3;
-    [SerializeField]
-    private NeuralLayer prefabNeuralLayer;
+    [SerializeField] [Range(0f, 1f)] private double learningRate = 0.3;
+
+    [SerializeField] private NeuralLayer prefabNeuralLayer;
 
     public NeuralLayer inputLayer;
     public NeuralLayer[] hiddenLayers;
     public NeuralLayer outputLayer;
 
-    [Tooltip("Оценка результатов (не используется)")]
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)")]
     public EvaluationOfResultsType evaluationOfResults;
-    [Tooltip("Функция потерь")]
-    public LossFunctionType lossFunction;
+
+    [Tooltip("пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ")] public LossFunctionType lossFunction;
 
     public int countEra, exampleCount;
     private bool stop, step;
     public double error, E = 10E-3;
+
     #endregion Fields
 
     #region Methods
 
     /// <summary>
-    /// Корректировка весов слоя
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="neuronsNeeded">требуемое значение нейронов слоя</param>
-    /// <param name="previousLayer">предыдущий слой</param>
-    /// <param name="layer">слой</param>
+    /// <param name="neuronsNeeded">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</param>
+    /// <param name="previousLayer">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ</param>
+    /// <param name="layer">пїЅпїЅпїЅпїЅ</param>
     /// <param name="errorNeurons"></param>
     /// <returns></returns>
-    private double[] AdjustingLayerWeights(double[] neuronsNeeded, NeuralLayer previousLayer, NeuralLayer layer, double[] errorNeurons = null)
+    private double[] AdjustingLayerWeights(double[] neuronsNeeded, NeuralLayer previousLayer, NeuralLayer layer,
+        double[] errorNeurons = null)
     {
         double[] errorPrevousNeurons = new double[previousLayer.neurons.Length];
         for (int id = 0; id < errorPrevousNeurons.Length; id++)
@@ -118,14 +126,15 @@ public class NeuralNetwork : MonoBehaviour
 
         for (int neuronID = 0; neuronID < layer.neurons.Length; neuronID++)
         {
-            error = errorNeurons == null ?
-                  layer.neurons[neuronID].value - neuronsNeeded[neuronID]
+            error = errorNeurons == null
+                ? layer.neurons[neuronID].value - neuronsNeeded[neuronID]
                 : errorNeurons[neuronID];
             delta = errorNeurons == null ? error : error * layer.neurons[neuronID].DerivativeFunction();
             for (int prevousNeuronID = 0; prevousNeuronID < previousLayer.neurons.Length; prevousNeuronID++)
             {
                 errorPrevousNeurons[prevousNeuronID] += delta * layer.neurons[neuronID].weight[prevousNeuronID];
-                layer.neurons[neuronID].weight[prevousNeuronID] -= previousLayer.neurons[prevousNeuronID].value * delta * learningRate;
+                layer.neurons[neuronID].weight[prevousNeuronID] -=
+                    previousLayer.neurons[prevousNeuronID].value * delta * learningRate;
             }
         }
 
@@ -165,13 +174,19 @@ public class NeuralNetwork : MonoBehaviour
     }
 
     /// <summary>
-    ///  Оценка результатов
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="TP">количество истинно положительных случаев, то есть когда случай был верно классифицирован и он принадлежит выбранному целевому множеству</param>
-    /// <param name="TN">количество истинно отрицательных  случаев, то есть когда случай был верно классифицирован и он принадлежит нецелевому множеству</param>
-    /// <param name="FP">ложно-положительный – число случаев классификации элемента нецелевого множества как целевого</param>
-    /// <param name="FN">ложно-отрицательный – число случаев классификации элемента целевого множества как нецелевого</param>
-    /// <returns>значение оценки результатов</returns>
+    /// <param name="TP">
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    /// </param>
+    /// <param name="TN">
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    /// </param>
+    /// <param name="FP">пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="FN">пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</returns>
     private double EvaluationOfResults(double TP, double TN, double FP, double FN)
     {
         return evaluationOfResults switch
@@ -180,29 +195,35 @@ public class NeuralNetwork : MonoBehaviour
             EvaluationOfResultsType.Recall => TP / (TP + FN),
             EvaluationOfResultsType.FPR => FP / (FP + TN),
             EvaluationOfResultsType.Precision => TP / (TP + FP),
-            EvaluationOfResultsType.F_score => TP * 2 / ((2 * TP) + FN + FP),
+            EvaluationOfResultsType.F_score => TP * 2 / (2 * TP + FN + FP),
             _ => 0
         };
     }
+
     /// <summary>
-    /// Метод обратного распространения ошибки
+    ///     пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="input">вход</param>
-    /// <param name="outputNeuronsNeeded">необходимый выход</param>
+    /// <param name="input">пїЅпїЅпїЅпїЅ</param>
+    /// <param name="outputNeuronsNeeded">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ</param>
     private double Backpropagation(double[] input, double[] outputNeuronsNeeded)
     {
-
         double[] outputNeurons = Run(input);
 
         double[] errorNeurons = AdjustingLayerWeights(outputNeuronsNeeded, hiddenLayers.Last(), outputLayer);
         for (int id = hiddenLayers.Length - 1; id >= 0; id--)
-            errorNeurons = AdjustingLayerWeights(null, id == 0 ? inputLayer : hiddenLayers[id - 1], hiddenLayers[id], errorNeurons);
+            errorNeurons = AdjustingLayerWeights(null, id == 0 ? inputLayer : hiddenLayers[id - 1], hiddenLayers[id],
+                errorNeurons);
         double summ = 0;
         for (int id = 0; id < outputNeurons.Length; id++)
             summ += SummLossFunction(outputNeurons[id], outputNeuronsNeeded[id]);
         return summ;
     }
-    public void Learn(List<double[]> input, List<double[]> outputNeeded) => StartCoroutine(ILearn(input, outputNeeded));
+
+    public void Learn(List<double[]> input, List<double[]> outputNeeded)
+    {
+        StartCoroutine(ILearn(input, outputNeeded));
+    }
+
     private IEnumerator ILearn(List<double[]> inputs, List<double[]> outputsNeeded)
     {
         while (true)
@@ -229,12 +250,13 @@ public class NeuralNetwork : MonoBehaviour
             }
         }
     }
+
     /// <summary>
-    ///  Функция потерь https://habr.com/ru/articles/722628/
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ https://habr.com/ru/articles/722628/
     /// </summary>
-    /// <param name="result">выход нейрона</param>
-    /// <param name="needResult">необходимый выход нейрона</param>
-    /// <returns>отклонение</returns>
+    /// <param name="result">пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="needResult">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</returns>
     public double LossFunction(double summ, int count)
     {
         return lossFunction switch
@@ -242,9 +264,10 @@ public class NeuralNetwork : MonoBehaviour
             LossFunctionType.MAE => summ / count,
             LossFunctionType.MSE => summ / count,
             LossFunctionType.RMSE => Math.Sqrt(summ / count),
-            _ => 0,
+            _ => 0
         };
     }
+
     public double SummLossFunction(double result, double needResult)
     {
         return lossFunction switch
@@ -252,13 +275,22 @@ public class NeuralNetwork : MonoBehaviour
             LossFunctionType.MAE => result - needResult,
             LossFunctionType.MSE => Math.Pow(result - needResult, 2),
             LossFunctionType.RMSE => Math.Abs(result - needResult),
-            _ => 0,
+            _ => 0
         };
     }
+
     [Button("Next", 15)]
-    public void Next() => step = true;
+    public void Next()
+    {
+        step = true;
+    }
+
     [Button("Stop or Resume", 15)]
-    public void StopOrResume() => stop = !stop;
+    public void StopOrResume()
+    {
+        stop = !stop;
+    }
+
     public void CreateNeuralNetwork(int countInputNeurons, int[] countHiddenNeurons, int countOutputNeurons)
     {
         if (countHiddenNeurons.Length == 0)
@@ -267,7 +299,8 @@ public class NeuralNetwork : MonoBehaviour
 
         CreateNeuralLayer(out inputLayer, null, countInputNeurons, "Input layer");
         for (int id = 0; id < hiddenLayers.Length; id++)
-            CreateNeuralLayer(out hiddenLayers[id], id == 0 ? inputLayer : hiddenLayers[id - 1], countHiddenNeurons[id], $"Hidden layer {id + 1}");
+            CreateNeuralLayer(out hiddenLayers[id], id == 0 ? inputLayer : hiddenLayers[id - 1], countHiddenNeurons[id],
+                $"Hidden layer {id + 1}");
         CreateNeuralLayer(out outputLayer, hiddenLayers.Last(), countOutputNeurons, "Output layer");
     }
 
@@ -290,10 +323,15 @@ public class NeuralNetwork : MonoBehaviour
         return outputLayer.GetNeuronsValue();
     }
 
-    public void LoadNeuralNetwork() => MyExtentions.ReadDat("Neural Network", ReadDat);
+    public void LoadNeuralNetwork()
+    {
+        MyExtentions.ReadDat("Neural Network", ReadDat);
+    }
 
-    public void SaveNeuralNetwork() => MyExtentions.WriteDat("Neural Network", WriteDat);
+    public void SaveNeuralNetwork()
+    {
+        MyExtentions.WriteDat("Neural Network", WriteDat);
+    }
 
     #endregion Methods
-
 }

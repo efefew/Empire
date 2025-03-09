@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
-using UnityEditor;
-using Object = UnityEngine.Object;
+
 
 //using OdinSerializer;
 //using OdinSerializer.Utilities;
@@ -40,7 +34,8 @@ namespace Meryel.UnityCodeAssist.Editor
 
             ShowFieldInfo(type.BaseType);//, importer, names, objects, ref didModify);
 
-            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            FieldInfo[] infos =
+ type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             foreach (FieldInfo field in infos)
             {
                 if (!field.IsPublic)
@@ -84,7 +79,8 @@ namespace Meryel.UnityCodeAssist.Editor
 
             ShowFieldInfo(type.BaseType, obj, fields);//, importer, names, objects, ref didModify);
 
-            FieldInfo[] infos = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            FieldInfo[] infos =
+ type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
             foreach (FieldInfo field in infos)
             {
                 if (!field.IsPublic)

@@ -1,17 +1,19 @@
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using AdvancedEditorTools.Attributes;
-
 using Unity.VisualScripting;
-
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
+
+#endregion
 
 /// <summary>
-/// Армия
+///     пїЅпїЅпїЅпїЅпїЅ
 /// </summary>
 public partial class Army : MonoBehaviour
 {
@@ -24,15 +26,12 @@ public partial class Army : MonoBehaviour
 
     #region Fields
 
-    [SerializeField]
-    private Person warriorPrefab;
+    [SerializeField] private Person warriorPrefab;
 
     private ConteinerButtonSkills conteinerSkill;
     private Battlefield battlefield;
 
-    [SerializeField]
-    [ReadOnly]
-    private List<Person> personsCanRun = new();
+    [SerializeField] [ReadOnly] private List<Person> personsCanRun = new();
 
     private bool firstCallWhenAllCanRun, cancelWaitCastSkill;
     public const float OFFSET_BETWEEN_ARMIES = 2f;
@@ -42,6 +41,7 @@ public partial class Army : MonoBehaviour
     public Button buttonArmy;
     private Coroutine patrolCoroutine;
     public Skill PatrolSkill { get; private set; }
+
     #endregion Fields
 
     #region Methods
@@ -50,10 +50,10 @@ public partial class Army : MonoBehaviour
     {
         Stand = false;
         firstMinDistance = true;
-        battlefield = Battlefield.singleton;
+        battlefield = Battlefield.Singleton;
         foreach (Skill skill in status.skills)
             skill.buttonSkillPrefab.Build(this, skill);
-        anchors.OnChangedPositions += (Transform a, Transform b) =>
+        anchors.OnChangedPositions += (a, b) =>
         {
             TargetButtonPersonId = newTargetButtonPersonId;
             battlefield.RemoveSkillAditionalUI();
@@ -123,16 +123,15 @@ public partial class Army : MonoBehaviour
         int idTarget = 0;
         bool allCantRun = true;
         for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
             if (persons[idPerson].stunCount == 0)
             {
-                if (persons[idPerson].CastRun(skill, targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget]))
+                if (persons[idPerson].CastRun(skill,
+                        targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget]))
                     allCantRun = false;
                 idTarget++;
                 if (idTarget >= targets.Length)
                     idTarget = 0;
             }
-        }
 
         if (!allCantRun)
         {
@@ -149,13 +148,9 @@ public partial class Army : MonoBehaviour
     {
         bool allCantRun = true;
         for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-        {
             if (persons[idPerson].stunCount == 0)
-            {
                 if (persons[idPerson].CastRun(skill, target))
                     allCantRun = false;
-            }
-        }
 
         if (!allCantRun)
         {
@@ -183,7 +178,8 @@ public partial class Army : MonoBehaviour
         bool allCantRun = true;
         for (int idPerson = 0; idPerson < persons.Count; idPerson++)
         {
-            if (persons[idPerson].CastRun(skill, persons[idPerson].LastPursuitTarget != null ? persons[idPerson].LastPursuitTarget : randomTarget))
+            if (persons[idPerson].CastRun(skill,
+                    persons[idPerson].LastPursuitTarget != null ? persons[idPerson].LastPursuitTarget : randomTarget))
                 allCantRun = false;
             if (!melee)
                 persons[idPerson].armyTarget = null;
@@ -210,14 +206,16 @@ public partial class Army : MonoBehaviour
     }
 
     /// <summary>
-    /// Выполнение навыка с наступлением
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
-    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="person">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</returns>
     /// <param name="melee"></param>
-    /// <returns></returns>выполнения навыка</returns>
+    /// <returns></returns>
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    /// </returns>
     private Func<bool> ForceSkill(Skill skill, Person person, Person target, Army armyTarget, bool melee)
     {
         return () =>
@@ -227,7 +225,7 @@ public partial class Army : MonoBehaviour
 
             if (ChangeUpdateWaitPersonsCanRun(skill, person, armyTarget, melee))
                 return true;
-            // Если цель не определена
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (target == null)
                 return TrySetTarget(person, out target, armyTarget);
 
@@ -239,12 +237,12 @@ public partial class Army : MonoBehaviour
     }
 
     /// <summary>
-    /// Выполнение навыка с наступлением
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
-    /// <returns>функция, которая будет использоваться для выполнения навыка</returns>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="person">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</returns>
     private Func<bool> ForceSkill(Skill skill, Person person, Vector3 target)
     {
         return () =>
@@ -264,9 +262,9 @@ public partial class Army : MonoBehaviour
 
     private void ReadyCheck(Person person)
     {
-        if (person.Ready)// Если персонаж готов к выполнению навыка
+        if (person.Ready) // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         {
-            // Убираем персонажа из списка, тех кто может выполнить навык
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             _ = personsCanRun.Remove(person);
             person.Ready = false;
         }
@@ -274,10 +272,10 @@ public partial class Army : MonoBehaviour
 
     private bool ChangeUpdateWaitPersonsCanRun(Skill skill, Person person, Army armyTarget, bool melee)
     {
-        // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди,  или персонажа не существует, или операция была отменена
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ,  пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
         {
-            // Обновление состояния персонажей, которые могут использовать навыки
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             UpdateWaitPersonsCanRun(skill, armyTarget, melee);
             return true;
         }
@@ -288,7 +286,7 @@ public partial class Army : MonoBehaviour
     private bool TrySetTarget(Person person, out Person target, Army armyTarget)
     {
         target = GetRandomPerson(armyTarget);
-        // Если цель всё ещё  не определена
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ  пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (target == null)
         {
             CancelForceSkill(person);
@@ -308,10 +306,10 @@ public partial class Army : MonoBehaviour
 
     private bool ChangeUpdateWaitPersonsCanRun(Skill skill, Person person, Vector3 target)
     {
-        // Если достигнуты условия отмены ожидания выполнения навыка при переполнении очереди, или персонажа не существует, или операция была отменена
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
         {
-            // Обновление состояния персонажей, которые могут использовать навыки
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             UpdateWaitPersonsCanRun(skill, target);
             return true;
         }
@@ -320,25 +318,26 @@ public partial class Army : MonoBehaviour
     }
 
     /// <summary>
-    /// Управлять выполнением навыка
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="person">инициатор</param>
-    /// <param name="target">цель</param>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="person">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
     /// <returns></returns>
     private bool HandleSkillExecution(Skill skill, Person person, Vector3 target)
     {
-        // Если счетчик стана персонажа равен ожиданию выполнения и удовлетворяет условиям диапазона навыка
-        if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target, close: true))
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        if (person.stunCount == (person.Ready ? 1 : 0) && skill.LimitRangeRun(person, target, true))
         {
-            // Если персонаж не готов к выполнению навыка
+            // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (!person.Ready)
             {
                 person.Ready = true;
                 personsCanRun.Add(person);
 
-                // Запуск процесса ожидания персонажем выполнения навыка (персонаж становится в стан)
-                _ = person.Stun(() => target == null || !person.Ready || (personsCanRun.Count >= persons.Count) || cancelWaitCastSkill);
+                // пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ)
+                _ = person.Stun(() =>
+                    target == null || !person.Ready || personsCanRun.Count >= persons.Count || cancelWaitCastSkill);
             }
 
             return true;
@@ -349,12 +348,10 @@ public partial class Army : MonoBehaviour
 
     private void CancelForceSkill(Person person)
     {
-        // Если персонаж готов использовать навык
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         if (!personsCanRun.Contains(person))
-        {
-            // Добавление персонажа в очередь
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             personsCanRun.Add(person);
-        }
 
         person.Ready = false;
     }
@@ -381,12 +378,11 @@ public partial class Army : MonoBehaviour
 
     private bool AnyEnemyInRange(out Army target, Skill skill)
     {
-        for (int idEnemyFraction = 0; idEnemyFraction < battlefield.fractions.Length; idEnemyFraction++)
+        for (int idEnemyFraction = 0; idEnemyFraction < battlefield.Fractions.Length; idEnemyFraction++)
         {
-            FractionBattlefield enemyFraction = battlefield.fractions[idEnemyFraction];
+            FractionBattlefield enemyFraction = battlefield.Fractions[idEnemyFraction];
             bool itsEnemy = enemyFraction.sideID != status.fraction.sideID;
             if (itsEnemy)
-            {
                 for (int idEnemyArmy = 0; idEnemyArmy < enemyFraction.armies.Count; idEnemyArmy++)
                 {
                     Army enemy = enemyFraction.armies[idEnemyArmy];
@@ -396,7 +392,6 @@ public partial class Army : MonoBehaviour
                         return true;
                     }
                 }
-            }
         }
 
         target = null;
@@ -405,14 +400,21 @@ public partial class Army : MonoBehaviour
 
     private bool EnemyInRange(Army enemy, Skill skill)
     {
-        float distance = Vector3.Distance(persons[TargetButtonPersonId].transform.position, enemy.persons[enemy.TargetButtonPersonId].transform.position);
+        float distance = Vector3.Distance(persons[TargetButtonPersonId].transform.position,
+            enemy.persons[enemy.TargetButtonPersonId].transform.position);
         float range = skill.range;
         return distance <= range;
     }
 
-    public static Person GetRandomPerson(Army armyTarget) => armyTarget == null || armyTarget.persons.Count == 0 ? null : armyTarget.persons[UnityEngine.Random.Range(0, armyTarget.persons.Count)];
+    public static Person GetRandomPerson(Army armyTarget)
+    {
+        return armyTarget == null || armyTarget.persons.Count == 0
+            ? null
+            : armyTarget.persons[Random.Range(0, armyTarget.persons.Count)];
+    }
 
-    public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy, StatusUI armyUI, StatusUI armyGlobalUI, ConteinerButtonSkills conteinerSkill)
+    public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy, StatusUI armyUI,
+        StatusUI armyGlobalUI, ConteinerButtonSkills conteinerSkill)
     {
         this.armyUI = armyUI;
         this.armyGlobalUI = armyGlobalUI;
@@ -430,8 +432,8 @@ public partial class Army : MonoBehaviour
         _ = StartCoroutine(UIArmyUpdate());
         for (int id = 0; id < countWarriors; id++)
         {
-            persons.Add(Instantiate(warriorPrefab, transform));//просит позицию знать заранее -_-
-            persons.Last().OnDeadPerson += (Person person) => personsCanRun.Remove(person);
+            persons.Add(Instantiate(warriorPrefab, transform)); //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ -_-
+            persons.Last().OnDeadPerson += person => personsCanRun.Remove(person);
             persons.Last().name += $" {id}";
             persons.Last().Build(this);
         }
@@ -452,10 +454,10 @@ public partial class Army : MonoBehaviour
     }
 
     /// <summary>
-    /// Запускает навык
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="targets">цель</param>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="targets">пїЅпїЅпїЅпїЅ</param>
     public void UseSkill(Skill skill, params Person[] targets)
     {
         if (!status.skills.Contains(skill) || targets.NotUnityNull().Count() == 0)
@@ -475,10 +477,10 @@ public partial class Army : MonoBehaviour
     }
 
     /// <summary>
-    /// Запускает навык
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="skill">навык</param>
-    /// <param name="target">цель</param>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
     public void UseSkill(Skill skill, Vector3 target)
     {
         if (!status.skills.Contains(skill))
@@ -496,7 +498,10 @@ public partial class Army : MonoBehaviour
             PursuitUseSkill(skill, target);
     }
 
-    public void CancelWaitCastSkill(Transform a, Transform b) => CancelWaitCastSkill(null);
+    public void CancelWaitCastSkill(Transform a, Transform b)
+    {
+        CancelWaitCastSkill(null);
+    }
 
     public void CancelWaitCastSkill(ButtonSkill buttonSkill)
     {
@@ -510,11 +515,18 @@ public partial class Army : MonoBehaviour
         SetTargetArmy(null);
     }
 
-    public void SetRepeat(bool on) => Repeat = on;
+    public void SetRepeat(bool on)
+    {
+        Repeat = on;
+    }
 
-    public void SetStand(bool on) => Stand = on;
+    public void SetStand(bool on)
+    {
+        Stand = on;
+    }
+
     /// <summary>
-    /// Патрулировать
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public void StartPatrol(Skill skill)
     {
@@ -544,13 +556,12 @@ public partial class Army : MonoBehaviour
         while (true)
         {
             if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army, skill))
-            {
                 UseSkill(skill, army.persons.ToArray());
-            }
 
             yield return new WaitForSeconds(PATROL_DELAY);
         }
     }
+
     public void SetActive(bool on)
     {
         armyGlobalUI.toggle.SetIsOnWithoutNotify(on);
@@ -560,36 +571,37 @@ public partial class Army : MonoBehaviour
     }
 
     /// <summary>
-    /// Использование навыка на цель
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="target">цель</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
     public void TargetForUseSkill(Army target)
     {
         ClearTargetUseSkill();
         if (target.TryGetValueOtherType(out Person person))
-            UseSkill(battlefield.targetSkill, person);
+            UseSkill(battlefield._targetSkill, person);
         if (target.TryGetValueOtherType(out Army army))
-            UseSkill(battlefield.targetSkill, army.persons.ToArray());
+            UseSkill(battlefield._targetSkill, army.persons.ToArray());
     }
 
     /// <summary>
-    /// Использование навыка на цель
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="target">цель</param>
+    /// <param name="target">пїЅпїЅпїЅпїЅ</param>
     public void TargetForUseSkill(Vector3 target)
     {
         ClearTargetUseSkill();
-        UseSkill(battlefield.targetSkill, target);
+        UseSkill(battlefield._targetSkill, target);
     }
 
     /// <summary>
-    /// Использование навыка патрулём
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public void TargetForUseSkill()
     {
         ClearTargetUseSkill();
         ListenCancelWaitCastSkill();
     }
+
     [Button("MoveUpdate")]
     public void MoveUpdate()
     {

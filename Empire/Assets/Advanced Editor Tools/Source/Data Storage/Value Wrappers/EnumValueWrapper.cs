@@ -1,17 +1,23 @@
 #if UNITY_EDITOR
+
+#region
+
 using System;
 using UnityEditor;
 using UnityEngine;
 
+#endregion
+
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
+    [Serializable]
     public class EnumValueWrapper : GenericValueWrapperReference<Enum>
     {
         public string typeName;
         public string enumVal;
 
         public Type _enumType;
+
         public Type EnumType
         {
             get
@@ -25,9 +31,9 @@ namespace AdvancedEditorTools
 
         public override ValueWrapper Init(Type type)
         {
-            this.EnumType = type;
-            this.typeName = type.AssemblyQualifiedName;
-            this.enumVal = Enum.GetNames(type)[0];
+            EnumType = type;
+            typeName = type.AssemblyQualifiedName;
+            enumVal = Enum.GetNames(type)[0];
             return this;
         }
 
@@ -46,14 +52,11 @@ namespace AdvancedEditorTools
 
         public override void OnInspector(Rect rect, string label)
         {
-            var serializedField = SerializedField;
-            var oldVal = (Enum)Unwrap();
-            var newVal = EditorGUI.EnumPopup(rect, label, oldVal);
+            SerializedField serializedField = SerializedField;
+            Enum oldVal = (Enum)Unwrap();
+            Enum newVal = EditorGUI.EnumPopup(rect, label, oldVal);
 
-            if (!oldVal.Equals(newVal))
-            {
-                serializedField.SetValue(newVal);
-            }
+            if (!oldVal.Equals(newVal)) serializedField.SetValue(newVal);
         }
     }
 }

@@ -1,17 +1,11 @@
+#region
+
 using UnityEngine;
+
+#endregion
 
 public class World : MonoBehaviour
 {
-    #region Fields
-
-    [SerializeField]
-    private City[] cities;
-
-    [SerializeField]
-    private Fraction[] fractions;
-
-    #endregion Fields
-
     #region Methods
 
     [ContextMenu("CreateWorld")]
@@ -20,4 +14,12 @@ public class World : MonoBehaviour
     }
 
     #endregion Methods
+
+    #region Fields
+
+    [SerializeField] private City[] cities;
+
+    [SerializeField] private Fraction[] fractions;
+
+    #endregion Fields
 }

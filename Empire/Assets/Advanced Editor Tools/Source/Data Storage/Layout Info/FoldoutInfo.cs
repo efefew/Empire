@@ -1,4 +1,8 @@
+#region
+
 using System;
+
+#endregion
 
 namespace AdvancedEditorTools
 {
@@ -11,21 +15,21 @@ namespace AdvancedEditorTools
         public override bool Matches(LayoutInfo obj)
         {
             if (obj is BeginFoldoutInfo oldObj)
-                return base.Matches(obj) && this.label == oldObj.label;
+                return base.Matches(obj) && label == oldObj.label;
             return false;
         }
 
         public override bool PartiallyMatches(LayoutInfo obj)
         {
             if (obj is BeginFoldoutInfo oldObj)
-                return LayoutTypeMatches(obj) && (this.fieldName.Equals(obj.fieldName) || this.label == oldObj.label);
+                return LayoutTypeMatches(obj) && (fieldName.Equals(obj.fieldName) || label == oldObj.label);
             return false;
         }
 
         public override LayoutInfo UpdateWith(LayoutInfo obj)
         {
             if (obj is BeginFoldoutInfo oldObj)
-                this.foldout = oldObj.foldout;
+                foldout = oldObj.foldout;
             return this;
         }
     }

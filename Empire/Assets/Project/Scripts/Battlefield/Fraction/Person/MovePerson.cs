@@ -1,32 +1,34 @@
+#region
+
 using System;
 using System.Collections;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEngine;
 
+#endregion
+
 [RequireComponent(typeof(AgentMove))]
-public partial class Person : MonoBehaviour// Мобильность существа
+public partial class Person : MonoBehaviour // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
     #region Enums
 
     /// <summary>
-    /// Тип преследования цели
+    ///     пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     /// </summary>
     public enum TargetType
     {
         /// <summary>
-        /// Вынужденая
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         forced,
 
         /// <summary>
-        /// Приказ
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         command,
 
         /// <summary>
-        /// Закончить то, что начал
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         finish
     }
@@ -128,19 +130,19 @@ public partial class Person : MonoBehaviour// Мобильность существа
         {
             yield return new WaitForSeconds(UPDATE_STOP_STATUS);
 
-            isStoped = (!agentMove.agent.isOnNavMesh || agentMove.agent.remainingDistance <= AgentMove.MIN_DISTANCE) && stunCount == 0;
+            isStoped = (!agentMove.agent.isOnNavMesh || agentMove.agent.remainingDistance <= AgentMove.MIN_DISTANCE) &&
+                       stunCount == 0;
             ChangeStateAnimation(isStoped ? idleState : walkState);
 
             if (!isStoped)
             {
                 if (agentMove.agent.path.corners.Length >= 2)
-                {
                     //agentMove.UpdateLine();
                     rightDirection = agentMove.agent.path.corners[1].x - transform.position.x > 0;
-                }
 
                 transform.localScale = scaleDefault.X(scaleDefault.x * (rightDirection ? 1 : -1));
-                animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y, -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
+                animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y,
+                    -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
             }
         }
     }
@@ -158,7 +160,10 @@ public partial class Person : MonoBehaviour// Мобильность существа
     }
 
     [Button("MoveUpdate")]
-    public void MoveUpdate() => StartCoroutine(IMoveUpdate());
+    public void MoveUpdate()
+    {
+        StartCoroutine(IMoveUpdate());
+    }
 
     public void SetTarget(Transform target)
     {
@@ -173,52 +178,76 @@ public partial class Person : MonoBehaviour// Мобильность существа
     }
 
     /// <summary>
-    /// Оглушает до определённого момента
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="funcStun">определённый момент</param>
-    public Coroutine Stun(Func<bool> funcStun) => StartCoroutine(IStun(funcStun));
+    /// <param name="funcStun">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Stun(Func<bool> funcStun)
+    {
+        return StartCoroutine(IStun(funcStun));
+    }
 
     /// <summary>
-    /// Оглушает до определённого момента
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="coroutineStun">определённый момент</param>
-    public Coroutine Stun(IEnumerator coroutineStun) => StartCoroutine(IStun(coroutineStun));
+    /// <param name="coroutineStun">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Stun(IEnumerator coroutineStun)
+    {
+        return StartCoroutine(IStun(coroutineStun));
+    }
 
     /// <summary>
-    /// Оглушает на время
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="endStun">время</param>
-    public Coroutine Stun(float time) => StartCoroutine(IStun(Timer(time)));
+    /// <param name="endStun">пїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Stun(float time)
+    {
+        return StartCoroutine(IStun(Timer(time)));
+    }
 
     /// <summary>
-    /// Преследует до определённого момента
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="funcTarget">определённый момент</param>
-    public Coroutine Pursuit(Person target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
+    /// <param name="funcTarget">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Pursuit(Person target, Func<bool> funcTarget)
+    {
+        return StartCoroutine(IPursuit(target, funcTarget));
+    }
 
     /// <summary>
-    /// Преследует до определённого момента
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="coroutineTarget">определённый момент</param>
-    public Coroutine Pursuit(Person target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
+    /// <param name="coroutineTarget">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Pursuit(Person target, IEnumerator coroutineTarget)
+    {
+        return StartCoroutine(IPursuit(target, coroutineTarget));
+    }
 
     /// <summary>
-    /// Преследует до определённого момента
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="funcTarget">определённый момент</param>
-    public Coroutine Pursuit(Vector3 target, Func<bool> funcTarget) => StartCoroutine(IPursuit(target, funcTarget));
+    /// <param name="funcTarget">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Pursuit(Vector3 target, Func<bool> funcTarget)
+    {
+        return StartCoroutine(IPursuit(target, funcTarget));
+    }
 
     /// <summary>
-    /// Преследует до определённого момента
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="coroutineTarget">определённый момент</param>
-    public Coroutine Pursuit(Vector3 target, IEnumerator coroutineTarget) => StartCoroutine(IPursuit(target, coroutineTarget));
+    /// <param name="coroutineTarget">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Pursuit(Vector3 target, IEnumerator coroutineTarget)
+    {
+        return StartCoroutine(IPursuit(target, coroutineTarget));
+    }
 
     /// <summary>
-    /// Преследует на время
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="endStun">время</param>
-    public Coroutine Pursuit(Person target, float time) => StartCoroutine(IPursuit(target, Timer(time)));
+    /// <param name="endStun">пїЅпїЅпїЅпїЅпїЅ</param>
+    public Coroutine Pursuit(Person target, float time)
+    {
+        return StartCoroutine(IPursuit(target, Timer(time)));
+    }
 
     public void StopPursuit()
     {

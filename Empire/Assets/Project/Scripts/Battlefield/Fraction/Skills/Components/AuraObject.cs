@@ -1,13 +1,21 @@
-using System.Collections;
+#region
 
+using System.Collections;
 using UnityEngine;
+
+#endregion
 
 public class AuraObject : MonoBehaviour
 {
-    private Transform tr;
-    private Aura skill;
     private Person initiator, target;
-    private void Start() => tr = transform;
+    private Aura skill;
+    private Transform tr;
+
+    private void Start()
+    {
+        tr = transform;
+    }
+
     public void Build(Person initiator, Aura skill, Person target)
     {
         this.initiator = initiator;
@@ -15,14 +23,16 @@ public class AuraObject : MonoBehaviour
         this.skill = skill;
         _ = StartCoroutine(IRun());
     }
+
     private IEnumerator IRun()
     {
         Person targetInAura;
         for (int ID = 0; ID < skill.frequency; ID++)
         {
-            // Находим все коллайдеры в радиусе действия умения
-            Collider2D[] colliders2D = Physics2D.OverlapCircleAll(target.transform.position, skill.radius, LayerMask.GetMask("Person"));
-            // Счетчик целей, пораженных умением
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            var colliders2D =
+                Physics2D.OverlapCircleAll(target.transform.position, skill.radius, LayerMask.GetMask("Person"));
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             int countCatch = 0;
             for (int i = 0; i < colliders2D.Length; i++)
             {
@@ -30,16 +40,17 @@ public class AuraObject : MonoBehaviour
                     continue;
 
                 targetInAura = colliders2D[i].GetComponent<Person>();
-                // Если у цели нет здоровья, переходим к следующей цели
+                // пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
                 if (targetInAura.health <= 0)
                     continue;
-                // Наносим урон и применяем эффекты умения
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
                 if (Skill.OnTrigger(skill.triggerTarget, initiator, targetInAura))
                 {
                     countCatch++;
                     skill.SetEffectsAndBuffs(initiator, targetInAura);
                 }
-                // Если количество пораженных целей достигло максимального значения и это значение не равно 0, то оставшиеся цели не поражаются
+
+                // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 0, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 if (countCatch >= skill.maxCountCatch && skill.maxCountCatch != 0)
                     yield break;
             }

@@ -1,15 +1,16 @@
-using System.Collections;
+#region
 
+using System.Collections;
 using UnityEngine;
+
+#endregion
 
 [AddComponentMenu("Condition/Timer")]
 public class Timer : Condition
 {
     #region Fields
 
-    [Min(0)]
-    [SerializeField]
-    private float time;
+    [Min(0)] [SerializeField] private float time;
 
     #endregion Fields
 
@@ -20,7 +21,10 @@ public class Timer : Condition
         yield return new WaitForSeconds(time);
     }
 
-    public override IEnumerator GetCondition() => IGetCondition();
+    public override IEnumerator GetCondition()
+    {
+        return IGetCondition();
+    }
 
     #endregion Methods
 }

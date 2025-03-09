@@ -1,23 +1,30 @@
 #if UNITY_EDITOR
-using AdvancedEditorTools.DataTypes;
+
+#region
+
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+#endregion
+
 namespace AdvancedEditorTools
 {
-    [System.Serializable]
-    public class AETDataDictionary : SerializableDictionary<MonoBehaviour, AETData> { }
+    [Serializable]
+    public class AETDataDictionary : SerializableDictionary<MonoBehaviour, AETData>
+    {
+    }
 
-    [System.Serializable]
+    [Serializable]
     public class AETData : ScriptableObject
     {
-        public bool baseInspectorFoldout = false;
+        public bool baseInspectorFoldout;
+
         // [SerializeReference]
         // public List<SerializedField> fields = new();
-        [SerializeReference]
-        public List<LayoutInfo> layoutInfos = new();
-        [SerializeReference]
-        public List<ButtonInfo> buttonMethods = new();
+        [SerializeReference] public List<LayoutInfo> layoutInfos = new();
+
+        [SerializeReference] public List<ButtonInfo> buttonMethods = new();
     }
 }
 #endif

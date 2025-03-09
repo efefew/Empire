@@ -1,6 +1,9 @@
-using System.Collections;
+#region
 
+using System.Collections;
 using UnityEngine;
+
+#endregion
 
 [RequireComponent(typeof(TemporaryAction))]
 public partial class Person : MonoBehaviour
@@ -12,7 +15,7 @@ public partial class Person : MonoBehaviour
     public Status status { get; private set; }
 
     /// <summary>
-    /// готов ли испольлзовать навык
+    ///     пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public bool Ready { get; set; }
 
@@ -37,7 +40,10 @@ public partial class Person : MonoBehaviour
         scaleDefault = transform.localScale;
     }
 
-    private void Start() => battlefield = Battlefield.singleton;
+    private void Start()
+    {
+        battlefield = Battlefield.Singleton;
+    }
 
     private void DeadPerson(Person person)
     {
@@ -71,7 +77,7 @@ public partial class Person : MonoBehaviour
             yield return new WaitForSeconds(status.melee.timeCooldown);
             if (health == 0)
                 yield break;
-            // Проверяем, не оглушены ли мы
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ
             if (stunCount == 0)
                 status.melee.Run(this);
         }

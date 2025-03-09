@@ -1,10 +1,11 @@
-﻿using System;
-using UnityEngine;
+﻿#nullable enable
+
+
+using System;
+using AsyncIO;
+using NetMQ;
+using Serilog;
 using UnityEditor;
-
-
-#nullable enable
-
 
 namespace Meryel.UnityCodeAssist.Editor
 {
@@ -12,7 +13,7 @@ namespace Meryel.UnityCodeAssist.Editor
     public static class NetMQInitializer
     {
         public static NetMQPublisher? Publisher;
-        
+
         static NetMQInitializer()
         {
             EditorApplication.quitting += EditorApplication_quitting;
@@ -24,48 +25,51 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public static void Initialize()
         {
-            Serilog.Log.Debug("NetMQ initializing");
+            Log.Debug("NetMQ initializing");
 
-            AsyncIO.ForceDotNet.Force();
+            ForceDotNet.Force();
 
-            Serilog.Log.Debug("NetMQ cleaning up (true)");
-            NetMQ.NetMQConfig.Cleanup(true);
+            Log.Debug("NetMQ cleaning up (true)");
+            NetMQConfig.Cleanup();
 
-            Serilog.Log.Debug("NetMQ constructing");
+            Log.Debug("NetMQ constructing");
             Publisher = new NetMQPublisher();
-            
+
             RunOnShutdown(OnShutDown);
-            Serilog.Log.Debug("NetMQ initialized");
+            Log.Debug("NetMQ initialized");
         }
 
         private static void OnShutDown()
         {
-            Serilog.Log.Debug("NetMQ OnShutDown");
+            Log.Debug("NetMQ OnShutDown");
             Clear();
         }
 
         private static void AssemblyReloadEvents_afterAssemblyReload()
         {
-            Serilog.Log.Debug("NetMQ AssemblyReloadEvents_afterAssemblyReload");
+            Log.Debug("NetMQ AssemblyReloadEvents_afterAssemblyReload");
         }
 
         //private static void AssemblyReloadEvents_beforeAssemblyReload() => Clear();
         private static void AssemblyReloadEvents_beforeAssemblyReload()
         {
-            Serilog.Log.Debug("NetMQ AssemblyReloadEvents_beforeAssemblyReload");
+            Log.Debug("NetMQ AssemblyReloadEvents_beforeAssemblyReload");
 
             Clear();
         }
 
         private static void EditorApplication_quitting()
         {
-            Serilog.Log.Debug("NetMQ EditorApplication_quitting");
+            Log.Debug("NetMQ EditorApplication_quitting");
 
             Publisher?.SendDisconnect();
             Clear();
         }
 
-        static void Clear() => Publisher?.Clear();
+        private static void Clear()
+        {
+            Publisher?.Clear();
+        }
 
 
         private static void RunOnceOnUpdate(Action action)
@@ -89,7 +93,6 @@ namespace Meryel.UnityCodeAssist.Editor
 #else
             AppDomain.CurrentDomain.DomainUnload += (_, __) => action();
 #endif
-
         }
     }
 }

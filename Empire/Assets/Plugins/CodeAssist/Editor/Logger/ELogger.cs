@@ -1,42 +1,60 @@
-using Serilog;
-using Serilog.Core;
-using UnityEngine;
-using UnityEditor;
-using System.Linq;
-
-
 #nullable enable
 
 
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Meryel.UnityCodeAssist.Synchronizer.Model;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+using UnityEditor;
+using UnityEngine;
+
 namespace Meryel.UnityCodeAssist.Editor.Logger
 {
-
     [InitializeOnLoad]
     public static class ELogger
     {
-        public static event System.Action? OnVsInternalLogChanged;
-
-
         // Change 'new LoggerConfiguration().MinimumLevel.Debug();' if you change these values
-        const Serilog.Events.LogEventLevel fileMinLevel = Serilog.Events.LogEventLevel.Debug;
-        const Serilog.Events.LogEventLevel outputWindowMinLevel = Serilog.Events.LogEventLevel.Information;
-        static LoggingLevelSwitch? fileLevelSwitch, outputWindowLevelSwitch;
+        private const LogEventLevel fileMinLevel = LogEventLevel.Debug;
+        private const LogEventLevel outputWindowMinLevel = LogEventLevel.Information;
+        private static LoggingLevelSwitch? fileLevelSwitch, outputWindowLevelSwitch;
 
         //static bool IsInitialized { get; set; }
 
-        static ILogEventSink? _outputWindowSink;
-        static ILogEventSink? _memorySink;
+        private static ILogEventSink? _outputWindowSink;
+        private static ILogEventSink? _memorySink;
+
+        //**-- make it work with multiple clients
+        private static string? _vsInternalLog;
 
 
-        public static string GetInternalLogContent() => _memorySink == null ? string.Empty : ((MemorySink)_memorySink).Export();
-        public static int GetErrorCountInInternalLog() => _memorySink == null ? 0 : ((MemorySink)_memorySink).ErrorCount;
-        public static int GetWarningCountInInternalLog() => _memorySink == null ? 0 : ((MemorySink)_memorySink).WarningCount;
+        static ELogger()
+        {
+            bool isFirst = false;
+            const string stateName = "isFirst";
+            if (!SessionState.GetBool(stateName, false))
+            {
+                isFirst = true;
+                SessionState.SetBool(stateName, true);
+            }
+
+            string projectPath = CommonTools.GetProjectPath();
+            var outputWindowSink = new Lazy<ILogEventSink>(() => new UnityOutputWindowSink(null));
+
+            Init(isFirst, projectPath, outputWindowSink);
+
+            if (isFirst)
+                LogHeader(Application.unityVersion, projectPath);
+            Log.Debug("PATH: {Path}", projectPath);
+        }
 
         public static string? FilePath { get; private set; }
         public static string? VSFilePath { get; private set; }
 
-        //**-- make it work with multiple clients
-        static string? _vsInternalLog;
         public static string? VsInternalLog
         {
             get => _vsInternalLog;
@@ -47,79 +65,77 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
             }
         }
 
+        //**-- UI for these two
+        private static bool OptionsIsLoggingToFile => true;
+        private static bool OptionsIsLoggingToOutputWindow => true;
+        public static event Action? OnVsInternalLogChanged;
 
 
-        static ELogger()
+        public static string GetInternalLogContent()
         {
-            var isFirst = false;
-            const string stateName = "isFirst";
-            if (!SessionState.GetBool(stateName, false))
-            {
-                isFirst = true;
-                SessionState.SetBool(stateName, true);
-            }
+            return _memorySink == null ? string.Empty : ((MemorySink)_memorySink).Export();
+        }
 
-            var projectPath = CommonTools.GetProjectPath();
-            var outputWindowSink = new System.Lazy<ILogEventSink>(() => new UnityOutputWindowSink(null));
+        public static int GetErrorCountInInternalLog()
+        {
+            return _memorySink == null ? 0 : ((MemorySink)_memorySink).ErrorCount;
+        }
 
-            Init(isFirst, projectPath, outputWindowSink);
-
-            if (isFirst)
-                LogHeader(Application.unityVersion, projectPath);
-            Serilog.Log.Debug("PATH: {Path}", projectPath);
+        public static int GetWarningCountInInternalLog()
+        {
+            return _memorySink == null ? 0 : ((MemorySink)_memorySink).WarningCount;
         }
 
 
-        static void LogHeader(string unityVersion, string solutionDir)
+        private static void LogHeader(string unityVersion, string solutionDir)
         {
-            var os = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
-            var assisterVersion = Assister.Version;
-            var syncModel = Synchronizer.Model.Utilities.Version;
-            var hash = CommonTools.GetHashOfPath(solutionDir);
-            Serilog.Log.Debug(
+            string? os = RuntimeInformation.OSDescription;
+            string? assisterVersion = Assister.Version;
+            string? syncModel = Utilities.Version;
+            int hash = CommonTools.GetHashOfPath(solutionDir);
+            Log.Debug(
                 "Beginning logging {OS}, Unity {U}, Unity Code Assist {A}, Communication Protocol {SM}, Project: '{Dir}', Project Hash: {Hash}",
                 os, unityVersion, assisterVersion, syncModel, solutionDir, hash);
         }
 
 
-
-
-
-
-
-        static string GetFilePath(string solutionDir)
+        private static string GetFilePath(string solutionDir)
         {
-            var solutionHash = CommonTools.GetHashOfPath(solutionDir);
-            var tempDir = System.IO.Path.GetTempPath();
-            var fileName = $"UCA_U_LOG_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
-            var filePath = System.IO.Path.Combine(tempDir, fileName);
+            int solutionHash = CommonTools.GetHashOfPath(solutionDir);
+            string? tempDir = Path.GetTempPath();
+            string?
+                fileName =
+                    $"UCA_U_LOG_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
+            string? filePath = Path.Combine(tempDir, fileName);
             return filePath;
         }
 
-        static string GetVSFilePath(string solutionDir)
+        private static string GetVSFilePath(string solutionDir)
         {
-            var solutionHash = CommonTools.GetHashOfPath(solutionDir);
-            var tempDir = System.IO.Path.GetTempPath();
-            var fileName = $"UCA_VS_LOG_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
-            var filePath = System.IO.Path.Combine(tempDir, fileName);
+            int solutionHash = CommonTools.GetHashOfPath(solutionDir);
+            string? tempDir = Path.GetTempPath();
+            string?
+                fileName =
+                    $"UCA_VS_LOG_{solutionHash}_.TXT"; // hour code will be appended to the end of file, so add a trailing '_'
+            string? filePath = Path.Combine(tempDir, fileName);
             return filePath;
         }
 
 
-        public static void Init(bool isFirst, string solutionDir, System.Lazy<ILogEventSink> outputWindowSink)
+        public static void Init(bool isFirst, string solutionDir, Lazy<ILogEventSink> outputWindowSink)
         {
-
             FilePath = GetFilePath(solutionDir);
             VSFilePath = GetVSFilePath(solutionDir);
 
             fileLevelSwitch = new LoggingLevelSwitch(fileMinLevel);
-            outputWindowLevelSwitch = new LoggingLevelSwitch(outputWindowMinLevel);
+            outputWindowLevelSwitch = new LoggingLevelSwitch();
 
-            var config = new LoggerConfiguration()
+            LoggerConfiguration? config = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .Enrich.With(new DomainHashEnricher());
 
-            const string outputTemplate = "{Timestamp:HH:mm:ss.fff} [U] [{Level:u3}] [{DomainHash}] {Message:lj}{NewLine}{Exception}";
+            const string outputTemplate =
+                "{Timestamp:HH:mm:ss.fff} [U] [{Level:u3}] [{DomainHash}] {Message:lj}{NewLine}{Exception}";
 
             config = config.WriteTo.PersistentFile(FilePath
                 , outputTemplate: outputTemplate
@@ -128,7 +144,7 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
                 , preserveLogFilename: true
                 , levelSwitch: fileLevelSwitch
                 , rollOnEachProcessRun: isFirst
-                );
+            );
 
             _outputWindowSink ??= outputWindowSink.Value;
             if (_outputWindowSink != null)
@@ -139,7 +155,7 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
 
             config = config.Destructure.With(new MyDestructuringPolicy());
 
-            Serilog.Log.Logger = config.CreateLogger();
+            Log.Logger = config.CreateLogger();
             //switchableLogger.Set(config.CreateLogger(), disposePrev: true);
 
             OnOptionsChanged();
@@ -151,31 +167,29 @@ namespace Meryel.UnityCodeAssist.Editor.Logger
         {
             // Since we don't use LogEventLevel.Fatal, we can use it for disabling sinks
 
-            var isLoggingToFile = OptionsIsLoggingToFile;
-            var targetFileLevel = isLoggingToFile ? fileMinLevel : Serilog.Events.LogEventLevel.Fatal;
+            bool isLoggingToFile = OptionsIsLoggingToFile;
+            LogEventLevel targetFileLevel = isLoggingToFile ? fileMinLevel : LogEventLevel.Fatal;
             if (fileLevelSwitch != null)
                 fileLevelSwitch.MinimumLevel = targetFileLevel;
 
-            var isLoggingToOutputWindow = OptionsIsLoggingToOutputWindow;
-            var targetOutputWindowLevel = isLoggingToOutputWindow ? outputWindowMinLevel : Serilog.Events.LogEventLevel.Fatal;
+            bool isLoggingToOutputWindow = OptionsIsLoggingToOutputWindow;
+            LogEventLevel targetOutputWindowLevel =
+                isLoggingToOutputWindow ? outputWindowMinLevel : LogEventLevel.Fatal;
             if (outputWindowLevelSwitch != null)
                 outputWindowLevelSwitch.MinimumLevel = targetOutputWindowLevel;
         }
-
-        //**-- UI for these two
-        static bool OptionsIsLoggingToFile => true;
-        static bool OptionsIsLoggingToOutputWindow => true;
     }
 
     public class MyDestructuringPolicy : IDestructuringPolicy
     {
         // serilog cannot destruct StringArrayContainer by default, so do it manually
-        public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out Serilog.Events.LogEventPropertyValue? result)
+        public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory,
+            [NotNullWhen(true)] out LogEventPropertyValue? result)
         {
-            if (value is Synchronizer.Model.StringArrayContainer sac)
+            if (value is StringArrayContainer sac)
             {
                 var items = sac.Container.Select(item => propertyValueFactory.CreatePropertyValue(item, true));
-                result = new Serilog.Events.SequenceValue(items);
+                result = new SequenceValue(items);
                 return true;
             }
 

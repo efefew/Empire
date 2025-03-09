@@ -1,7 +1,11 @@
+#region
+
 using UnityEngine;
 
+#endregion
+
 [RequireComponent(typeof(PointsAB))]
-public partial class Army : MonoBehaviour// Мобильность армии
+public partial class Army : MonoBehaviour // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 {
     #region Fields
 
@@ -55,10 +59,10 @@ public partial class Army : MonoBehaviour// Мобильность армии
         if (distance < (firstMinDistance ? FIRST_MIN_DISTANCE : MIN_DISTANCE))
             return;
 
-        int countX = (int)((distance / offsetX) + 1), x = 0, y = 0;
+        int countX = (int)(distance / offsetX + 1), x = 0, y = 0;
         for (int id = 0; id < persons.Count; id++)
         {
-            persons[id].target.position = a.position - (a.up * offsetY * y) + (a.right * offsetX * x);
+            persons[id].target.position = a.position - a.up * offsetY * y + a.right * offsetX * x;
             x++;
             if (x == countX)
             {
@@ -69,7 +73,7 @@ public partial class Army : MonoBehaviour// Мобильность армии
 
         int widhArmy = persons.Count < countX ? persons.Count : countX;
         int heightArmy = x == 0 ? y : y - 1;
-        newTargetButtonPersonId = (widhArmy * (heightArmy / 2)) + (widhArmy / 2);
+        newTargetButtonPersonId = widhArmy * (heightArmy / 2) + widhArmy / 2;
         firstMinDistance = false;
     }
 

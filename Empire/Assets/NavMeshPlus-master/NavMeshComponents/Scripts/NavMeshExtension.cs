@@ -1,17 +1,16 @@
-﻿using NavMeshPlus.Components;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using NavMeshPlus.Components;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace NavMeshPlus.Extensions
 {
-    public abstract class NavMeshExtension: MonoBehaviour
+    public abstract class NavMeshExtension : MonoBehaviour
     {
+        private NavMeshSurface m_navMeshOwner;
         public int Order { get; protected set; }
-        public virtual void CollectSources(NavMeshSurface surface, List<NavMeshBuildSource> sources, NavMeshBuilderState navNeshState) { }
-        public virtual void CalculateWorldBounds(NavMeshSurface surface, List<NavMeshBuildSource> sources, NavMeshBuilderState navNeshState) { }
-        public virtual void PostCollectSources(NavMeshSurface surface, List<NavMeshBuildSource> sources, NavMeshBuilderState navNeshState) { }
+
         public NavMeshSurface NavMeshSurfaceOwner
         {
             get
@@ -21,27 +20,45 @@ namespace NavMeshPlus.Extensions
                 return m_navMeshOwner;
             }
         }
-        NavMeshSurface m_navMeshOwner;
 
         protected virtual void Awake()
         {
             ConnectToVcam(true);
         }
-#if UNITY_EDITOR
-        [UnityEditor.Callbacks.DidReloadScripts]
-        static void OnScriptReload()
+
+        protected virtual void OnEnable()
         {
-            var extensions = Resources.FindObjectsOfTypeAll(
-                typeof(NavMeshExtension)) as NavMeshExtension[];
-            foreach (var e in extensions)
-                e.ConnectToVcam(true);
         }
-#endif
-        protected virtual void OnEnable() { }
+
         protected virtual void OnDestroy()
         {
             ConnectToVcam(false);
         }
+
+        public virtual void CollectSources(NavMeshSurface surface, List<NavMeshBuildSource> sources,
+            NavMeshBuilderState navNeshState)
+        {
+        }
+
+        public virtual void CalculateWorldBounds(NavMeshSurface surface, List<NavMeshBuildSource> sources,
+            NavMeshBuilderState navNeshState)
+        {
+        }
+
+        public virtual void PostCollectSources(NavMeshSurface surface, List<NavMeshBuildSource> sources,
+            NavMeshBuilderState navNeshState)
+        {
+        }
+#if UNITY_EDITOR
+        [DidReloadScripts]
+        private static void OnScriptReload()
+        {
+            var extensions = Resources.FindObjectsOfTypeAll(
+                typeof(NavMeshExtension)) as NavMeshExtension[];
+            foreach (NavMeshExtension e in extensions)
+                e.ConnectToVcam(true);
+        }
+#endif
         protected virtual void ConnectToVcam(bool connect)
         {
             if (connect && NavMeshSurfaceOwner == null)

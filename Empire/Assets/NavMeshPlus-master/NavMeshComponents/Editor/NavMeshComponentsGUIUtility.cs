@@ -9,18 +9,19 @@ namespace NavMeshPlus.Editors.Components
     {
         public static void AreaPopup(string labelName, SerializedProperty areaProperty)
         {
-            var areaIndex = -1;
-            var areaNames = GameObjectUtility.GetNavMeshAreaNames();
-            for (var i = 0; i < areaNames.Length; i++)
+            int areaIndex = -1;
+            string[] areaNames = NavMesh.GetAreaNames();
+            for (int i = 0; i < areaNames.Length; i++)
             {
-                var areaValue = GameObjectUtility.GetNavMeshAreaFromName(areaNames[i]);
+                int areaValue = NavMesh.GetAreaFromName(areaNames[i]);
                 if (areaValue == areaProperty.intValue)
                     areaIndex = i;
             }
+
             ArrayUtility.Add(ref areaNames, "");
             ArrayUtility.Add(ref areaNames, "Open Area Settings...");
 
-            var rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
+            Rect rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
             EditorGUI.BeginProperty(rect, GUIContent.none, areaProperty);
 
             EditorGUI.BeginChangeCheck();
@@ -29,7 +30,7 @@ namespace NavMeshPlus.Editors.Components
             if (EditorGUI.EndChangeCheck())
             {
                 if (areaIndex >= 0 && areaIndex < areaNames.Length - 2)
-                    areaProperty.intValue = GameObjectUtility.GetNavMeshAreaFromName(areaNames[areaIndex]);
+                    areaProperty.intValue = NavMesh.GetAreaFromName(areaNames[areaIndex]);
                 else if (areaIndex == areaNames.Length - 1)
                     NavMeshEditorHelpers.OpenAreaSettings();
             }
@@ -39,27 +40,25 @@ namespace NavMeshPlus.Editors.Components
 
         public static void AgentTypePopup(string labelName, SerializedProperty agentTypeID)
         {
-            var index = -1;
-            var count = NavMesh.GetSettingsCount();
-            var agentTypeNames = new string[count + 2];
-            for (var i = 0; i < count; i++)
+            int index = -1;
+            int count = NavMesh.GetSettingsCount();
+            string[] agentTypeNames = new string[count + 2];
+            for (int i = 0; i < count; i++)
             {
-                var id = NavMesh.GetSettingsByIndex(i).agentTypeID;
-                var name = NavMesh.GetSettingsNameFromID(id);
+                int id = NavMesh.GetSettingsByIndex(i).agentTypeID;
+                string name = NavMesh.GetSettingsNameFromID(id);
                 agentTypeNames[i] = name;
                 if (id == agentTypeID.intValue)
                     index = i;
             }
+
             agentTypeNames[count] = "";
             agentTypeNames[count + 1] = "Open Agent Settings...";
 
             bool validAgentType = index != -1;
-            if (!validAgentType)
-            {
-                EditorGUILayout.HelpBox("Agent Type invalid.", MessageType.Warning);
-            }
+            if (!validAgentType) EditorGUILayout.HelpBox("Agent Type invalid.", MessageType.Warning);
 
-            var rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
+            Rect rect = EditorGUILayout.GetControlRect(true, EditorGUIUtility.singleLineHeight);
             EditorGUI.BeginProperty(rect, GUIContent.none, agentTypeID);
 
             EditorGUI.BeginChangeCheck();
@@ -68,7 +67,7 @@ namespace NavMeshPlus.Editors.Components
             {
                 if (index >= 0 && index < count)
                 {
-                    var id = NavMesh.GetSettingsByIndex(index).agentTypeID;
+                    int id = NavMesh.GetSettingsByIndex(index).agentTypeID;
                     agentTypeID.intValue = id;
                 }
                 else if (index == count + 1)
@@ -94,8 +93,8 @@ namespace NavMeshPlus.Editors.Components
             else
                 popupContent = GetAgentMaskLabelName(agentMask);
 
-            var content = new GUIContent(popupContent);
-            var popupRect = GUILayoutUtility.GetRect(content, EditorStyles.popup);
+            GUIContent content = new(popupContent);
+            Rect popupRect = GUILayoutUtility.GetRect(content, EditorStyles.popup);
 
             EditorGUI.BeginProperty(popupRect, GUIContent.none, agentMask);
             popupRect = EditorGUI.PrefixLabel(popupRect, 0, new GUIContent(labelName));
@@ -103,23 +102,23 @@ namespace NavMeshPlus.Editors.Components
 
             if (pressed)
             {
-                var show = !agentMask.hasMultipleDifferentValues;
-                var showNone = show && agentMask.arraySize == 0;
-                var showAll = show && IsAll(agentMask);
+                bool show = !agentMask.hasMultipleDifferentValues;
+                bool showNone = show && agentMask.arraySize == 0;
+                bool showAll = show && IsAll(agentMask);
 
-                var menu = new GenericMenu();
+                GenericMenu menu = new();
                 menu.AddItem(new GUIContent("None"), showNone, SetAgentMaskNone, agentMask);
                 menu.AddItem(new GUIContent("All"), showAll, SetAgentMaskAll, agentMask);
                 menu.AddSeparator("");
 
-                var count = NavMesh.GetSettingsCount();
-                for (var i = 0; i < count; i++)
+                int count = NavMesh.GetSettingsCount();
+                for (int i = 0; i < count; i++)
                 {
-                    var id = NavMesh.GetSettingsByIndex(i).agentTypeID;
-                    var sname = NavMesh.GetSettingsNameFromID(id);
+                    int id = NavMesh.GetSettingsByIndex(i).agentTypeID;
+                    string sname = NavMesh.GetSettingsNameFromID(id);
 
-                    var showSelected = show && AgentMaskHasSelectedAgentTypeID(agentMask, id);
-                    var userData = new object[] { agentMask, id, !showSelected };
+                    bool showSelected = show && AgentMaskHasSelectedAgentTypeID(agentMask, id);
+                    object[] userData = { agentMask, id, !showSelected };
                     menu.AddItem(new GUIContent(sname), showSelected, ToggleAgentMaskItem, userData);
                 }
 
@@ -131,9 +130,9 @@ namespace NavMeshPlus.Editors.Components
 
         public static GameObject CreateAndSelectGameObject(string suggestedName, GameObject parent)
         {
-            var parentTransform = parent != null ? parent.transform : null;
-            var uniqueName = GameObjectUtility.GetUniqueNameForSibling(parentTransform, suggestedName);
-            var child = new GameObject(uniqueName);
+            Transform parentTransform = parent != null ? parent.transform : null;
+            string uniqueName = GameObjectUtility.GetUniqueNameForSibling(parentTransform, suggestedName);
+            GameObject child = new(uniqueName);
 
             Undo.RegisterCreatedObjectUndo(child, "Create " + uniqueName);
             if (parentTransform != null)
@@ -144,22 +143,22 @@ namespace NavMeshPlus.Editors.Components
             return child;
         }
 
-        static bool IsAll(SerializedProperty agentMask)
+        private static bool IsAll(SerializedProperty agentMask)
         {
             return agentMask.arraySize == 1 && agentMask.GetArrayElementAtIndex(0).intValue == -1;
         }
 
-        static void ToggleAgentMaskItem(object userData)
+        private static void ToggleAgentMaskItem(object userData)
         {
-            var args = (object[])userData;
-            var agentMask = (SerializedProperty)args[0];
-            var agentTypeID = (int)args[1];
-            var value = (bool)args[2];
+            object[] args = (object[])userData;
+            SerializedProperty agentMask = (SerializedProperty)args[0];
+            int agentTypeID = (int)args[1];
+            bool value = (bool)args[2];
 
             ToggleAgentMaskItem(agentMask, agentTypeID, value);
         }
 
-        static void ToggleAgentMaskItem(SerializedProperty agentMask, int agentTypeID, bool value)
+        private static void ToggleAgentMaskItem(SerializedProperty agentMask, int agentTypeID, bool value)
         {
             if (agentMask.hasMultipleDifferentValues)
             {
@@ -169,18 +168,15 @@ namespace NavMeshPlus.Editors.Components
 
             // Find which index this agent type is in the agentMask array.
             int idx = -1;
-            for (var j = 0; j < agentMask.arraySize; j++)
+            for (int j = 0; j < agentMask.arraySize; j++)
             {
-                var elem = agentMask.GetArrayElementAtIndex(j);
+                SerializedProperty elem = agentMask.GetArrayElementAtIndex(j);
                 if (elem.intValue == agentTypeID)
                     idx = j;
             }
 
             // Handle "All" special case.
-            if (IsAll(agentMask))
-            {
-                agentMask.DeleteArrayElementAtIndex(0);
-            }
+            if (IsAll(agentMask)) agentMask.DeleteArrayElementAtIndex(0);
 
             // Toggle value.
             if (value)
@@ -193,32 +189,29 @@ namespace NavMeshPlus.Editors.Components
             }
             else
             {
-                if (idx != -1)
-                {
-                    agentMask.DeleteArrayElementAtIndex(idx);
-                }
+                if (idx != -1) agentMask.DeleteArrayElementAtIndex(idx);
             }
 
             agentMask.serializedObject.ApplyModifiedProperties();
         }
 
-        static void SetAgentMaskNone(object data)
+        private static void SetAgentMaskNone(object data)
         {
-            var agentMask = (SerializedProperty)data;
+            SerializedProperty agentMask = (SerializedProperty)data;
             agentMask.ClearArray();
             agentMask.serializedObject.ApplyModifiedProperties();
         }
 
-        static void SetAgentMaskAll(object data)
+        private static void SetAgentMaskAll(object data)
         {
-            var agentMask = (SerializedProperty)data;
+            SerializedProperty agentMask = (SerializedProperty)data;
             agentMask.ClearArray();
             agentMask.InsertArrayElementAtIndex(0);
             agentMask.GetArrayElementAtIndex(0).intValue = -1;
             agentMask.serializedObject.ApplyModifiedProperties();
         }
 
-        static string GetAgentMaskLabelName(SerializedProperty agentMask)
+        private static string GetAgentMaskLabelName(SerializedProperty agentMask)
         {
             if (agentMask.arraySize == 0)
                 return "None";
@@ -228,11 +221,11 @@ namespace NavMeshPlus.Editors.Components
 
             if (agentMask.arraySize <= 3)
             {
-                var labelName = "";
-                for (var j = 0; j < agentMask.arraySize; j++)
+                string labelName = "";
+                for (int j = 0; j < agentMask.arraySize; j++)
                 {
-                    var elem = agentMask.GetArrayElementAtIndex(j);
-                    var settingsName = NavMesh.GetSettingsNameFromID(elem.intValue);
+                    SerializedProperty elem = agentMask.GetArrayElementAtIndex(j);
+                    string settingsName = NavMesh.GetSettingsNameFromID(elem.intValue);
                     if (string.IsNullOrEmpty(settingsName))
                         continue;
 
@@ -240,20 +233,22 @@ namespace NavMeshPlus.Editors.Components
                         labelName += ", ";
                     labelName += settingsName;
                 }
+
                 return labelName;
             }
 
             return "Mixed...";
         }
 
-        static bool AgentMaskHasSelectedAgentTypeID(SerializedProperty agentMask, int agentTypeID)
+        private static bool AgentMaskHasSelectedAgentTypeID(SerializedProperty agentMask, int agentTypeID)
         {
-            for (var j = 0; j < agentMask.arraySize; j++)
+            for (int j = 0; j < agentMask.arraySize; j++)
             {
-                var elem = agentMask.GetArrayElementAtIndex(j);
+                SerializedProperty elem = agentMask.GetArrayElementAtIndex(j);
                 if (elem.intValue == agentTypeID)
                     return true;
             }
+
             return false;
         }
     }

@@ -1,24 +1,40 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Array2DEditor
 {
-    [System.Serializable]
-    public class CellRowBool : CellRow<bool> { }
+    [Serializable]
+    public class CellRowBool : CellRow<bool>
+    {
+    }
 
-    [System.Serializable]
-    public class CellRowFloat : CellRow<float> { }
+    [Serializable]
+    public class CellRowFloat : CellRow<float>
+    {
+    }
 
-    [System.Serializable]
-    public class CellRowInt : CellRow<int> { }
-    [System.Serializable]
-    public class CellRowDouble : CellRow<double> { }
+    [Serializable]
+    public class CellRowInt : CellRow<int>
+    {
+    }
 
-    [System.Serializable]
-    public class CellRowString : CellRow<string> { }
+    [Serializable]
+    public class CellRowDouble : CellRow<double>
+    {
+    }
 
-    [System.Serializable]
-    public class CellRowSprite : CellRow<Sprite> { }
+    [Serializable]
+    public class CellRowString : CellRow<string>
+    {
+    }
 
-    [System.Serializable]
-    public class CellRowAudioClip : CellRow<AudioClip> { }
+    [Serializable]
+    public class CellRowSprite : CellRow<Sprite>
+    {
+    }
+
+    [Serializable]
+    public class CellRowAudioClip : CellRow<AudioClip>
+    {
+    }
 }

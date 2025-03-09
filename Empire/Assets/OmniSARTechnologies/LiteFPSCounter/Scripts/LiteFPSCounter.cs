@@ -6,14 +6,17 @@
 // Copyright  : OmniSAR Technologies
 //
 
-using System;
+#region
 
+using System;
+using OmniSARTechnologies.Helper;
 using UnityEngine;
 using UnityEngine.UI;
 
+#endregion
+
 #if UNITY_EDITOR
 #endif
-using OmniSARTechnologies.Helper;
 
 namespace OmniSARTechnologies.LiteFPSCounter
 {
@@ -21,12 +24,15 @@ namespace OmniSARTechnologies.LiteFPSCounter
     [DisallowMultipleComponent]
     public class LiteFPSCounter : MonoBehaviour
     {
+        public static float UpdateInterval = 0.5f;
+        public static float MinTime = 0.000000001f; // equivalent to 1B fps
+
         /// <summary>
-        /// Reference to a Text component where the dynamic info will be displayed.
-        /// <para></para>
-        /// <para></para>
-        /// Make sure the referenced UI Text component is not expensive to draw and also not 
-        /// expensive to update (keep it as simple and efficient as possible).
+        ///     Reference to a Text component where the dynamic info will be displayed.
+        ///     <para></para>
+        ///     <para></para>
+        ///     Make sure the referenced UI Text component is not expensive to draw and also not
+        ///     expensive to update (keep it as simple and efficient as possible).
         /// </summary>
         [Header("GUI")]
         [Tooltip(
@@ -37,11 +43,11 @@ namespace OmniSARTechnologies.LiteFPSCounter
         public Text dynamicInfoText;
 
         /// <summary>
-        /// Reference to a Text component where the static info will be displayed.
-        /// <para></para>
-        /// <para></para>
-        /// Although this field will rarely be updated, still make sure the referenced UI Text 
-        /// component is at least not expensive to draw.
+        ///     Reference to a Text component where the static info will be displayed.
+        ///     <para></para>
+        ///     <para></para>
+        ///     Although this field will rarely be updated, still make sure the referenced UI Text
+        ///     component is at least not expensive to draw.
         /// </summary>
         [Tooltip(
             "Reference to a Text component where the static info will be displayed.\n\r\n\r" +
@@ -50,85 +56,69 @@ namespace OmniSARTechnologies.LiteFPSCounter
         )]
         public Text staticInfoText;
 
-        /// <summary>
-        /// Registered frame time within the update interval.
-        /// </summary>
-        public float frameTime { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Minimum registered frame time within the update interval.
-        /// </summary>
-        public float minFrameTime { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Maximum registered frame time within the update interval.
-        /// </summary>
-        public float maxFrameTime { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Fluctuation of the registered frame time within the update interval.
-        /// </summary>
-        public float frameTimeFlutuation { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Registered framerate within the update interval.
-        /// </summary>
-        public float frameRate { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Minimum registered framerate within the update interval.
-        /// </summary>
-        public float minFrameRate { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Maximum registered framerate within the update interval.
-        /// </summary>
-        public float maxFrameRate { get; private set; } = 0.0f;
-
-        /// <summary>
-        /// Framerate fluctuation within the update interval.
-        /// </summary>
-        public float frameRateFlutuation { get; private set; } = 0.0f;
-
-        private Color m_FPSFieldsColor = ColorHelper.HexStrToColor("#80FF00FF");
-        private Color m_FPSMinFieldsColor = ColorHelper.HexStrToColor("#FF8400FF");
-        private Color m_FPSMaxFieldsColor = ColorHelper.HexStrToColor("#00A0FFFF");
-        private Color m_FPSFluctuationFieldsColor = ColorHelper.HexStrToColor("#DCEC00FF");
-        private Color m_GPUFieldsColor = ColorHelper.HexStrToColor("#FF5020FF");
-        private Color m_GPUDetailFieldsColor = ColorHelper.HexStrToColor("#FF3379FF");
-        private Color m_CPUFieldsColor = ColorHelper.HexStrToColor("#0090CBFF");
-        private Color m_SysFieldsColor = ColorHelper.HexStrToColor("#C9D700FF");
+        private int m_AccumulatedFrames;
 
         private float m_AccumulatedTime;
-        private int m_AccumulatedFrames;
-        private float m_LastUpdateTime;
-        private string m_StaticInfoDisplay;
+        private Color m_CPUFieldsColor = ColorHelper.HexStrToColor("#0090CBFF");
         private string m_DynamicConfigurationFormat;
 
-        public static float UpdateInterval = 0.5f;
-        public static float MinTime = 0.000000001f; // equivalent to 1B fps
+        private Color m_FPSFieldsColor = ColorHelper.HexStrToColor("#80FF00FF");
+        private Color m_FPSFluctuationFieldsColor = ColorHelper.HexStrToColor("#DCEC00FF");
+        private Color m_FPSMaxFieldsColor = ColorHelper.HexStrToColor("#00A0FFFF");
+        private Color m_FPSMinFieldsColor = ColorHelper.HexStrToColor("#FF8400FF");
+        private Color m_GPUDetailFieldsColor = ColorHelper.HexStrToColor("#FF3379FF");
+        private Color m_GPUFieldsColor = ColorHelper.HexStrToColor("#FF5020FF");
+        private float m_LastUpdateTime;
+        private string m_StaticInfoDisplay;
+        private Color m_SysFieldsColor = ColorHelper.HexStrToColor("#C9D700FF");
 
         /// <summary>
-        /// Initializes (and resets) the component.
-        /// <para></para>
-        /// <para></para>
-        /// <remarks>
-        /// The initialization only targets the component's internal data.
-        /// </remarks>
+        ///     Registered frame time within the update interval.
         /// </summary>
-        public void Initialize()
-        {
-            Reset();
-            UpdateInternals();
-        }
+        public float frameTime { get; private set; }
 
         /// <summary>
-        /// Resets the framerate probing data.
-        /// <para></para>
-        /// <para></para>
-        /// <remarks>
-        /// This does not reset the component's inspector state.
-        /// </remarks>
+        ///     Minimum registered frame time within the update interval.
+        /// </summary>
+        public float minFrameTime { get; private set; }
+
+        /// <summary>
+        ///     Maximum registered frame time within the update interval.
+        /// </summary>
+        public float maxFrameTime { get; private set; }
+
+        /// <summary>
+        ///     Fluctuation of the registered frame time within the update interval.
+        /// </summary>
+        public float frameTimeFlutuation { get; private set; }
+
+        /// <summary>
+        ///     Registered framerate within the update interval.
+        /// </summary>
+        public float frameRate { get; private set; }
+
+        /// <summary>
+        ///     Minimum registered framerate within the update interval.
+        /// </summary>
+        public float minFrameRate { get; private set; }
+
+        /// <summary>
+        ///     Maximum registered framerate within the update interval.
+        /// </summary>
+        public float maxFrameRate { get; private set; }
+
+        /// <summary>
+        ///     Framerate fluctuation within the update interval.
+        /// </summary>
+        public float frameRateFlutuation { get; private set; }
+
+        /// <summary>
+        ///     Resets the framerate probing data.
+        ///     <para></para>
+        ///     <para></para>
+        ///     <remarks>
+        ///         This does not reset the component's inspector state.
+        ///     </remarks>
         /// </summary>
         public void Reset()
         {
@@ -137,11 +127,39 @@ namespace OmniSARTechnologies.LiteFPSCounter
             m_LastUpdateTime = Time.realtimeSinceStartup;
         }
 
-        private void Start() => Initialize();
+        private void Start()
+        {
+            Initialize();
+        }
 
-        private void OnEnable() => Initialize();
+        private void Update()
+        {
+            UpdateFPS();
+        }
 
-        public void UpdateInternals() => UpdateStaticContentAndData();
+        private void OnEnable()
+        {
+            Initialize();
+        }
+
+        /// <summary>
+        ///     Initializes (and resets) the component.
+        ///     <para></para>
+        ///     <para></para>
+        ///     <remarks>
+        ///         The initialization only targets the component's internal data.
+        ///     </remarks>
+        /// </summary>
+        public void Initialize()
+        {
+            Reset();
+            UpdateInternals();
+        }
+
+        public void UpdateInternals()
+        {
+            UpdateStaticContentAndData();
+        }
 
         private void UpdateStaticContentAndData()
         {
@@ -150,28 +168,21 @@ namespace OmniSARTechnologies.LiteFPSCounter
                 "{3} FPS {4} ms {5}" + Environment.NewLine +
                 "{6} FPS {7} ms {8}" + Environment.NewLine +
                 "{9} FPS {10} ms {11}",
-
                 ColorHelper.ColorText("{0}", m_FPSFieldsColor),
                 ColorHelper.ColorText("{1}", m_FPSFieldsColor),
                 ColorHelper.ColorText("Σ", m_FPSFieldsColor),
-
                 ColorHelper.ColorText("{2}", m_FPSMinFieldsColor),
                 ColorHelper.ColorText("{3}", m_FPSMinFieldsColor),
                 ColorHelper.ColorText("⇓", m_FPSMinFieldsColor),
-
                 ColorHelper.ColorText("{4}", m_FPSMaxFieldsColor),
                 ColorHelper.ColorText("{5}", m_FPSMaxFieldsColor),
                 ColorHelper.ColorText("⇑", m_FPSMaxFieldsColor),
-
                 ColorHelper.ColorText("{6}", m_FPSFluctuationFieldsColor),
                 ColorHelper.ColorText("{7}", m_FPSFluctuationFieldsColor),
                 ColorHelper.ColorText("∿", m_FPSFluctuationFieldsColor)
             );
 
-            if (!staticInfoText)
-            {
-                return;
-            }
+            if (!staticInfoText) return;
 
             staticInfoText.text = string.Format(
                 "{0} {1}" + Environment.NewLine +
@@ -180,7 +191,7 @@ namespace OmniSARTechnologies.LiteFPSCounter
                 "{4} MB RAM" + Environment.NewLine +
                 "{5}",
                 ColorHelper.ColorText(SystemInfo.graphicsDeviceName, m_GPUFieldsColor),
-                ColorHelper.ColorText("[" + SystemInfo.graphicsDeviceType.ToString() + "]", m_GPUDetailFieldsColor),
+                ColorHelper.ColorText("[" + SystemInfo.graphicsDeviceType + "]", m_GPUDetailFieldsColor),
                 ColorHelper.ColorText(SystemInfo.graphicsMemorySize.ToString(), m_GPUFieldsColor),
                 ColorHelper.ColorText(SystemInfo.processorType, m_CPUFieldsColor),
                 ColorHelper.ColorText(SystemInfo.systemMemorySize.ToString(), m_CPUFieldsColor),
@@ -190,10 +201,7 @@ namespace OmniSARTechnologies.LiteFPSCounter
 
         private void UpdateDynamicContent()
         {
-            if (!dynamicInfoText)
-            {
-                return;
-            }
+            if (!dynamicInfoText) return;
 
             dynamicInfoText.text = string.Format(
                 m_DynamicConfigurationFormat,
@@ -214,46 +222,25 @@ namespace OmniSARTechnologies.LiteFPSCounter
 
         private void UpdateFPS()
         {
-            if (!dynamicInfoText)
-            {
-                return;
-            }
+            if (!dynamicInfoText) return;
 
             float deltaTime = Time.unscaledDeltaTime;
 
             m_AccumulatedTime += deltaTime;
             m_AccumulatedFrames++;
 
-            if (deltaTime < MinTime)
-            {
-                deltaTime = MinTime;
-            }
+            if (deltaTime < MinTime) deltaTime = MinTime;
 
-            if (deltaTime < minFrameTime)
-            {
-                minFrameTime = deltaTime;
-            }
+            if (deltaTime < minFrameTime) minFrameTime = deltaTime;
 
-            if (deltaTime > maxFrameTime)
-            {
-                maxFrameTime = deltaTime;
-            }
+            if (deltaTime > maxFrameTime) maxFrameTime = deltaTime;
 
             float nowTime = Time.realtimeSinceStartup;
-            if (nowTime - m_LastUpdateTime < UpdateInterval)
-            {
-                return;
-            }
+            if (nowTime - m_LastUpdateTime < UpdateInterval) return;
 
-            if (m_AccumulatedTime < MinTime)
-            {
-                m_AccumulatedTime = MinTime;
-            }
+            if (m_AccumulatedTime < MinTime) m_AccumulatedTime = MinTime;
 
-            if (m_AccumulatedFrames < 1)
-            {
-                m_AccumulatedFrames = 1;
-            }
+            if (m_AccumulatedFrames < 1) m_AccumulatedFrames = 1;
 
             frameTime = m_AccumulatedTime / m_AccumulatedFrames;
             frameRate = 1.0f / frameTime;
@@ -269,7 +256,5 @@ namespace OmniSARTechnologies.LiteFPSCounter
             ResetProbingData();
             m_LastUpdateTime = nowTime;
         }
-
-        private void Update() => UpdateFPS();
     }
 }

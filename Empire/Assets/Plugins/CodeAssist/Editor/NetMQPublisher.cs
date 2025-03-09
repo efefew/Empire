@@ -1,15 +1,22 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
-using UnityEngine;
-using UnityEditor;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Meryel.UnityCodeAssist.Editor.Logger;
+using Meryel.UnityCodeAssist.Editor.TinyJson;
+using Meryel.UnityCodeAssist.Synchronizer.Model;
 using NetMQ;
 using NetMQ.Sockets;
-using System.Threading;
+using Serilog;
+using UnityEngine;
 using Task = System.Threading.Tasks.Task;
 //using CancellationToken = System.Threading;
 using Application = UnityEngine.Application;
+using GameObject = UnityEngine.GameObject;
 
 
 #nullable enable
@@ -21,103 +28,34 @@ using Application = UnityEngine.Application;
 
 namespace Meryel.UnityCodeAssist.Editor
 {
-    public class NetMQPublisher : Synchronizer.Model.IProcessor
+    public class NetMQPublisher : IProcessor
     {
-        PublisherSocket? pubSocket;
-        readonly string pubConnString;
+        private readonly string pubConnString;
 
-        Task? pullTask;
-        CancellationTokenSource? pullTaskCancellationTokenSource;
+        private readonly Manager syncMngr;
 
-        readonly Synchronizer.Model.Manager syncMngr;
+        private Connect? _self;
 
-        public List<Synchronizer.Model.Connect> clients;
+        public List<Connect> clients;
 
-        Synchronizer.Model.Connect? _self;
+        private bool isBind;
+        private PublisherSocket? pubSocket;
 
-        Synchronizer.Model.Connect Self => _self!;
+        private Task? pullTask;
+        private CancellationTokenSource? pullTaskCancellationTokenSource;
 
-        void InitializeSelf()
-        {
-            var projectPath = CommonTools.GetProjectPath();
-            _self = new Synchronizer.Model.Connect()
-            {
-                ModelVersion = Synchronizer.Model.Utilities.Version,
-                ProjectPath = projectPath,
-                ProjectName = getProjectName(),
-                ContactInfo = $"Unity {Application.unityVersion}",
-                AssemblyVersion = Assister.Version,
-            };
-
-            string getProjectName()
-            {
-                string[] s = projectPath.Split('/');
-                string projectName = s[s.Length - 2];
-                //Logg("project = " + projectName);
-                return projectName;
-            }
-        }
-
-
-        public static void LogContext()
-        {
-            Serilog.Log.Debug("LogginContext begin");
-
-            //var context = typeof(NetMQConfig).GetProperty("Context", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).GetValue(null);
-            var context = typeof(NetMQConfig).GetField("s_ctx", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).GetValue(null);
-            Serilog.Log.Debug("context: {Context}", context);
-
-            if (context == null)
-                return;
-
-            var starting = context.GetType().GetField("m_starting", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(context);
-            Serilog.Log.Debug("starting: {Starting}", starting);
-
-            var terminating = context.GetType().GetField("m_terminating", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(context);
-            Serilog.Log.Debug("terminating: {Terminating}", terminating);
-
-            var sockets = context.GetType().GetField("m_sockets", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(context);
-            //Logg("sockets:" + sockets);
-            //var socketList = sockets as System.Collections.IList;
-            if (sockets is System.Collections.IList socketList)
-            {
-                Serilog.Log.Debug("socketList: {SocketList} [{Count}]", socketList, socketList.Count);
-
-                foreach (var socketItem in socketList)
-                {
-                    Serilog.Log.Debug("socketItem: {SocketItem}", socketItem);
-                }
-            }
-
-            var endPoints = context.GetType().GetField("m_endpoints", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(context);
-            //Logg("endPoints:" + endPoints);
-            //var endPointDict = endPoints as System.Collections.IDictionary;
-            if (endPoints is System.Collections.IDictionary endPointDict)
-            {
-                Serilog.Log.Debug("endPointDict: {EndPointDict} ,{Count}", endPointDict, endPointDict.Count);
-
-                foreach (var endPointDictKey in endPointDict.Keys)
-                {
-                    Serilog.Log.Debug("endPointDictKey: {EndPointDictKey} => {EndPointDictValue}", endPointDictKey, endPointDict[endPointDictKey]);
-                }
-            }
-
-            Serilog.Log.Debug("LogginContext end");
-        }
-
-        bool isBind = false;
         public NetMQPublisher()
         {
             // LogContext();
 
-            Serilog.Log.Debug("NetMQ server initializing, begin");
+            Log.Debug("NetMQ server initializing, begin");
 
             InitializeSelf();
 
-            clients = new List<Synchronizer.Model.Connect>();
-            syncMngr = new Synchronizer.Model.Manager(this);
+            clients = new List<Connect>();
+            syncMngr = new Manager(this);
 
-            var (pubSub, pushPull) = Synchronizer.Model.Utilities.GetConnectionString(Self!.ProjectPath);
+            (string pubSub, string pushPull) = Utilities.GetConnectionString(Self!.ProjectPath);
             pubConnString = pubSub;
 
             //NetMQConfig.Linger = new TimeSpan(0);
@@ -126,7 +64,7 @@ namespace Meryel.UnityCodeAssist.Editor
             pubSocket = new PublisherSocket();
 
             pubSocket.Options.SendHighWatermark = 1000;
-            Serilog.Log.Debug("NetMQ server initializing, Publisher socket binding... {PubConnString}", pubConnString);
+            Log.Debug("NetMQ server initializing, Publisher socket binding... {PubConnString}", pubConnString);
             //pubSocket.Bind("tcp://127.0.0.1:12349");
 
 
@@ -134,22 +72,22 @@ namespace Meryel.UnityCodeAssist.Editor
             {
                 pubSocket.Bind(pubConnString);
                 isBind = true;
-                Serilog.Log.Debug("NetMQ server initializing, Publisher socket bound");
+                Log.Debug("NetMQ server initializing, Publisher socket bound");
             }
             catch (AddressAlreadyInUseException ex)
             {
-                Serilog.Log.Warning(ex, "NetMQ.AddressAlreadyInUseException");
+                Log.Warning(ex, "NetMQ.AddressAlreadyInUseException");
                 LogContext();
-                Serilog.Log.Warning("NetMQ.AddressAlreadyInUseException disposing pubSocket");
+                Log.Warning("NetMQ.AddressAlreadyInUseException disposing pubSocket");
                 pubSocket.Dispose();
                 pubSocket = null;
                 return;
             }
-            catch (System.Net.Sockets.SocketException ex)
+            catch (SocketException ex)
             {
-                Serilog.Log.Warning(ex, "Socket exception");
+                Log.Warning(ex, "Socket exception");
                 LogContext();
-                Serilog.Log.Warning("Socket exception disposing pubSocket");
+                Log.Warning("Socket exception disposing pubSocket");
                 pubSocket.Dispose();
                 pubSocket = null;
                 return;
@@ -174,11 +112,11 @@ namespace Meryel.UnityCodeAssist.Editor
 
             pullTask = Task.Factory.StartNew(
                 () => InitPull(pushPull, pullTaskCancellationTokenSource.Token),
-                System.Threading.Tasks.TaskCreationOptions.LongRunning);
+                TaskCreationOptions.LongRunning);
 
             //InitPull(conn.pushPull);
 
-            Serilog.Log.Debug("NetMQ server initializing, initialized");
+            Log.Debug("NetMQ server initializing, initialized");
 
             // need to sleep here, clients will take some time to start subscribing
             // https://github.com/zeromq/netmq/issues/482#issuecomment-182200323
@@ -186,40 +124,316 @@ namespace Meryel.UnityCodeAssist.Editor
             SendConnect();
         }
 
+        private Connect Self => _self!;
+
+
+        string IProcessor.Serialize<T>(T value)
+        {
+            //return System.Text.Json.JsonSerializer.Serialize<T>(value);
+            //return Newtonsoft.Json.JsonConvert.SerializeObject(value);
+            return SerializeObject(value);
+        }
+
+        T IProcessor.Deserialize<T>(string data)
+        {
+            //return System.Text.Json.JsonSerializer.Deserialize<T>(data)!;
+            //return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(data)!;
+            return JsonParser.FromJson<T>(data)!;
+
+            //byte[] buffer = System.Text.Encoding.UTF8.GetBytes(data);
+            //T val = OdinSerializer.SerializationUtility.DeserializeValue<T>(buffer, OdinSerializer.DataFormat.JSON);
+            //return val;
+        }
+
+        //**--make sure all Synchronizer.Model.IProcessor.Process methods are thread-safe
+
+        // a new client has connected
+        void IProcessor.Process(Connect connect)
+        {
+            if (connect.ModelVersion != Self.ModelVersion)
+            {
+                Log.Error(
+                    "Version mismatch with {ContactInfo}. Please update your asset and reinstall the Visual Studio extension. {ContactModel} != {SelfModel}",
+                    connect.ContactInfo, connect.ModelVersion, Self.ModelVersion);
+                return;
+            }
+
+            if (connect.ProjectPath != Self.ProjectPath)
+            {
+                Log.Error("Project mismatch with {ProjectName}. '{ConnectPath}' != '{SelfPath}'", connect.ProjectName,
+                    connect.ProjectPath, Self.ProjectPath);
+                return;
+            }
+
+            if (!clients.Any(c => c.ContactInfo == connect.ContactInfo)) clients.Add(connect);
+
+            SendHandshake();
+            if (ScriptFinder.GetActiveGameObject(out GameObject? activeGO))
+                SendGameObject(activeGO);
+            Assister.SendTagsAndLayers();
+        }
+
+        // a new client is online and requesting connection
+        void IProcessor.Process(RequestConnect requestConnect)
+        {
+            SendConnect();
+        }
+
+        void IProcessor.Process(Disconnect disconnect)
+        {
+            Connect? client = clients.FirstOrDefault(c => c.ContactInfo == disconnect.ContactInfo);
+            if (client == null)
+                return;
+
+            clients.Remove(client);
+        }
+
+        void IProcessor.Process(ConnectionInfo connectionInfo)
+        {
+            if (connectionInfo.ModelVersion != Self.ModelVersion)
+            {
+                Log.Error(
+                    "Version mismatch with {ContactInfo}. Please update your asset and reinstall the Visual Studio extension. {ContactModel} != {SelfModel}",
+                    connectionInfo.ContactInfo, connectionInfo.ModelVersion, Self.ModelVersion);
+                return;
+            }
+
+            if (connectionInfo.ProjectPath != Self.ProjectPath)
+            {
+                Log.Error("Project mismatch with {ProjectName}. '{ConnectPath}' != '{SelfPath}'",
+                    connectionInfo.ProjectName, connectionInfo.ProjectPath, Self.ProjectPath);
+                return;
+            }
+
+            if (!clients.Any(c => c.ContactInfo == connectionInfo.ContactInfo))
+            {
+                SendConnect();
+            }
+            else
+            {
+                SendHandshake();
+                if (ScriptFinder.GetActiveGameObject(out GameObject? activeGO))
+                    SendGameObject(activeGO);
+                Assister.SendTagsAndLayers();
+            }
+        }
+
+        void IProcessor.Process(RequestConnectionInfo requestConnectionInfo)
+        {
+            SendConnectionInfo();
+        }
+
+        /*
+        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Layers layers)
+        {
+
+        }
+        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Tags tags)
+        {
+
+        }
+        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.SortingLayers sortingLayers)
+        {
+
+        }*/
+        void IProcessor.Process(StringArray stringArray)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.StringArray)");
+        }
+
+        void IProcessor.Process(StringArrayContainer stringArrayContainer)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.StringArrayContainer)");
+        }
+
+        void IProcessor.Process(Synchronizer.Model.GameObject gameObject)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.GameObject)");
+        }
+
+        void IProcessor.Process(ComponentData component)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ComponentData)");
+        }
+
+        void IProcessor.Process(RequestScript requestScript)
+        {
+            if (requestScript.DeclaredTypes == null || requestScript.DeclaredTypes.Length == 0)
+                return;
+
+            string? documentPath = requestScript.DocumentPath;
+
+            foreach (string? declaredType in requestScript.DeclaredTypes)
+                if (ScriptFinder.FindInstanceOfType(declaredType, documentPath, out GameObject? go,
+                        out ScriptableObject? so))
+                {
+                    if (go != null)
+                        SendGameObject(go);
+                    else if (so != null)
+                        SendScriptableObject(so);
+                    else
+                        Log.Warning("Invalid instance of type");
+                }
+                else
+                {
+                    SendScriptMissing(declaredType);
+                }
+        }
+
+        void IProcessor.Process(ScriptMissing scriptMissing)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ScriptMissing)");
+        }
+
+
+        void IProcessor.Process(Handshake handshake)
+        {
+            // Do nothing
+        }
+
+        void IProcessor.Process(RequestInternalLog requestInternalLog)
+        {
+            SendInternalLog();
+        }
+
+        void IProcessor.Process(InternalLog internalLog)
+        {
+            ELogger.VsInternalLog = internalLog.LogContent;
+        }
+
+        void IProcessor.Process(AnalyticsEvent analyticsEvent)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.AnalyticsEvent)");
+        }
+
+        void IProcessor.Process(ErrorReport errorReport)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ErrorReport)");
+        }
+
+        void IProcessor.Process(RequestVerboseType requestVerboseType)
+        {
+            Log.Warning(
+                "Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestVerboseType)");
+        }
+
+        void IProcessor.Process(RequestLazyLoad requestLazyLoad)
+        {
+            Monitor.LazyLoad(requestLazyLoad.Category);
+        }
+
+        private void InitializeSelf()
+        {
+            string projectPath = CommonTools.GetProjectPath();
+            _self = new Connect
+            {
+                ModelVersion = Utilities.Version,
+                ProjectPath = projectPath,
+                ProjectName = getProjectName(),
+                ContactInfo = $"Unity {Application.unityVersion}",
+                AssemblyVersion = Assister.Version
+            };
+
+            string getProjectName()
+            {
+                string[] s = projectPath.Split('/');
+                string projectName = s[s.Length - 2];
+                //Logg("project = " + projectName);
+                return projectName;
+            }
+        }
+
+
+        public static void LogContext()
+        {
+            Log.Debug("LogginContext begin");
+
+            //var context = typeof(NetMQConfig).GetProperty("Context", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic).GetValue(null);
+            object? context = typeof(NetMQConfig).GetField("s_ctx", BindingFlags.Static | BindingFlags.NonPublic)
+                .GetValue(null);
+            Log.Debug("context: {Context}", context);
+
+            if (context == null)
+                return;
+
+            object? starting = context.GetType().GetField("m_starting", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(context);
+            Log.Debug("starting: {Starting}", starting);
+
+            object? terminating = context.GetType()
+                .GetField("m_terminating", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(context);
+            Log.Debug("terminating: {Terminating}", terminating);
+
+            object? sockets = context.GetType().GetField("m_sockets", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(context);
+            //Logg("sockets:" + sockets);
+            //var socketList = sockets as System.Collections.IList;
+            if (sockets is IList socketList)
+            {
+                Log.Debug("socketList: {SocketList} [{Count}]", socketList, socketList.Count);
+
+                foreach (object? socketItem in socketList) Log.Debug("socketItem: {SocketItem}", socketItem);
+            }
+
+            object? endPoints = context.GetType()
+                .GetField("m_endpoints", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(context);
+            //Logg("endPoints:" + endPoints);
+            //var endPointDict = endPoints as System.Collections.IDictionary;
+            if (endPoints is IDictionary endPointDict)
+            {
+                Log.Debug("endPointDict: {EndPointDict} ,{Count}", endPointDict, endPointDict.Count);
+
+                foreach (object? endPointDictKey in endPointDict.Keys)
+                    Log.Debug("endPointDictKey: {EndPointDictKey} => {EndPointDictValue}", endPointDictKey,
+                        endPointDict[endPointDictKey]);
+            }
+
+            Log.Debug("LogginContext end");
+        }
+
 
         private void InitPull(string connectionString, CancellationToken cancellationToken)
         {
-            using (var runtime = new NetMQRuntime())
+            using (NetMQRuntime runtime = new())
             {
-                runtime.Run(//cancellationToken,
+                runtime.Run( //cancellationToken,
                     PullAsync(connectionString, cancellationToken)
-                    );
-                Serilog.Log.Debug("Puller runtime ended");
+                );
+                Log.Debug("Puller runtime ended");
             }
-            Serilog.Log.Debug("Puller runtime disposed");
+
+            Log.Debug("Puller runtime disposed");
         }
 
-        async Task PullAsync(string connectionString, CancellationToken cancellationToken)
+        private async Task PullAsync(string connectionString, CancellationToken cancellationToken)
         {
-            Serilog.Log.Debug("Puller begin");
-            using (var pullSocket = new PullSocket(connectionString))
+            Log.Debug("Puller begin");
+            using (PullSocket pullSocket = new(connectionString))
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     string header, content;
                     try
                     {
-                        var headerTuple = await pullSocket.ReceiveFrameStringAsync(cancellationToken);
-                        var contentTuple = await pullSocket.ReceiveFrameStringAsync(cancellationToken);
+                        (string, bool) headerTuple = await pullSocket.ReceiveFrameStringAsync(cancellationToken);
+                        (string, bool) contentTuple = await pullSocket.ReceiveFrameStringAsync(cancellationToken);
                         header = headerTuple.Item1;
                         content = contentTuple.Item1;
                     }
-                    catch (System.Threading.Tasks.TaskCanceledException)
+                    catch (TaskCanceledException)
                     {
                         // Cancellation (token) requested
                         break;
                     }
-                    Serilog.Log.Debug("Pulled: {Header}, {Content}", header, content);
+
+                    Log.Debug("Pulled: {Header}, {Content}", header, content);
 
                     if (cancellationToken.IsCancellationRequested)
                         break;
@@ -229,74 +443,77 @@ namespace Meryel.UnityCodeAssist.Editor
                     //syncMngr.ProcessMessage(header.Item1, content.Item1);
                 }
 
-                Serilog.Log.Debug("Puller closing");
+                Log.Debug("Puller closing");
 
                 pullSocket.Unbind(connectionString);
                 pullSocket.Close();
 
-                Serilog.Log.Debug("Puller closed");
+                Log.Debug("Puller closed");
             }
 
-            Serilog.Log.Debug("Puller disposed");
+            Log.Debug("Puller disposed");
         }
 
         public void Clear()
         {
             // LogContext();
 
-            Serilog.Log.Debug("NetMQ clearing, begin 1, pullTaskCancellationTokenSource: {PullTaskCancellationTokenSource}", pullTaskCancellationTokenSource);
+            Log.Debug("NetMQ clearing, begin 1, pullTaskCancellationTokenSource: {PullTaskCancellationTokenSource}",
+                pullTaskCancellationTokenSource);
             pullTaskCancellationTokenSource?.Cancel();
 
-            Serilog.Log.Verbose("NetMQ clearing, begin 2, pubSocket: {PubSocket}", pubSocket);
-            var pubSocketDebugStr = pubSocket?.ToString();
-            Serilog.Log.Debug("NetMQ clearing, begin 3, isBind: {IsBind}", isBind);
+            Log.Verbose("NetMQ clearing, begin 2, pubSocket: {PubSocket}", pubSocket);
+            string? pubSocketDebugStr = pubSocket?.ToString();
+            Log.Debug("NetMQ clearing, begin 3, isBind: {IsBind}", isBind);
             if (isBind)
             {
                 pubSocket?.Unbind(pubConnString);
                 isBind = false;
             }
-            Serilog.Log.Verbose("NetMQ clearing, begin 4");
+
+            Log.Verbose("NetMQ clearing, begin 4");
             pubSocket?.Close();
-            Serilog.Log.Verbose("NetMQ clearing, begin 5");
+            Log.Verbose("NetMQ clearing, begin 5");
             pubSocket?.Dispose();
-            Serilog.Log.Verbose("NetMQ clearing, begin 6");
+            Log.Verbose("NetMQ clearing, begin 6");
             pubSocket = null;
-            Serilog.Log.Debug("NetMQ clearing, publisher closed pubSocketDebugStr: {PubSocketDebugStr}", pubSocketDebugStr);
+            Log.Debug("NetMQ clearing, publisher closed pubSocketDebugStr: {PubSocketDebugStr}", pubSocketDebugStr);
 
             try
             {
-                Serilog.Log.Debug("NetMQ clearing, Task 1 begin");
+                Log.Debug("NetMQ clearing, Task 1 begin");
 
                 if (pullTask != null && !pullTask.Wait(1000))
-                    Serilog.Log.Warning("NetMQ clearing, pull task termination failed");
+                    Log.Warning("NetMQ clearing, pull task termination failed");
 
-                Serilog.Log.Verbose("NetMQ clearing, Task 2 waited");
+                Log.Verbose("NetMQ clearing, Task 2 waited");
 
                 pullTask?.Dispose();
                 pullTask = null;
 
-                Serilog.Log.Debug("NetMQ clearing, Task 3 disposed");
+                Log.Debug("NetMQ clearing, Task 3 disposed");
             }
             catch (Exception ex)
             {
                 //Console.WriteLine($"\n{nameof(OperationCanceledException)} thrown\n");
-                Serilog.Log.Error(ex, "NetMQ clearing, pull task");
+                Log.Error(ex, "NetMQ clearing, pull task");
             }
             finally
             {
                 pullTaskCancellationTokenSource?.Dispose();
                 pullTaskCancellationTokenSource = null;
-                Serilog.Log.Debug("NetMQ clearing, task cancelled");
+                Log.Debug("NetMQ clearing, task cancelled");
             }
 
-            Serilog.Log.Debug("NetMQ clearing, cleaning up");
+            Log.Debug("NetMQ clearing, cleaning up");
             //pullSocket?.Close();
-            NetMQConfig.Cleanup(false);  // Must be here to work more than once. Also argument false is important, otherwise might freeze Unity upon exit or domain reload
+            NetMQConfig.Cleanup(
+                false); // Must be here to work more than once. Also argument false is important, otherwise might freeze Unity upon exit or domain reload
             //pullThread?.Abort();
-            Serilog.Log.Debug("NetMQ clearing, cleared");
+            Log.Debug("NetMQ clearing, cleared");
         }
 
-        string SerializeObject<T>(T obj)
+        private string SerializeObject<T>(T obj)
             where T : class
         {
             // Odin cant serialize string arrays, https://github.com/TeamSirenix/odin-serializer/issues/26
@@ -312,12 +529,12 @@ namespace Meryel.UnityCodeAssist.Editor
             // needs nuget
             //System.Text.Json.JsonSerializer;
 
-            var str = TinyJson.JsonWriter.ToJson(obj);
+            string? str = JsonWriter.ToJson(obj);
 
             return str;
         }
 
-        void SendAux(Synchronizer.Model.IMessage message, bool logContent = true)
+        private void SendAux(IMessage message, bool logContent = true)
         {
             if (message == null)
                 return;
@@ -325,36 +542,36 @@ namespace Meryel.UnityCodeAssist.Editor
             SendAux(message.GetType().Name, message, logContent);
         }
 
-        void SendAux(string messageType, object content, bool logContent = true)
+        private void SendAux(string messageType, object content, bool logContent = true)
         {
             if (logContent)
-                Serilog.Log.Debug("Publishing {MessageType} {@Content}", messageType, content);
+                Log.Debug("Publishing {MessageType} {@Content}", messageType, content);
             else
-                Serilog.Log.Debug("Publishing {MessageType}", messageType);
+                Log.Debug("Publishing {MessageType}", messageType);
 
-            var publisher = pubSocket;
+            PublisherSocket? publisher = pubSocket;
             if (publisher != null)
                 publisher.SendMoreFrame(messageType).SendFrame(SerializeObject(content));
             else
-                Serilog.Log.Error("Publisher socket is null");
+                Log.Error("Publisher socket is null");
         }
 
         public void SendConnect()
         {
-            var connect = Self;
+            Connect? connect = Self;
 
             SendAux(connect);
         }
 
         public void SendDisconnect()
         {
-            var disconnect = new Synchronizer.Model.Disconnect()
+            Disconnect disconnect = new()
             {
                 ModelVersion = Self.ModelVersion,
                 ProjectPath = Self.ProjectPath,
                 ProjectName = Self.ProjectName,
                 ContactInfo = Self.ContactInfo,
-                AssemblyVersion = Self.AssemblyVersion,
+                AssemblyVersion = Self.AssemblyVersion
             };
 
             SendAux(disconnect);
@@ -362,13 +579,13 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public void SendConnectionInfo()
         {
-            var connectionInfo = new Synchronizer.Model.ConnectionInfo()
+            ConnectionInfo connectionInfo = new()
             {
                 ModelVersion = Self.ModelVersion,
                 ProjectPath = Self.ProjectPath,
                 ProjectName = Self.ProjectName,
                 ContactInfo = Self.ContactInfo,
-                AssemblyVersion = Self.AssemblyVersion,
+                AssemblyVersion = Self.AssemblyVersion
             };
 
             SendAux(connectionInfo);
@@ -376,65 +593,65 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public void SendHandshake()
         {
-            var handshake = new Synchronizer.Model.Handshake();
+            Handshake handshake = new();
 
             SendAux(handshake);
         }
 
         public void SendRequestInternalLog()
         {
-            var requestInternalLog = new Synchronizer.Model.RequestInternalLog();
+            RequestInternalLog requestInternalLog = new();
 
             SendAux(requestInternalLog);
         }
 
         public void SendInternalLog()
         {
-            var internalLog = new Synchronizer.Model.InternalLog()
+            InternalLog internalLog = new()
             {
-                LogContent = Logger.ELogger.GetInternalLogContent(),
+                LogContent = ELogger.GetInternalLogContent()
             };
 
-            SendAux(internalLog, logContent: false);
+            SendAux(internalLog, false);
         }
 
 
-        void SendStringArrayAux(string id, string[] array)
+        private void SendStringArrayAux(string id, string[] array)
         {
-            var stringArray = new Synchronizer.Model.StringArray()
+            StringArray stringArray = new()
             {
                 Id = id,
-                Array = array,
+                Array = array
             };
 
             SendAux(stringArray);
         }
 
-        void SendStringArrayContainerAux(params (string id, string[] array)[] container)
+        private void SendStringArrayContainerAux(params (string id, string[] array)[] container)
         {
-            var stringArrayContainer = new Synchronizer.Model.StringArrayContainer()
+            StringArrayContainer stringArrayContainer = new()
             {
-                Container = new Synchronizer.Model.StringArray[container.Length],
+                Container = new StringArray[container.Length]
             };
 
             for (int i = 0; i < container.Length; i++)
-            {
-                stringArrayContainer.Container[i] = new Synchronizer.Model.StringArray
+                stringArrayContainer.Container[i] = new StringArray
                 {
                     Id = container[i].id,
                     Array = container[i].array
                 };
-            }
 
             SendAux(stringArrayContainer);
         }
 
-        public void SendTags(string[] tags) =>
-            SendStringArrayAux(Synchronizer.Model.Ids.Tags, tags);
+        public void SendTags(string[] tags)
+        {
+            SendStringArrayAux(Ids.Tags, tags);
+        }
 
         /*
         {
-            
+
             var tags = new Synchronizer.Model.Tags()
             {
                 TagArray = tagArray,
@@ -443,7 +660,7 @@ namespace Meryel.UnityCodeAssist.Editor
             var serialized = Newtonsoft.Json.JsonConvert.SerializeObject(tags);
 
             pubSocket.SendMoreFrame(nameof(Synchronizer.Model.Tags)).SendFrame(serialized);
-            
+
 
         }*/
 
@@ -464,9 +681,9 @@ namespace Meryel.UnityCodeAssist.Editor
             //SendStringArrayAux(Synchronizer.Model.Ids.Layers, layerNames);
             //SendStringArrayAux(Synchronizer.Model.Ids.LayerIndices, layerIndices);
             SendStringArrayContainerAux(
-                (Synchronizer.Model.Ids.Layers, layerNames),
-                (Synchronizer.Model.Ids.LayerIndices, layerIndices)
-                );
+                (Ids.Layers, layerNames),
+                (Ids.LayerIndices, layerIndices)
+            );
         }
 
         public void SendSortingLayers(string[] sortingLayers, string[] sortingLayerIds, string[] sortingLayerValues)
@@ -476,22 +693,22 @@ namespace Meryel.UnityCodeAssist.Editor
             //SendStringArrayAux(Synchronizer.Model.Ids.SortingLayerValues, sortingLayerValues);
 
             SendStringArrayContainerAux(
-                (Synchronizer.Model.Ids.SortingLayers, sortingLayers),
-                (Synchronizer.Model.Ids.SortingLayerIds, sortingLayerIds),
-                (Synchronizer.Model.Ids.SortingLayerValues, sortingLayerValues)
-                );
+                (Ids.SortingLayers, sortingLayers),
+                (Ids.SortingLayerIds, sortingLayerIds),
+                (Ids.SortingLayerValues, sortingLayerValues)
+            );
         }
 
         public void SendPlayerPrefs(string[] playerPrefKeys, string[] playerPrefValues,
             string[] playerPrefStringKeys, string[] playerPrefIntegerKeys, string[] playerPrefFloatKeys)
         {
             SendStringArrayContainerAux(
-                (Synchronizer.Model.Ids.PlayerPrefKeys, playerPrefKeys),
-                (Synchronizer.Model.Ids.PlayerPrefValues, playerPrefValues),
-                (Synchronizer.Model.Ids.PlayerPrefStringKeys, playerPrefStringKeys),
-                (Synchronizer.Model.Ids.PlayerPrefIntegerKeys, playerPrefIntegerKeys),
-                (Synchronizer.Model.Ids.PlayerPrefFloatKeys, playerPrefFloatKeys)
-                );
+                (Ids.PlayerPrefKeys, playerPrefKeys),
+                (Ids.PlayerPrefValues, playerPrefValues),
+                (Ids.PlayerPrefStringKeys, playerPrefStringKeys),
+                (Ids.PlayerPrefIntegerKeys, playerPrefIntegerKeys),
+                (Ids.PlayerPrefFloatKeys, playerPrefFloatKeys)
+            );
         }
 
         public void SendEditorPrefs(string[] editorPrefKeys, string[] editorPrefValues,
@@ -499,31 +716,32 @@ namespace Meryel.UnityCodeAssist.Editor
             string[] editorPrefBooleanKeys)
         {
             SendStringArrayContainerAux(
-                (Synchronizer.Model.Ids.EditorPrefKeys, editorPrefKeys),
-                (Synchronizer.Model.Ids.EditorPrefValues, editorPrefValues),
-                (Synchronizer.Model.Ids.EditorPrefStringKeys, editorPrefStringKeys),
-                (Synchronizer.Model.Ids.EditorPrefIntegerKeys, editorPrefIntegerKeys),
-                (Synchronizer.Model.Ids.EditorPrefFloatKeys, editorPrefFloatKeys),
-                (Synchronizer.Model.Ids.EditorPrefBooleanKeys, editorPrefBooleanKeys)
-                );
+                (Ids.EditorPrefKeys, editorPrefKeys),
+                (Ids.EditorPrefValues, editorPrefValues),
+                (Ids.EditorPrefStringKeys, editorPrefStringKeys),
+                (Ids.EditorPrefIntegerKeys, editorPrefIntegerKeys),
+                (Ids.EditorPrefFloatKeys, editorPrefFloatKeys),
+                (Ids.EditorPrefBooleanKeys, editorPrefBooleanKeys)
+            );
         }
 
-        public void SendInputManager(string[] axisNames, string[] axisInfos, string[] buttonKeys, string[] buttonAxis, string[] joystickNames)
+        public void SendInputManager(string[] axisNames, string[] axisInfos, string[] buttonKeys, string[] buttonAxis,
+            string[] joystickNames)
         {
             SendStringArrayContainerAux(
-                (Synchronizer.Model.Ids.InputManagerAxes, axisNames),
-                (Synchronizer.Model.Ids.InputManagerAxisInfos, axisInfos),
-                (Synchronizer.Model.Ids.InputManagerButtonKeys, buttonKeys),
-                (Synchronizer.Model.Ids.InputManagerButtonAxis, buttonAxis),
-                (Synchronizer.Model.Ids.InputManagerJoystickNames, joystickNames)
-                );
+                (Ids.InputManagerAxes, axisNames),
+                (Ids.InputManagerAxisInfos, axisInfos),
+                (Ids.InputManagerButtonKeys, buttonKeys),
+                (Ids.InputManagerButtonAxis, buttonAxis),
+                (Ids.InputManagerJoystickNames, joystickNames)
+            );
         }
 
         public void SendScriptMissing(string component)
         {
-            var scriptMissing = new Synchronizer.Model.ScriptMissing()
+            ScriptMissing scriptMissing = new()
             {
-                Component = component,
+                Component = component
             };
 
             SendAux(scriptMissing);
@@ -534,40 +752,35 @@ namespace Meryel.UnityCodeAssist.Editor
             if (!go)
                 return;
 
-            Serilog.Log.Debug("SendGO: {GoName}", go.name);
+            Log.Debug("SendGO: {GoName}", go.name);
 
-            var dataOfSelf = go.ToSyncModel(priority:10000);
+            Synchronizer.Model.GameObject? dataOfSelf = go.ToSyncModel(10000);
             if (dataOfSelf != null)
                 SendAux(dataOfSelf);
 
             var dataOfHierarchy = go.ToSyncModelOfHierarchy();
             if (dataOfHierarchy != null)
-            {
-                foreach (var doh in dataOfHierarchy)
+                foreach (Synchronizer.Model.GameObject? doh in dataOfHierarchy)
                     SendAux(doh);
-            }
 
             var dataOfComponents = go.ToSyncModelOfComponents();
             if (dataOfComponents != null)
-            {
-                foreach (var doc in dataOfComponents)
+                foreach (ComponentData? doc in dataOfComponents)
                     SendAux(doc);
-            }
-            
         }
 
         public void SendScriptableObject(ScriptableObject so)
         {
-            Serilog.Log.Debug("SendSO: {SoName}", so.name);
+            Log.Debug("SendSO: {SoName}", so.name);
 
-            var dataOfSo = so.ToSyncModel();
+            ComponentData? dataOfSo = so.ToSyncModel();
             if (dataOfSo != null)
                 SendAux(dataOfSo);
         }
 
         public void SendAnalyticsEvent(string type, string content)
         {
-            var dataOfAe = new Synchronizer.Model.AnalyticsEvent()
+            AnalyticsEvent dataOfAe = new()
             {
                 EventType = type,
                 EventContent = content
@@ -577,216 +790,23 @@ namespace Meryel.UnityCodeAssist.Editor
 
         public void SendErrorReport(string errorMessage, string stack, string type)
         {
-            var dataOfER = new Synchronizer.Model.ErrorReport()
+            ErrorReport dataOfER = new()
             {
                 ErrorMessage = errorMessage,
                 ErrorStack = stack,
-                ErrorType = type,
+                ErrorType = type
             };
             SendAux(dataOfER);
         }
 
         public void SendRequestVerboseType(string type, string docPath)
         {
-            var dataOfRVT = new Synchronizer.Model.RequestVerboseType()
+            RequestVerboseType dataOfRVT = new()
             {
                 Type = type,
-                DocPath = docPath,
+                DocPath = docPath
             };
             SendAux(dataOfRVT);
         }
-
-
-
-        string Synchronizer.Model.IProcessor.Serialize<T>(T value)
-        {
-            //return System.Text.Json.JsonSerializer.Serialize<T>(value);
-            //return Newtonsoft.Json.JsonConvert.SerializeObject(value);
-            return SerializeObject(value);
-        }
-        T Synchronizer.Model.IProcessor.Deserialize<T>(string data)
-        {
-            //return System.Text.Json.JsonSerializer.Deserialize<T>(data)!;
-            //return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(data)!;
-            return TinyJson.JsonParser.FromJson<T>(data)!;
-
-            //byte[] buffer = System.Text.Encoding.UTF8.GetBytes(data);
-            //T val = OdinSerializer.SerializationUtility.DeserializeValue<T>(buffer, OdinSerializer.DataFormat.JSON);
-            //return val;
-        }
-
-        //**--make sure all Synchronizer.Model.IProcessor.Process methods are thread-safe
-
-        // a new client has connected
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Connect connect)
-        {
-            if (connect.ModelVersion != Self.ModelVersion)
-            {
-                Serilog.Log.Error("Version mismatch with {ContactInfo}. Please update your asset and reinstall the Visual Studio extension. {ContactModel} != {SelfModel}", connect.ContactInfo, connect.ModelVersion, Self.ModelVersion);
-                return;
-            }
-
-            if (connect.ProjectPath != Self.ProjectPath)
-            {
-                Serilog.Log.Error("Project mismatch with {ProjectName}. '{ConnectPath}' != '{SelfPath}'", connect.ProjectName, connect.ProjectPath, Self.ProjectPath);
-                return;
-            }
-
-            if (!clients.Any(c => c.ContactInfo == connect.ContactInfo))
-            {
-                clients.Add(connect);
-            }
-
-            SendHandshake();
-            if (ScriptFinder.GetActiveGameObject(out var activeGO))
-                SendGameObject(activeGO);
-            Assister.SendTagsAndLayers();
-        }
-
-        // a new client is online and requesting connection
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestConnect requestConnect)
-        {
-            SendConnect();
-        }
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Disconnect disconnect)
-        {
-            var client = clients.FirstOrDefault(c => c.ContactInfo == disconnect.ContactInfo);
-            if (client == null)
-                return;
-
-            clients.Remove(client);
-        }
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ConnectionInfo connectionInfo)
-        {
-            if (connectionInfo.ModelVersion != Self.ModelVersion)
-            {
-                Serilog.Log.Error("Version mismatch with {ContactInfo}. Please update your asset and reinstall the Visual Studio extension. {ContactModel} != {SelfModel}", connectionInfo.ContactInfo, connectionInfo.ModelVersion, Self.ModelVersion);
-                return;
-            }
-
-            if (connectionInfo.ProjectPath != Self.ProjectPath)
-            {
-                Serilog.Log.Error("Project mismatch with {ProjectName}. '{ConnectPath}' != '{SelfPath}'", connectionInfo.ProjectName, connectionInfo.ProjectPath, Self.ProjectPath);
-                return;
-            }
-
-            if (!clients.Any(c => c.ContactInfo == connectionInfo.ContactInfo))
-            {
-                SendConnect();
-            }
-            else
-            {
-                SendHandshake();
-                if (ScriptFinder.GetActiveGameObject(out var activeGO))
-                    SendGameObject(activeGO);
-                Assister.SendTagsAndLayers();
-            }
-        }
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestConnectionInfo requestConnectionInfo)
-        {
-            SendConnectionInfo();
-        }
-        /*
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Layers layers)
-        {
-
-        }
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Tags tags)
-        {
-
-        }
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.SortingLayers sortingLayers)
-        {
-
-        }*/
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.StringArray stringArray)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.StringArray)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.StringArrayContainer stringArrayContainer)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.StringArrayContainer)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.GameObject gameObject)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.GameObject)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ComponentData component)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ComponentData)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestScript requestScript)
-        {
-            if (requestScript.DeclaredTypes == null || requestScript.DeclaredTypes.Length == 0)
-                return;
-
-            var documentPath = requestScript.DocumentPath;
-
-            foreach (var declaredType in requestScript.DeclaredTypes)
-            {
-                if (ScriptFinder.FindInstanceOfType(declaredType, documentPath, out var go, out var so))
-                {
-                    if (go != null)
-                        SendGameObject(go);
-                    else if (so != null)
-                        SendScriptableObject(so);
-                    else
-                        Serilog.Log.Warning("Invalid instance of type");
-                }
-                else
-                {
-                    SendScriptMissing(declaredType);
-                }
-            }
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ScriptMissing scriptMissing)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ScriptMissing)");
-        }
-
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.Handshake handshake)
-        {
-            // Do nothing
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestInternalLog requestInternalLog)
-        {
-            SendInternalLog();
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.InternalLog internalLog)
-        {
-            Logger.ELogger.VsInternalLog = internalLog.LogContent;
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.AnalyticsEvent analyticsEvent)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.AnalyticsEvent)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ErrorReport errorReport)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.ErrorReport)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestVerboseType requestVerboseType)
-        {
-            Serilog.Log.Warning("Unity/Server shouldn't call Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestVerboseType)");
-        }
-
-        void Synchronizer.Model.IProcessor.Process(Synchronizer.Model.RequestLazyLoad requestLazyLoad)
-        {
-            Monitor.LazyLoad(requestLazyLoad.Category);
-        }
-
-
-
     }
 }
-

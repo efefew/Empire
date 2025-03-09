@@ -1,10 +1,16 @@
-using System;
+#region
 
+using System;
 using UnityEngine;
+
+#endregion
 
 public class InterfaceAttribute : PropertyAttribute
 {
-    public Type InterfaceType { get; }
+    public InterfaceAttribute(Type interfaceType)
+    {
+        InterfaceType = interfaceType;
+    }
 
-    public InterfaceAttribute(Type interfaceType) => InterfaceType = interfaceType;
+    public Type InterfaceType { get; }
 }

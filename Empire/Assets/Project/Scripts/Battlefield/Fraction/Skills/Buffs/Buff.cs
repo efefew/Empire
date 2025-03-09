@@ -1,33 +1,37 @@
+#region
+
 using System.Linq;
-
 using AdvancedEditorTools.Attributes;
-
 using UnityEngine;
 
+#endregion
+
 /// <summary>
-/// Усиление или ослабление
+///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 /// </summary>
 public abstract class Buff : MonoBehaviour
 {
     #region Enums
 
     /// <summary>
-    /// Ограничение суммирования эффектов по специфике
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public enum SpecificityStackType
     {
         /// <summary>
-        /// Этот класс усиления или ослабления
+        ///     пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         OneBuff,
+
         /// <summary>
-        /// Конкркетно это усиление или ослабление
+        ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         /// </summary>
         OneThisBuff,
         None
     }
+
     /// <summary>
-    /// Ограничение суммирования эффектов по инициаторам
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public enum InitiatorStackType
     {
@@ -37,21 +41,24 @@ public abstract class Buff : MonoBehaviour
         OneCaster,
         None
     }
+
     #endregion Enums
 
     #region Fields
-    [Header("Ограничения")]
-    [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelOrange)]
 
+    [Header("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ")]
+    [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelOrange)]
     [SerializeField]
     public SpecificityStackType specificityStack = SpecificityStackType.None;
-    [SerializeField]
-    public InitiatorStackType initiatorStack = InitiatorStackType.None;
+
+    [SerializeField] public InitiatorStackType initiatorStack = InitiatorStackType.None;
+
     [EndColumnArea]
     /// <summary>
-    /// условие действия эффекта
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
     public Condition condition;
+
     #endregion Fields
 
     #region Methods
@@ -74,12 +81,13 @@ public abstract class Buff : MonoBehaviour
             return;
         caster.temporaryBuff.Do(condition, StartBuff, EndBuff, new object[2] { caster, target });
     }
+
     protected virtual bool LimitRun(Person initiator, Person target)
     {
         switch (specificityStack)
         {
             case SpecificityStackType.OneBuff:
-                if (target.buffs.Any((Buff buff) => buff.GetType() == GetType()))
+                if (target.buffs.Any(buff => buff.GetType() == GetType()))
                     return false;
                 break;
             case SpecificityStackType.OneThisBuff:
@@ -87,8 +95,6 @@ public abstract class Buff : MonoBehaviour
                     return false;
                 break;
             case SpecificityStackType.None:
-                break;
-            default:
                 break;
         }
 
@@ -104,11 +110,10 @@ public abstract class Buff : MonoBehaviour
                 break;
             case InitiatorStackType.None:
                 break;
-            default:
-                break;
         }
 
         return true;
     }
+
     #endregion Methods
 }

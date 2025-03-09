@@ -1,6 +1,9 @@
-using System.Collections;
+#region
 
+using System.Collections;
 using UnityEngine;
+
+#endregion
 
 public abstract class Condition : MonoBehaviour
 {

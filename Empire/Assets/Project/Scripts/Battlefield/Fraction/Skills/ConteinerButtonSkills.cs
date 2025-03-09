@@ -1,9 +1,11 @@
+#region
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
-using UnityEngine.Events;
+
+#endregion
 
 public class ConteinerButtonSkills : MonoBehaviour
 {
@@ -19,7 +21,10 @@ public class ConteinerButtonSkills : MonoBehaviour
 
     #region Methods
 
-    private void Awake() => tr = transform;
+    private void Awake()
+    {
+        tr = transform;
+    }
 
     private IEnumerator ITimerSkillCast()
     {
@@ -34,14 +39,20 @@ public class ConteinerButtonSkills : MonoBehaviour
         timerSkillCast = 0;
     }
 
-    private void ClickAnyButtonSkills(ButtonSkill buttonSkill) => OnClickAnyButtonSkills?.Invoke(buttonSkill);
+    private void ClickAnyButtonSkills(ButtonSkill buttonSkill)
+    {
+        OnClickAnyButtonSkills?.Invoke(buttonSkill);
+    }
 
-    private void AddTimerSkillCast(Army army) => Silence(army, army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
+    private void AddTimerSkillCast(Army army)
+    {
+        Silence(army, army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
+    }
 
     /// <summary>
-    /// Блокировка использования способностей
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     /// </summary>
-    /// <param name="on">блокировать?</param>
+    /// <param name="on">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ?</param>
     private void Silence(bool on)
     {
         for (int id = 0; id < buttonSkills.Count; id++)
@@ -52,13 +63,11 @@ public class ConteinerButtonSkills : MonoBehaviour
     {
         bool exist = false;
         for (int id = 0; id < buttonSkills.Count; id++)
-        {
             if (buttonSkills[id].initiatorArmies.ContainsKey(initiator))
             {
                 exist = true;
                 break;
             }
-        }
 
         if (!exist)
             return false;
@@ -85,6 +94,7 @@ public class ConteinerButtonSkills : MonoBehaviour
         for (int id = 0; id < buttonSkills.Count; id++)
             buttonSkills[id].UpdatePatrolUI();
     }
+
     public void Add(Army army, Skill skill)
     {
         int id = IndexOf(skill.buttonSkillPrefab);
@@ -106,22 +116,22 @@ public class ConteinerButtonSkills : MonoBehaviour
     }
 
     /// <summary>
-    /// Удаляет навык из армии и интерфейса.
+    ///     пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
-    /// <param name="army">Армия, из которой необходимо удалить навык.</param>
-    /// <param name="skill">Навык, который нужно удалить.</param>
+    /// <param name="army">пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ.</param>
+    /// <param name="skill">пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</param>
     public void Remove(Army army, Skill skill)
     {
-        // Получаем индекс навыка в списке кнопок навыков
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         int id = IndexOf(skill.buttonSkillPrefab);
-        // Если индекс равен -1, значит навык не найден, возвращаемся
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ -1, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (id == -1)
             return;
 
-        // Удаляем армию из списка инициаторов навыка
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         buttonSkills[id].Remove(army);
 
-        // Если список инициаторов пустой, удаляем кнопку навыка и удаляем из списка кнопок
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (buttonSkills[id].initiatorArmies.Count == 0)
         {
             buttonSkills[id].button.onClick.RemoveListener(() => ClickAnyButtonSkills(buttonSkills[id]));
@@ -129,16 +139,14 @@ public class ConteinerButtonSkills : MonoBehaviour
             _ = buttonSkills.Remove(buttonSkills[id]);
         }
 
-        // Если таймер каста навыка не равен 0, значит идет каст навыка
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 0, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         if (timerSkillCast == 0)
             return;
-        // Обнуляем таймер каста и перезапускаем его для всех инициаторов навыков
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         timerSkillCast = 0;
         for (int idButtonSkill = 0; idButtonSkill < buttonSkills.Count; idButtonSkill++)
-        {
-            foreach (KeyValuePair<Army, UnityAction> initiatorArmy in buttonSkills[idButtonSkill].initiatorArmies)
+            foreach (var initiatorArmy in buttonSkills[idButtonSkill].initiatorArmies)
                 AddTimerSkillCast(initiatorArmy.Key);
-        }
 
         UpdatePatrolUI();
     }
@@ -159,7 +167,6 @@ public class ConteinerButtonSkills : MonoBehaviour
     {
         buttonSkill = null;
         for (int id = 0; id < buttonSkills.Count; id++)
-        {
             if (buttonSkills[id].targetSkill == skill)
             {
                 if (buttonSkills[id].initiatorArmies.ContainsKey(army))
@@ -170,7 +177,6 @@ public class ConteinerButtonSkills : MonoBehaviour
 
                 return false;
             }
-        }
 
         return false;
     }
@@ -178,10 +184,8 @@ public class ConteinerButtonSkills : MonoBehaviour
     public int IndexOf(ButtonSkill buttonSkill)
     {
         for (int id = 0; id < buttonSkills.Count; id++)
-        {
             if (buttonSkills[id].prefabID == buttonSkill.prefabID)
                 return id;
-        }
 
         return -1;
     }

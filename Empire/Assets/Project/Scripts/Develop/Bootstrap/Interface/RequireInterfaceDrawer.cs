@@ -1,7 +1,13 @@
 #if UNITY_EDITOR
-using UnityEditor;
 
+#region
+
+using System;
+using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
+
+#endregion
 
 [CustomPropertyDrawer(typeof(InterfaceAttribute))]
 public class RequireInterfaceDrawer : PropertyDrawer
@@ -9,12 +15,12 @@ public class RequireInterfaceDrawer : PropertyDrawer
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         InterfaceAttribute requiredAttribute = (InterfaceAttribute)attribute;
-        System.Type interfaceType = requiredAttribute.InterfaceType;
+        Type interfaceType = requiredAttribute.InterfaceType;
 
-        // Отрисовка поля для MonoBehavior
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ MonoBehavior
         EditorGUI.BeginProperty(position, label, property);
 
-        UnityEngine.Object obj = EditorGUI.ObjectField(
+        Object obj = EditorGUI.ObjectField(
             position,
             label,
             property.objectReferenceValue,
@@ -22,14 +28,14 @@ public class RequireInterfaceDrawer : PropertyDrawer
             true
         );
 
-        // Проверка, реализует ли компонент интерфейс
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (obj != null)
         {
             MonoBehaviour monoBehavior = (MonoBehaviour)obj;
             if (!interfaceType.IsAssignableFrom(monoBehavior.GetType()))
             {
                 obj = null;
-                Debug.LogError($"Компонент должен реализовывать {interfaceType.Name}!");
+                Debug.LogError($"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {interfaceType.Name}!");
             }
         }
 
