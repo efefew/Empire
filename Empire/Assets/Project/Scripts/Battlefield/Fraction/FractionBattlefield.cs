@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using AdvancedEditorTools.Attributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 #endregion
@@ -11,79 +12,70 @@ using UnityEngine.UI;
 /// <summary>
 ///     ������� �� ���� �����
 /// </summary>
-[RequireComponent(typeof(PointsAB))]
+[RequireComponent(typeof(PointsAb))]
 public class FractionBattlefield : MonoBehaviour
 {
-    #region Properties
+    private PointsAb MainAb { get; set; }
+    
+    [FormerlySerializedAs("conteinerGlobal")] [SerializeField] private Transform _containerGlobal;
+    [FormerlySerializedAs("conteinerArmy")] [SerializeField] private Transform _containerArmy;
+    [FormerlySerializedAs("conteinerToggle")] [SerializeField] private ToggleGroup _containerToggle;
 
-    public PointsAB mainAB { get; private set; }
+    private Battlefield _battlefield;
 
-    #endregion Properties
+    [FormerlySerializedAs("bot")] [ReadOnly] public Bot Bot;
 
-    #region Fields
+    [FormerlySerializedAs("sideID")] public ulong SideID;
 
-    [SerializeField] private Transform conteinerGlobal, conteinerArmy;
+    [FormerlySerializedAs("armies")] [SerializeField] public List<Army> Armies = new();
 
-    [SerializeField] private ToggleGroup conteinerToggle;
+    [FormerlySerializedAs("armiesInfo")] public List<ArmyInformation> ArmiesInfo;
 
-    private Battlefield battlefield;
-
-    [ReadOnly] public Bot bot;
-
-    public ulong sideID;
-
-    [SerializeField] public List<Army> armies = new();
-
-    public List<ArmyInformation> armiesInfo;
-
-    public Transform start, end;
-
-    #endregion Fields
-
-    #region Methods
+    [FormerlySerializedAs("start")] public Transform Start;
+    [FormerlySerializedAs("end")] public Transform End;
 
     //public float angle;
     private void Awake()
     {
-        mainAB = GetComponent<PointsAB>();
-        bot ??= GetComponent<Bot>();
-        conteinerArmy = transform;
-        battlefield = Battlefield.Singleton;
-        BuildFraction(start.position, end.position);
+        MainAb = GetComponent<PointsAb>();
+        Bot ??= GetComponent<Bot>();
+        _containerArmy = transform;
+        _battlefield = Battlefield.Instance;
+        BuildFraction(Start.position, End.position);
     }
 
     private void BuildFraction(Vector2 a, Vector2 b)
     {
-        int countArmy = armiesInfo.Count;
+        int countArmy = ArmiesInfo.Count;
         float distance = Mathf.Max(0,
             (Vector2.Distance(a, b) - Army.OFFSET_BETWEEN_ARMIES * (countArmy - 1)) / countArmy);
         Transform point = new GameObject("point").transform;
         point.position = a;
         point.LookAt2D(b);
 
-        if (!bot)
+        if (!Bot)
         {
-            mainAB.conteinerToggle = conteinerToggle;
-            battlefield.ToggleArmyGroup.onValueChanged.AddListener(on => mainAB.Group(on));
+            MainAb.ContainerToggle = _containerToggle;
+            _battlefield.ToggleArmyGroup.onValueChanged.AddListener(on => MainAb.Group(on));
             //toggleStand.onValueChanged.AddListener((bool on) =>  );
         }
 
-        for (int id = 0; id < armiesInfo.Count; id++)
+        for (int id = 0; id < ArmiesInfo.Count; id++)
         {
-            Army army = Instantiate(armiesInfo[id].armyPack.army, conteinerArmy);
+            Army army = Instantiate(ArmiesInfo[id].ArmyContent.Army, _containerArmy);
             army.name += $" {id}";
-            armies.Add(army);
-            mainAB.childrensAB.Add(army.anchors);
-            army.anchors.parentAB = mainAB;
+            Armies.Add(army);
+            MainAb.ChildrenAb.Add(army.anchors);
+            army.anchors.ParentAb = MainAb;
             army.OnDeadArmy += DeadArmy;
-            Button buttonArmy = Instantiate(armiesInfo[id].armyPack.buttonArmy, conteinerGlobal);
-            buttonArmy.GetComponent<Image>().color = battlefield.GetColorFraction(this);
-            buttonArmy.onClick.AddListener(() => battlefield.SetTargetArmy(army));
+            Button buttonArmy = Instantiate(ArmiesInfo[id].ArmyContent.ButtonArmy, _containerGlobal);
+            buttonArmy.GetComponent<Image>().color = _battlefield.GetColorFraction(this);
+            buttonArmy.onClick.AddListener(() => _battlefield.SetTargetArmy(army));
 
             a = point.position;
             point.position += point.right * distance;
             b = point.position;
-            BuildArmy(a, b, armiesInfo[id], army, buttonArmy);
+            BuildArmy(a, b, ArmiesInfo[id], army, buttonArmy);
 
             point.position += point.right * Army.OFFSET_BETWEEN_ARMIES;
         }
@@ -91,64 +83,63 @@ public class FractionBattlefield : MonoBehaviour
 
     private void BuildArmy(Vector2 a, Vector2 b, ArmyInformation armyInfo, Army army, Button buttonArmy)
     {
-        if (bot)
+        if (Bot)
         {
             army.BuildArmy(a, b, this, buttonArmy);
             return;
         }
 
-        StatusUI armyUI = Instantiate(armyInfo.armyPack.armyUI, conteinerToggle.transform);
-        StatusUI armyGlobalUI = Instantiate(armyInfo.armyPack.armyGlobalUI, conteinerGlobal);
-        armyGlobalUI.background.color = battlefield.GetColorFraction(this);
+        StatusUI armyUI = Instantiate(armyInfo.ArmyContent.ArmyUI, _containerToggle.transform);
+        StatusUI armyGlobalUI = Instantiate(armyInfo.ArmyContent.ArmyGlobalUI, _containerGlobal);
+        armyGlobalUI.background.color = _battlefield.GetColorFraction(this);
 
         Toggle toggle = armyUI.toggle;
-        toggle.group = conteinerToggle;
+        toggle.group = _containerToggle;
         toggle.onValueChanged.AddListener(on =>
         {
             if (on)
             {
                 army.AddSkillsUI();
-                battlefield.ToggleRepeat.SetIsOnWithoutNotify(army.Repeat);
-                battlefield.ToggleStand.SetIsOnWithoutNotify(army.Stand);
-                battlefield.DeactiveAllArmies();
-                battlefield.ToggleRepeat.onValueChanged.AddListener(army.SetRepeat);
-                battlefield.ToggleStand.onValueChanged.AddListener(army.SetStand);
+                _battlefield.ToggleRepeat.SetIsOnWithoutNotify(army.Repeat);
+                _battlefield.ToggleStand.SetIsOnWithoutNotify(army.Stand);
+                _battlefield.DeactiveAllArmies();
+                _battlefield.ToggleRepeat.onValueChanged.AddListener(army.SetRepeat);
+                _battlefield.ToggleStand.onValueChanged.AddListener(army.SetStand);
                 army.SetActive(true);
             }
             else
             {
                 army.RemoveSkillsUI();
-                battlefield.ToggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
-                battlefield.ToggleStand.onValueChanged.RemoveListener(army.SetStand);
+                _battlefield.ToggleRepeat.onValueChanged.RemoveListener(army.SetRepeat);
+                _battlefield.ToggleStand.onValueChanged.RemoveListener(army.SetStand);
                 army.SetActive(false);
             }
         });
         armyGlobalUI.toggle.onValueChanged.AddListener(on => toggle.isOn = !toggle.isOn);
 
-        army.BuildArmy(a, b, this, buttonArmy, armyUI, armyGlobalUI, battlefield.ConteinerSkill);
+        army.BuildArmy(a, b, this, buttonArmy, armyUI, armyGlobalUI, _battlefield.ConteinerSkill);
     }
 
     private void DeadArmy(Army army)
     {
         army.OnDeadArmy -= DeadArmy;
-        if (army.armyUI)
-            Destroy(army.armyUI.gameObject);
-        if (army.armyGlobalUI)
-            Destroy(army.armyGlobalUI.gameObject);
-        if (army.buttonArmy)
-            Destroy(army.buttonArmy.gameObject);
-        _ = armies.Remove(army);
+        army.anchors.enabled = false;
+        if (army.ArmyUI)
+            Destroy(army.ArmyUI.gameObject);
+        if (army.ArmyGlobalUI)
+            Destroy(army.ArmyGlobalUI.gameObject);
+        if (army.ButtonArmy)
+            Destroy(army.ButtonArmy.gameObject);
+        _ = Armies.Remove(army);
         //Destroy(army);
     }
 
     [Button("Kill", 15)]
     public void Kill()
     {
-        for (int id = armies.Count - 1; id >= 0; id--)
-            armies[id].Kill();
+        for (int id = Armies.Count - 1; id >= 0; id--)
+            Armies[id].Kill();
     }
-
-    #endregion Methods
 }
 
 [Serializable]
@@ -156,8 +147,8 @@ public class ArmyInformation
 {
     #region Fields
 
-    public List<Buff> buffs;
-    public PackArmy armyPack;
+    [FormerlySerializedAs("buffs")] public List<Buff> Buffs;
+    public ArmyContent ArmyContent;
 
     #endregion Fields
 }

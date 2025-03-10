@@ -13,7 +13,7 @@ public class Battlefield : MonoBehaviour
 {
     #region Properties
 
-    public static Battlefield Singleton { get; private set; }
+    public static Battlefield Instance { get; private set; }
 
     #endregion Properties
 
@@ -109,7 +109,7 @@ public class Battlefield : MonoBehaviour
             return;
         }
 
-        if (_targetSkill == null || !_targetSkill.pointCanBeTarget) return;
+        if (_targetSkill == null || !_targetSkill.PointCanBeTarget) return;
 
         if (!Input.GetKeyUp(KeyCode.Mouse0) || MyExtentions.IsPointerOverUI()) return;
 
@@ -123,14 +123,14 @@ public class Battlefield : MonoBehaviour
     /// <param name="on">Активировать?</param>
     private void SetActiveArmy(Army army, bool on)
     {
-        army.buttonArmy.interactable = on;
+        army.ButtonArmy.interactable = on;
 
         // Если это наша фракция, скрываем глобальный UI армии
         // (только в нашей фракции есть глобальный UI для выбора армии)
-        if (PlayerFraction == army.status.fraction)
+        if (PlayerFraction == army.status.Fraction)
         {
-            army.buttonArmy.gameObject.SetActive(on);
-            army.armyGlobalUI.gameObject.SetActive(!on);
+            army.ButtonArmy.gameObject.SetActive(on);
+            army.ArmyGlobalUI.gameObject.SetActive(!on);
         }
     }
 
@@ -142,20 +142,20 @@ public class Battlefield : MonoBehaviour
         List<Army> armies;
         for (int idFraction = 0; idFraction < Fractions.Length; idFraction++)
         {
-            armies = Fractions[idFraction].armies;
+            armies = Fractions[idFraction].Armies;
             for (int idArmy = 0; idArmy < armies.Count; idArmy++) SetActiveArmy(armies[idArmy], false);
         }
     }
 
     public void InitializeSingleton()
     {
-        if (Singleton != null)
+        if (Instance != null)
         {
             Debug.LogError("singleton > 1");
             return;
         }
 
-        Singleton = this;
+        Instance = this;
     }
 
     /// <summary>
@@ -209,21 +209,21 @@ public class Battlefield : MonoBehaviour
         DeactiveAllArmies();
 
         for (int idFraction = 0; idFraction < Fractions.Length; idFraction++)
-        for (int idArmy = 0; idArmy < Fractions[idFraction].armies.Count; idArmy++)
-            if (OnTrigger(trigger, armyInitiator, Fractions[idFraction].armies[idArmy]))
-                SetActiveArmy(Fractions[idFraction].armies[idArmy], true);
+        for (int idArmy = 0; idArmy < Fractions[idFraction].Armies.Count; idArmy++)
+            if (OnTrigger(trigger, armyInitiator, Fractions[idFraction].Armies[idArmy]))
+                SetActiveArmy(Fractions[idFraction].Armies[idArmy], true);
     }
 
     public void ActiveSkillButtons(Skill skill)
     {
-        if (!(skill.collective || skill.сanBePatrol)) return;
+        if (!(skill.Collective || skill.СanBePatrol)) return;
 
         _skillButtonsPopup = true;
-        if (skill.collective)
+        if (skill.Collective)
         {
         }
 
-        if (skill.сanBePatrol)
+        if (skill.СanBePatrol)
         {
             Patrol.gameObject.SetActive(true);
             Patrol.onClick.RemoveAllListeners();
@@ -259,7 +259,7 @@ public class Battlefield : MonoBehaviour
 
     public Color GetColorFraction(FractionBattlefield fraction)
     {
-        return fraction.sideID != PlayerFraction.sideID
+        return fraction.SideID != PlayerFraction.SideID
             ? _enemyColor
             : PlayerFraction == fraction
                 ? _selfColor

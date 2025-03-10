@@ -39,16 +39,16 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
             healthArmy = 0;
             manaArmy = 0;
             staminaArmy = 0;
-            for (int i = 0; i < persons.Count; i++)
+            for (int i = 0; i < Persons.Count; i++)
             {
-                moralityArmy += persons[i].morality;
-                healthArmy += persons[i].health;
-                manaArmy += persons[i].mana;
-                staminaArmy += persons[i].stamina;
+                moralityArmy += Persons[i].morality;
+                healthArmy += Persons[i].health;
+                manaArmy += Persons[i].mana;
+                staminaArmy += Persons[i].stamina;
             }
 
-            if (!status.fraction.bot)
-                UpdateStatusUI(armyUI, armyGlobalUI);
+            if (!status.Fraction.Bot)
+                UpdateStatusUI(ArmyUI, ArmyGlobalUI);
             // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 0, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ OnDeadArmy
             if (healthArmy == 0)
                 OnDeadArmy?.Invoke(this);
@@ -59,16 +59,16 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
 
     private void UpdateStatusUI(StatusUI statusUI)
     {
-        statusUI.healthSlider.maxValue = persons.Count * status.maxHealth;
-        statusUI.manaSlider.maxValue = persons.Count * status.maxMana;
-        statusUI.staminaSlider.maxValue = persons.Count * status.maxStamina;
-        statusUI.moralitySlider.maxValue = persons.Count * status.maxMorality;
+        statusUI.healthSlider.maxValue = Persons.Count * status.MaxHealth;
+        statusUI.manaSlider.maxValue = Persons.Count * status.MaxMana;
+        statusUI.staminaSlider.maxValue = Persons.Count * status.MaxStamina;
+        statusUI.moralitySlider.maxValue = Persons.Count * status.MaxMorality;
 
         statusUI.manaSlider.value = manaArmy;
         statusUI.staminaSlider.value = staminaArmy;
         statusUI.moralitySlider.value = moralityArmy;
         statusUI.healthSlider.value = healthArmy;
-        statusUI.countWarriors.text = persons.Count.ToString();
+        statusUI.countWarriors.text = Persons.Count.ToString();
     }
 
     private void UpdateStatusUI(params StatusUI[] statusUI)
@@ -81,8 +81,8 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
     [Button("Kill", 15)]
     public void Kill()
     {
-        for (int id = persons.Count - 1; id >= 0; id--)
-            persons[id].Kill();
+        for (int id = Persons.Count - 1; id >= 0; id--)
+            Persons[id].Kill();
     }
 
     #endregion Methods

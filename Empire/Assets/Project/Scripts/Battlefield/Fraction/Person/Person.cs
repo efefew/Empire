@@ -2,56 +2,43 @@
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #endregion
 
 [RequireComponent(typeof(TemporaryAction))]
 public partial class Person : MonoBehaviour
 {
-    #region Properties
 
-    public Army army { get; set; }
+    public Army Army { get; private set; }
 
-    public Status status { get; private set; }
+    public Status Status { get; private set; }
 
     /// <summary>
     ///     ����� �� ������������� �����
     /// </summary>
     public bool Ready { get; set; }
 
-    public TemporaryAction temporaryBuff { get; set; }
+    public TemporaryAction TemporaryBuff { get; private set; }
 
     private const int WAIT_MELEE = 1;
 
-    #endregion Properties
-
-    #region Fields
-
-    private Battlefield battlefield;
-    public Transform target;
-
-    #endregion Fields
+    [FormerlySerializedAs("target")] public Transform Target;
 
     #region Methods
 
     private void Awake()
     {
-        temporaryBuff = GetComponent<TemporaryAction>();
-        scaleDefault = transform.localScale;
+        TemporaryBuff = GetComponent<TemporaryAction>();
+        _scaleDefault = transform.localScale;
     }
-
-    private void Start()
-    {
-        battlefield = Battlefield.Singleton;
-    }
-
     private void DeadPerson(Person person)
     {
         if (person != this)
             return;
         OnDeadPerson -= DeadPerson;
-        if (army)
-            _ = army.persons.Remove(this);
+        if (Army)
+            _ = Army.Persons.Remove(this);
         ChangeStateAnimation(deadState, uint.MaxValue);
         if (transform.childCount > 0)
         {
@@ -60,7 +47,7 @@ public partial class Person : MonoBehaviour
             transform.GetChild(0).SetParent(transform.parent);
         }
 
-        Destroy(target.gameObject);
+        Destroy(Target.gameObject);
         Destroy(gameObject);
     }
 
@@ -68,52 +55,52 @@ public partial class Person : MonoBehaviour
     {
         while (true)
         {
-            if (status.melee == null)
+            if (!Status.Melee)
             {
                 yield return new WaitForSeconds(WAIT_MELEE);
                 continue;
             }
 
-            yield return new WaitForSeconds(status.melee.timeCooldown);
+            yield return new WaitForSeconds(Status.Melee.TimeCooldown);
             if (health == 0)
                 yield break;
             // ���������, �� �������� �� ��
             if (stunCount == 0)
-                status.melee.Run(this);
+                Status.Melee.Run(this);
         }
     }
 
     private IEnumerator ICastRun(Skill skill, Person target = null)
     {
-        _ = Stun(skill.timeCast);
-        yield return new WaitForSeconds(skill.timeCast);
+        _ = Stun(skill.TimeCast);
+        yield return new WaitForSeconds(skill.TimeCast);
         skill.Run(this, target);
     }
 
     private IEnumerator ICastRun(Skill skill, Vector3 target)
     {
-        _ = Stun(skill.timeCast);
-        yield return new WaitForSeconds(skill.timeCast);
+        _ = Stun(skill.TimeCast);
+        yield return new WaitForSeconds(skill.TimeCast);
         skill.Run(this, target);
     }
 
     public void Build(Army army)
     {
-        this.army = army;
+        this.Army = army;
         Build(army.status);
     }
 
-    public void Build(Status status)
+    private void Build(Status status)
     {
-        this.status = status;
-        for (int i = 0; i < status.skills.Length; i++)
-            amountSkill.Add(status.skills[i], status.skills[i].maxAmountSkill);
+        this.Status = status;
+        for (int i = 0; i < status.Skills.Length; i++)
+            amountSkill.Add(status.Skills[i], status.Skills[i].MaxAmountSkill);
 
-        target.SetParent(transform.parent, true);
-        health = status.maxHealth;
-        stamina = status.maxStamina;
-        mana = status.maxMana;
-        morality = status.maxMorality;
+        Target.SetParent(transform.parent, true);
+        health = status.MaxHealth;
+        stamina = status.MaxStamina;
+        mana = status.MaxMana;
+        morality = status.MaxMorality;
         _ = StartCoroutine(MeleeUpdate());
         _ = StartCoroutine(IRegenUpdate());
         _ = StartCoroutine(IStopStatusUpdate());
@@ -122,46 +109,40 @@ public partial class Person : MonoBehaviour
 
     public bool CastRun(Skill skill, Person target)
     {
-        if (skill.LimitRun(this, target.transform.position))
+        if (!skill.LimitRun(this, target.transform.position)) return false;
+        if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
         {
-            if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
-            {
-                status.melee = melee;
-                if (!melee.canMiss)
-                    ChangeStateAnimation(skill.nameAnimation, 1);
-            }
-            else
-            {
-                ChangeStateAnimation(skill.nameAnimation, 1);
-            }
-
-            _ = StartCoroutine(ICastRun(skill, target));
-            return true;
+            Status.Melee = melee;
+            if (!melee.canMiss)
+                ChangeStateAnimation(skill.NameAnimation, 1);
+        }
+        else
+        {
+            ChangeStateAnimation(skill.NameAnimation, 1);
         }
 
-        return false;
+        _ = StartCoroutine(ICastRun(skill, target));
+        return true;
+
     }
 
     public bool CastRun(Skill skill, Vector3 target)
     {
-        if (skill.LimitRun(this, target))
+        if (!skill.LimitRun(this, target)) return false;
+        if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
         {
-            if (skill.TryGetComponent(out Melee melee) && !melee.canMiss)
-            {
-                status.melee = melee;
-                if (!melee.canMiss)
-                    ChangeStateAnimation(skill.nameAnimation, 1);
-            }
-            else
-            {
-                ChangeStateAnimation(skill.nameAnimation, 1);
-            }
-
-            _ = StartCoroutine(ICastRun(skill, target));
-            return true;
+            Status.Melee = melee;
+            if (!melee.canMiss)
+                ChangeStateAnimation(skill.NameAnimation, 1);
+        }
+        else
+        {
+            ChangeStateAnimation(skill.NameAnimation, 1);
         }
 
-        return false;
+        _ = StartCoroutine(ICastRun(skill, target));
+        return true;
+
     }
 
     #endregion Methods

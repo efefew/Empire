@@ -7,61 +7,53 @@ using System.Linq;
 using AdvancedEditorTools.Attributes;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 #endregion
 
-/// <summary>
-///     �����
-/// </summary>
 public partial class Army : MonoBehaviour
 {
-    #region Properties
-
-    public bool Repeat { get; set; }
-    public bool Stand { get; set; }
-
-    #endregion Properties
-
-    #region Fields
-
-    [SerializeField] private Person warriorPrefab;
-
-    private ConteinerButtonSkills conteinerSkill;
-    private Battlefield battlefield;
-
-    [SerializeField] [ReadOnly] private List<Person> personsCanRun = new();
-
-    private bool firstCallWhenAllCanRun, cancelWaitCastSkill;
     public const float OFFSET_BETWEEN_ARMIES = 2f;
     private const float PATROL_DELAY = 0.1f;
-    public List<Person> persons = new();
-    public StatusUI armyUI, armyGlobalUI;
-    public Button buttonArmy;
-    private Coroutine patrolCoroutine;
+
+    [FormerlySerializedAs("warriorPrefab")] [SerializeField]
+    private Person _warriorPrefab;
+
+    [FormerlySerializedAs("personsCanRun")] [SerializeField] [ReadOnly]
+    private List<Person> _personsCanRun = new();
+
+    [FormerlySerializedAs("persons")] public List<Person> Persons = new();
+    [FormerlySerializedAs("armyUI")] public StatusUI ArmyUI;
+    [FormerlySerializedAs("armyGlobalUI")] public StatusUI ArmyGlobalUI;
+    [FormerlySerializedAs("buttonArmy")] public Button ButtonArmy;
+    private Battlefield _battlefield;
+
+    private ConteinerButtonSkills _containerSkill;
+
+    private bool _firstCallWhenAllCanRun, _cancelWaitCastSkill;
+    private Coroutine _patrolCoroutine;
+    public bool Repeat { get; private set; }
+    public bool Stand { get; private set; }
     public Skill PatrolSkill { get; private set; }
-
-    #endregion Fields
-
-    #region Methods
 
     private void Start()
     {
         Stand = false;
         firstMinDistance = true;
-        battlefield = Battlefield.Singleton;
-        foreach (Skill skill in status.skills)
-            skill.buttonSkillPrefab.Build(this, skill);
-        anchors.OnChangedPositions += (a, b) =>
+        _battlefield = Battlefield.Instance;
+        foreach (Skill skill in status.Skills)
+            skill.ButtonSkillPrefab.Build(this, skill);
+        anchors.OnChangedPositions += (_, _) =>
         {
             TargetButtonPersonId = newTargetButtonPersonId;
-            battlefield.RemoveSkillAditionalUI();
-            battlefield.StopPatrol();
+            _battlefield.RemoveSkillAditionalUI();
+            _battlefield.StopPatrol();
         };
     }
 
-    private void SetPositionArmy(Vector2 a, Vector2 b, int countWarriors)
+    private void SetPositionArmy(Vector2 a, Vector2 b, int warriors)
     {
         anchors.OnChangePositions -= MovePoints;
         anchors.OnChangePositions += MovePoints;
@@ -69,9 +61,9 @@ public partial class Army : MonoBehaviour
         anchors.OnChangedPositions += MoveArmy;
         anchors.ChangePositionA(a);
         anchors.ChangePositionB(b, true);
-        for (int i = 0; i < countWarriors; i++)
-            persons[i].transform.position = persons[i].target.position;
-        MovePoints(anchors.a, anchors.b);
+        for (int i = 0; i < warriors; i++)
+            Persons[i].transform.position = Persons[i].Target.position;
+        MovePoints(anchors.A, anchors.B);
         TargetButtonPersonId = newTargetButtonPersonId;
     }
 
@@ -79,20 +71,20 @@ public partial class Army : MonoBehaviour
     {
         int idTarget = 0;
 
-        if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
-            buttonSkill.waitCastSkill = true;
+        if (_containerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
+            buttonSkill.WaitCastSkill = true;
 
-        firstCallWhenAllCanRun = true;
-        status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
-        bool melee = skill.TryGetComponent(out Melee meleeObj);
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        _firstCallWhenAllCanRun = true;
+        status.WaitCastSkill(skill, () => _cancelWaitCastSkill || !_firstCallWhenAllCanRun);
+        bool melee = skill.TryGetComponent(out Melee _);
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
         {
-            Person person = persons[idPerson];
-            Person target = targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget];
+            Person person = Persons[idPerson];
+            Person target = targets[idTarget].Army ? GetRandomPerson(targets[idTarget].Army) : targets[idTarget];
             person.Ready = false;
 
             person.StopPursuit();
-            person.armyPursuit = person.Pursuit(target, ForceSkill(skill, person, target, target.army, melee));
+            person.ArmyPursuit = person.Pursuit(target, ForceSkill(skill, person, target, target.Army, melee));
             person.MoveUpdate();
             idTarget++;
             if (idTarget >= targets.Length)
@@ -102,18 +94,18 @@ public partial class Army : MonoBehaviour
 
     private void PursuitUseSkill(Skill skill, Vector3 target)
     {
-        if (conteinerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
-            buttonSkill.waitCastSkill = true;
+        if (_containerSkill.Contains(this, skill, out ButtonSkill buttonSkill))
+            buttonSkill.WaitCastSkill = true;
 
-        firstCallWhenAllCanRun = true;
-        status.WaitCastSkill(skill, () => cancelWaitCastSkill || !firstCallWhenAllCanRun);
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        _firstCallWhenAllCanRun = true;
+        status.WaitCastSkill(skill, () => _cancelWaitCastSkill || !_firstCallWhenAllCanRun);
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
         {
-            Person person = persons[idPerson];
+            Person person = Persons[idPerson];
             person.Ready = false;
 
             person.StopPursuit();
-            person.armyPursuit = person.Pursuit(target, ForceSkill(skill, person, target));
+            person.ArmyPursuit = person.Pursuit(target, ForceSkill(skill, person, target));
             person.MoveUpdate();
         }
     }
@@ -122,11 +114,11 @@ public partial class Army : MonoBehaviour
     {
         int idTarget = 0;
         bool allCantRun = true;
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-            if (persons[idPerson].stunCount == 0)
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
+            if (Persons[idPerson].stunCount == 0)
             {
-                if (persons[idPerson].CastRun(skill,
-                        targets[idTarget].army ? GetRandomPerson(targets[idTarget].army) : targets[idTarget]))
+                if (Persons[idPerson].CastRun(skill,
+                        targets[idTarget].Army ? GetRandomPerson(targets[idTarget].Army) : targets[idTarget]))
                     allCantRun = false;
                 idTarget++;
                 if (idTarget >= targets.Length)
@@ -135,7 +127,7 @@ public partial class Army : MonoBehaviour
 
         if (!allCantRun)
         {
-            _ = conteinerSkill.Reload(this, skill);
+            _ = _containerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, targets.NotUnityNull().ToArray()[0]);
         }
         else
@@ -147,14 +139,14 @@ public partial class Army : MonoBehaviour
     private void StandUseSkill(Skill skill, Vector3 target)
     {
         bool allCantRun = true;
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-            if (persons[idPerson].stunCount == 0)
-                if (persons[idPerson].CastRun(skill, target))
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
+            if (Persons[idPerson].stunCount == 0)
+                if (Persons[idPerson].CastRun(skill, target))
                     allCantRun = false;
 
         if (!allCantRun)
         {
-            _ = conteinerSkill.Reload(this, skill);
+            _ = _containerSkill.Reload(this, skill);
             status.TimerSkillReload(skill, target);
         }
         else
@@ -165,44 +157,44 @@ public partial class Army : MonoBehaviour
 
     private void ForgetTargetArmy()
     {
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-            persons[idPerson].armyTarget = null;
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
+            Persons[idPerson].ArmyTarget = null;
     }
 
     private void UpdateWaitPersonsCanRun(Skill skill, Army armyTarget, bool melee)
     {
         Person randomTarget = GetRandomPerson(armyTarget);
-        if (!firstCallWhenAllCanRun || personsCanRun.Count < persons.Count)
+        if (!_firstCallWhenAllCanRun || _personsCanRun.Count < Persons.Count)
             return;
 
         bool allCantRun = true;
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
         {
-            if (persons[idPerson].CastRun(skill,
-                    persons[idPerson].LastPursuitTarget != null ? persons[idPerson].LastPursuitTarget : randomTarget))
+            if (Persons[idPerson].CastRun(skill,
+                    Persons[idPerson].LastPursuitTarget != null ? Persons[idPerson].LastPursuitTarget : randomTarget))
                 allCantRun = false;
             if (!melee)
-                persons[idPerson].armyTarget = null;
+                Persons[idPerson].ArmyTarget = null;
         }
 
-        _ = conteinerSkill.Reload(this, skill);
+        _ = _containerSkill.Reload(this, skill);
         status.TimerSkillReload(skill, allCantRun ? null : randomTarget);
-        firstCallWhenAllCanRun = false;
-        personsCanRun.Clear();
+        _firstCallWhenAllCanRun = false;
+        _personsCanRun.Clear();
     }
 
     private void UpdateWaitPersonsCanRun(Skill skill, Vector3 target)
     {
-        if (!firstCallWhenAllCanRun || personsCanRun.Count < persons.Count)
+        if (!_firstCallWhenAllCanRun || _personsCanRun.Count < Persons.Count)
             return;
 
-        for (int idPerson = 0; idPerson < persons.Count; idPerson++)
-            _ = persons[idPerson].CastRun(skill, target);
+        for (int idPerson = 0; idPerson < Persons.Count; idPerson++)
+            _ = Persons[idPerson].CastRun(skill, target);
 
-        _ = conteinerSkill.Reload(this, skill);
+        _ = _containerSkill.Reload(this, skill);
         status.TimerSkillReload(skill, target);
-        firstCallWhenAllCanRun = false;
-        personsCanRun.Clear();
+        _firstCallWhenAllCanRun = false;
+        _personsCanRun.Clear();
     }
 
     /// <summary>
@@ -212,10 +204,9 @@ public partial class Army : MonoBehaviour
     /// <param name="person">���������</param>
     /// <param name="target">����</param>
     /// <returns>�������, ������� ����� �������������� ��� ���������� ������</returns>
+    /// <param name="armyTarget"></param>
     /// <param name="melee"></param>
     /// <returns></returns>
-    /// ���������� ������
-    /// </returns>
     private Func<bool> ForceSkill(Skill skill, Person person, Person target, Army armyTarget, bool melee)
     {
         return () =>
@@ -265,7 +256,7 @@ public partial class Army : MonoBehaviour
         if (person.Ready) // ���� �������� ����� � ���������� ������
         {
             // ������� ��������� �� ������, ��� ��� ����� ��������� �����
-            _ = personsCanRun.Remove(person);
+            _ = _personsCanRun.Remove(person);
             person.Ready = false;
         }
     }
@@ -273,7 +264,7 @@ public partial class Army : MonoBehaviour
     private bool ChangeUpdateWaitPersonsCanRun(Skill skill, Person person, Army armyTarget, bool melee)
     {
         // ���� ���������� ������� ������ �������� ���������� ������ ��� ������������ �������,  ��� ��������� �� ����������, ��� �������� ���� ��������
-        if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
+        if (_personsCanRun.Count >= Persons.Count || person == null || _cancelWaitCastSkill || person.distracted)
         {
             // ���������� ��������� ����������, ������� ����� ������������ ������
             UpdateWaitPersonsCanRun(skill, armyTarget, melee);
@@ -297,7 +288,7 @@ public partial class Army : MonoBehaviour
         person.LastPursuitTarget = target;
         person.SetTarget(target.transform);
         person.Ready = false;
-        _ = personsCanRun.Remove(person);
+        _ = _personsCanRun.Remove(person);
 
         //person.SetTarget(target.transform);
         person.MoveUpdate();
@@ -307,7 +298,7 @@ public partial class Army : MonoBehaviour
     private bool ChangeUpdateWaitPersonsCanRun(Skill skill, Person person, Vector3 target)
     {
         // ���� ���������� ������� ������ �������� ���������� ������ ��� ������������ �������, ��� ��������� �� ����������, ��� �������� ���� ��������
-        if (personsCanRun.Count >= persons.Count || person == null || cancelWaitCastSkill || person.distracted)
+        if (_personsCanRun.Count >= Persons.Count || person == null || _cancelWaitCastSkill || person.distracted)
         {
             // ���������� ��������� ����������, ������� ����� ������������ ������
             UpdateWaitPersonsCanRun(skill, target);
@@ -333,11 +324,11 @@ public partial class Army : MonoBehaviour
             if (!person.Ready)
             {
                 person.Ready = true;
-                personsCanRun.Add(person);
+                _personsCanRun.Add(person);
 
                 // ������ �������� �������� ���������� ���������� ������ (�������� ���������� � ����)
                 _ = person.Stun(() =>
-                    target == null || !person.Ready || personsCanRun.Count >= persons.Count || cancelWaitCastSkill);
+                    !person.Ready || _personsCanRun.Count >= Persons.Count || _cancelWaitCastSkill);
             }
 
             return true;
@@ -349,43 +340,43 @@ public partial class Army : MonoBehaviour
     private void CancelForceSkill(Person person)
     {
         // ���� �������� ����� ������������ �����
-        if (!personsCanRun.Contains(person))
+        if (!_personsCanRun.Contains(person))
             // ���������� ��������� � �������
-            personsCanRun.Add(person);
+            _personsCanRun.Add(person);
 
         person.Ready = false;
     }
 
     private void SetTargetArmy(Army armyTarget)
     {
-        for (int id = 0; id < persons.Count; id++)
-            persons[id].armyTarget = armyTarget;
+        for (int id = 0; id < Persons.Count; id++)
+            Persons[id].ArmyTarget = armyTarget;
     }
 
     private void ListenCancelWaitCastSkill()
     {
         anchors.OnChangePositions -= CancelWaitCastSkill;
         anchors.OnChangePositions += CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
-        conteinerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
+        _containerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
+        _containerSkill.OnClickAnyButtonSkills += CancelWaitCastSkill;
     }
 
     private void ClearTargetUseSkill()
     {
-        battlefield.OnSetTargetArmy -= TargetForUseSkill;
-        battlefield.OnSetTargetPoint -= TargetForUseSkill;
+        _battlefield.OnSetTargetArmy -= TargetForUseSkill;
+        _battlefield.OnSetTargetPoint -= TargetForUseSkill;
     }
 
     private bool AnyEnemyInRange(out Army target, Skill skill)
     {
-        for (int idEnemyFraction = 0; idEnemyFraction < battlefield.Fractions.Length; idEnemyFraction++)
+        for (int idEnemyFraction = 0; idEnemyFraction < _battlefield.Fractions.Length; idEnemyFraction++)
         {
-            FractionBattlefield enemyFraction = battlefield.Fractions[idEnemyFraction];
-            bool itsEnemy = enemyFraction.sideID != status.fraction.sideID;
+            FractionBattlefield enemyFraction = _battlefield.Fractions[idEnemyFraction];
+            bool itsEnemy = enemyFraction.SideID != status.Fraction.SideID;
             if (itsEnemy)
-                for (int idEnemyArmy = 0; idEnemyArmy < enemyFraction.armies.Count; idEnemyArmy++)
+                for (int idEnemyArmy = 0; idEnemyArmy < enemyFraction.Armies.Count; idEnemyArmy++)
                 {
-                    Army enemy = enemyFraction.armies[idEnemyArmy];
+                    Army enemy = enemyFraction.Armies[idEnemyArmy];
                     if (EnemyInRange(enemy, skill))
                     {
                         target = enemy;
@@ -400,42 +391,42 @@ public partial class Army : MonoBehaviour
 
     private bool EnemyInRange(Army enemy, Skill skill)
     {
-        float distance = Vector3.Distance(persons[TargetButtonPersonId].transform.position,
-            enemy.persons[enemy.TargetButtonPersonId].transform.position);
-        float range = skill.range;
+        float distance = Vector3.Distance(Persons[TargetButtonPersonId].transform.position,
+            enemy.Persons[enemy.TargetButtonPersonId].transform.position);
+        float range = skill.Range;
         return distance <= range;
     }
 
     public static Person GetRandomPerson(Army armyTarget)
     {
-        return armyTarget == null || armyTarget.persons.Count == 0
+        return !armyTarget || armyTarget.Persons.Count == 0
             ? null
-            : armyTarget.persons[Random.Range(0, armyTarget.persons.Count)];
+            : armyTarget.Persons[Random.Range(0, armyTarget.Persons.Count)];
     }
 
     public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy, StatusUI armyUI,
-        StatusUI armyGlobalUI, ConteinerButtonSkills conteinerSkill)
+        StatusUI armyGlobalUI, ConteinerButtonSkills containerSkill)
     {
-        this.armyUI = armyUI;
-        this.armyGlobalUI = armyGlobalUI;
-        this.conteinerSkill = conteinerSkill;
+        ArmyUI = armyUI;
+        ArmyGlobalUI = armyGlobalUI;
+        _containerSkill = containerSkill;
 
         BuildArmy(a, b, fraction, buttonArmy);
     }
 
     public void BuildArmy(Vector2 a, Vector2 b, FractionBattlefield fraction, Button buttonArmy)
     {
-        this.buttonArmy = buttonArmy;
-        status.fraction = fraction;
-        status.sideID = fraction.sideID;
+        ButtonArmy = buttonArmy;
+        status.Fraction = fraction;
+        status.SideID = fraction.SideID;
 
         _ = StartCoroutine(UIArmyUpdate());
         for (int id = 0; id < countWarriors; id++)
         {
-            persons.Add(Instantiate(warriorPrefab, transform)); //������ ������� ����� ������� -_-
-            persons.Last().OnDeadPerson += person => personsCanRun.Remove(person);
-            persons.Last().name += $" {id}";
-            persons.Last().Build(this);
+            Persons.Add(Instantiate(_warriorPrefab, transform));
+            Persons.Last().OnDeadPerson += person => _personsCanRun.Remove(person);
+            Persons.Last().name += $" {id}";
+            Persons.Last().Build(this);
         }
 
         SetPositionArmy(a, b, countWarriors);
@@ -443,14 +434,14 @@ public partial class Army : MonoBehaviour
 
     public void AddSkillsUI()
     {
-        foreach (Skill skill in status.skills)
-            conteinerSkill.Add(this, skill);
+        foreach (Skill skill in status.Skills)
+            _containerSkill.Add(this, skill);
     }
 
     public void RemoveSkillsUI()
     {
-        foreach (Skill skill in status.skills)
-            conteinerSkill.Remove(this, skill);
+        foreach (Skill skill in status.Skills)
+            _containerSkill.Remove(this, skill);
     }
 
     /// <summary>
@@ -458,18 +449,18 @@ public partial class Army : MonoBehaviour
     /// </summary>
     /// <param name="skill">�����</param>
     /// <param name="targets">����</param>
-    public void UseSkill(Skill skill, params Person[] targets)
+    private void UseSkill(Skill skill, params Person[] targets)
     {
-        if (!status.skills.Contains(skill) || targets.NotUnityNull().Count() == 0)
+        if (!status.Skills.Contains(skill) || !targets.NotUnityNull().Any())
             return;
         status.OnRepeatUseSkillOnPersons -= UseSkill;
         if (Repeat)
             status.OnRepeatUseSkillOnPersons += UseSkill;
 
         ListenCancelWaitCastSkill();
-        cancelWaitCastSkill = false;
+        _cancelWaitCastSkill = false;
 
-        SetTargetArmy(targets[0].army);
+        SetTargetArmy(targets[0].Army);
         if (Stand)
             StandUseSkill(skill, targets);
         else
@@ -481,16 +472,16 @@ public partial class Army : MonoBehaviour
     /// </summary>
     /// <param name="skill">�����</param>
     /// <param name="target">����</param>
-    public void UseSkill(Skill skill, Vector3 target)
+    private void UseSkill(Skill skill, Vector3 target)
     {
-        if (!status.skills.Contains(skill))
+        if (!status.Skills.Contains(skill))
             return;
         status.OnRepeatUseSkillOnPoint -= UseSkill;
         if (Repeat)
             status.OnRepeatUseSkillOnPoint += UseSkill;
 
         ListenCancelWaitCastSkill();
-        cancelWaitCastSkill = false;
+        _cancelWaitCastSkill = false;
 
         if (Stand)
             StandUseSkill(skill, target);
@@ -498,20 +489,20 @@ public partial class Army : MonoBehaviour
             PursuitUseSkill(skill, target);
     }
 
-    public void CancelWaitCastSkill(Transform a, Transform b)
+    private void CancelWaitCastSkill(Transform a, Transform b)
     {
         CancelWaitCastSkill(null);
     }
 
-    public void CancelWaitCastSkill(ButtonSkill buttonSkill)
+    private void CancelWaitCastSkill(ButtonSkill buttonSkill)
     {
-        if (!armyUI.toggle.isOn)
+        if (!ArmyUI.toggle.isOn)
             return;
-        conteinerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
+        _containerSkill.OnClickAnyButtonSkills -= CancelWaitCastSkill;
         anchors.OnChangePositions -= CancelWaitCastSkill;
         status.OnRepeatUseSkillOnPersons -= UseSkill;
         status.OnRepeatUseSkillOnPoint -= UseSkill;
-        cancelWaitCastSkill = true;
+        _cancelWaitCastSkill = true;
         SetTargetArmy(null);
     }
 
@@ -530,43 +521,40 @@ public partial class Army : MonoBehaviour
     /// </summary>
     public void StartPatrol(Skill skill)
     {
-        if (patrolCoroutine == null)
-        {
-            PatrolSkill = skill;
-            patrolCoroutine = StartCoroutine(IPatrol(skill));
-            conteinerSkill.UpdatePatrolUI();
-        }
+        if (_patrolCoroutine != null) return;
+        PatrolSkill = skill;
+        _patrolCoroutine = StartCoroutine(IPatrol(skill));
+        _containerSkill.UpdatePatrolUI();
     }
 
     public void StopPatrol()
     {
-        if (patrolCoroutine != null)
-        {
-            status.OnRepeatUseSkillOnPersons -= UseSkill;
-            ForgetTargetArmy();
-            StopCoroutine(patrolCoroutine);
-            patrolCoroutine = null;
-            PatrolSkill = null;
-            conteinerSkill.UpdatePatrolUI();
-        }
+        if (_patrolCoroutine == null) return;
+        status.OnRepeatUseSkillOnPersons -= UseSkill;
+        ForgetTargetArmy();
+        StopCoroutine(_patrolCoroutine);
+        _patrolCoroutine = null;
+        PatrolSkill = null;
+        _containerSkill.UpdatePatrolUI();
     }
 
     private IEnumerator IPatrol(Skill skill)
     {
         while (true)
         {
-            if (persons[0].armyTarget == null && AnyEnemyInRange(out Army army, skill))
-                UseSkill(skill, army.persons.ToArray());
+            if (!Persons[0].ArmyTarget && AnyEnemyInRange(out Army army, skill))
+                UseSkill(skill, army.Persons.ToArray());
 
             yield return new WaitForSeconds(PATROL_DELAY);
         }
+        // ReSharper disable once IteratorNeverReturns
     }
 
     public void SetActive(bool on)
     {
-        armyGlobalUI.toggle.SetIsOnWithoutNotify(on);
-        for (int i = 0; i < persons.Count; i++)
-            persons[i].target.gameObject.SetActive(on);
+        ArmyGlobalUI.toggle.SetIsOnWithoutNotify(on);
+        for (int i = 0; i < Persons.Count; i++)
+            Persons[i].Target.gameObject.SetActive(on);
         anchors.SetActive(on);
     }
 
@@ -578,9 +566,9 @@ public partial class Army : MonoBehaviour
     {
         ClearTargetUseSkill();
         if (target.TryGetValueOtherType(out Person person))
-            UseSkill(battlefield._targetSkill, person);
+            UseSkill(_battlefield._targetSkill, person);
         if (target.TryGetValueOtherType(out Army army))
-            UseSkill(battlefield._targetSkill, army.persons.ToArray());
+            UseSkill(_battlefield._targetSkill, army.Persons.ToArray());
     }
 
     /// <summary>
@@ -590,7 +578,7 @@ public partial class Army : MonoBehaviour
     public void TargetForUseSkill(Vector3 target)
     {
         ClearTargetUseSkill();
-        UseSkill(battlefield._targetSkill, target);
+        UseSkill(_battlefield._targetSkill, target);
     }
 
     /// <summary>
@@ -605,9 +593,7 @@ public partial class Army : MonoBehaviour
     [Button("MoveUpdate")]
     public void MoveUpdate()
     {
-        for (int id = 0; id < persons.Count; id++)
-            persons[id].MoveUpdate();
+        for (int id = 0; id < Persons.Count; id++)
+            Persons[id].MoveUpdate();
     }
-
-    #endregion Methods
 }

@@ -9,17 +9,17 @@ using UnityEngine;
 public class Bot : MonoBehaviour
 {
     private FractionBattlefield myFraction;
-    private PointsAB pointsAB;
+    private PointsAb pointsAB;
 
     private void Awake()
     {
         myFraction = GetComponent<FractionBattlefield>();
-        pointsAB = GetComponent<PointsAB>();
+        pointsAB = GetComponent<PointsAb>();
     }
 
     private void Start()
     {
-        MoveArmy(myFraction.armies[2], new Vector2(3, 3), new Vector2(5, 8));
+        MoveArmy(myFraction.Armies[2], new Vector2(3, 3), new Vector2(5, 8));
     }
 
     private IEnumerator IMoveArmy(Army army, Vector2 a, Vector2 b)
@@ -27,14 +27,14 @@ public class Bot : MonoBehaviour
         yield return new WaitUntil
         (() =>
         {
-            foreach (Person person in army.persons)
-                if (!person.agentMove.agent.isOnNavMesh)
+            foreach (Person person in army.Persons)
+                if (!person.AgentMove.Agent.isOnNavMesh)
                     return false;
 
             return true;
         });
 
-        if (!myFraction.armies.Contains(army))
+        if (!myFraction.Armies.Contains(army))
             yield break;
         army.anchors.ChangePositionA(a);
         army.anchors.ChangePositionB(b);

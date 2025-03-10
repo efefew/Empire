@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &572533677050671239
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8866065068018918361}
+  m_Layer: 0
+  m_Name: A
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &8866065068018918361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572533677050671239}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 6167093052450525725}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2121021027557401195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6288005371399214506}
+  m_Layer: 0
+  m_Name: B
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &6288005371399214506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2121021027557401195}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.28, y: 0.28, z: 0.28}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 6167093052450525725}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6735182092453628090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6167093052450525725}
+  - component: {fileID: 4620846031175704547}
+  - component: {fileID: 803402120731885701}
+  - component: {fileID: 556433751679092082}
+  m_Layer: 0
+  m_Name: Army
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6167093052450525725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735182092453628090}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children:
+  - {fileID: 8866065068018918361}
+  - {fileID: 6288005371399214506}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4620846031175704547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735182092453628090}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a73a9da468307b04c9da1cfeb5d19fe8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battlefield: {fileID: 0}
+  a: {fileID: 8866065068018918361}
+  b: {fileID: 6288005371399214506}
+--- !u!114 &803402120731885701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735182092453628090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f809b36b2823144083215a15ead7c6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _warriorPrefab: {fileID: 2934716093508156845, guid: 30bab848851991c45ac97e66c6802d66, type: 3}
+  _personsCanRun: []
+  Persons: []
+  ArmyUI: {fileID: 0}
+  ArmyGlobalUI: {fileID: 0}
+  ButtonArmy: {fileID: 0}
+  anchors: {fileID: 4620846031175704547}
+  offsetX: 1.5
+  offsetY: 1.5
+  status: {fileID: 556433751679092082}
+  countWarriors: 50
+--- !u!114 &556433751679092082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6735182092453628090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ac5ac440041cf2409d04f1877bbd3a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Fraction: {fileID: 0}
+  SideID: 0
+  MaxHealth: 600
+  MaxMana: 150
+  MaxStamina: 100
+  MaxMorality: 100
+  RegenHealth: 0.01
+  RegenMana: 2
+  RegenStamina: 7
+  RegenMorality: 1
+  CreteChance: 0
+  Crit: 1
+  ScaleGiveDamage:
+    m_keys: 
+    m_values: []
+  ScaleTakeDamage:
+    m_keys: 
+    m_values: []
+  Shield:
+    m_keys: 
+    m_values: []
+  Skills:
+  - {fileID: -3860243037903577101, guid: 2d85b2149dbe4954eb8d4f6e2bab20d3, type: 3}
+  - {fileID: -3860243037903577101, guid: 9f6b158b99d26f14d80ca1e27a69a64f, type: 3}
+  - {fileID: 1893778628882883706, guid: 7a798177915a27d4b8447dd3bcf37a37, type: 3}
+  Melee: {fileID: 666667436706664360, guid: 954b99b76a742e24bab3ff62ba55513e, type: 3}
+  MaxSpeed: 3.5
+  waitCastSkill: {fileID: 0}
+  TimerSkillCast: 0

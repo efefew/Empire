@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using AdvancedEditorTools.Attributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #endregion
 
@@ -18,59 +19,62 @@ public class Status : MonoBehaviour
     public Action<Skill, Person[]> OnRepeatUseSkillOnPersons;
     public Action<Skill, Vector3> OnRepeatUseSkillOnPoint;
 
-    public FractionBattlefield fraction;
-    public ulong sideID;
+    [FormerlySerializedAs("fraction")] public FractionBattlefield Fraction;
+    [FormerlySerializedAs("sideID")] public ulong SideID;
 
+    [FormerlySerializedAs("maxHealth")]
     [Header("�������� �������� ����������")]
     [BeginColumnArea(0.5f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelGreen)]
     [Min(0)]
-    public float maxHealth = 100;
+    public float MaxHealth = 100;
 
-    [Min(0)] public float maxMana;
+    [FormerlySerializedAs("maxMana")] [Min(0)] public float MaxMana;
 
-    [Min(0)] public float maxStamina = 100;
+    [FormerlySerializedAs("maxStamina")] [Min(0)] public float MaxStamina = 100;
 
-    [Min(0)] public float maxMorality = 100;
+    [FormerlySerializedAs("maxMorality")] [Min(0)] public float MaxMorality = 100;
 
-    [Header("������������� �������� ����������")] [NewColumn(0.5f)] [Min(0)]
-    public float regenHealth = 1;
+    [FormerlySerializedAs("regenHealth")] [Header("������������� �������� ����������")] [NewColumn(0.5f)] [Min(0)]
+    public float RegenHealth = 1;
 
-    [Min(0)] public float regenMana = 1;
+    [FormerlySerializedAs("regenMana")] [Min(0)] public float RegenMana = 1;
 
-    [Min(0)] public float regenStamina = 1;
+    [FormerlySerializedAs("regenStamina")] [Min(0)] public float RegenStamina = 1;
 
-    [Min(0)] public float regenMorality = 1;
-
+    [FormerlySerializedAs("regenMorality")] [Min(0)] public float RegenMorality = 1;
+    
     [EndColumnArea]
     [Header("�����")]
     [BeginColumnArea(1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelRed)]
-    public float critChance;
+    public float CreteChance;
 
-    [Min(1)] public float crit = 1;
+    [FormerlySerializedAs("crit")] [Min(1)] public float Crit = 1;
 
-    [SerializeField] public DamageTypeDictionary scaleGiveDamage = new();
+    [FormerlySerializedAs("scaleGiveDamage")] [SerializeField] public DamageTypeDictionary ScaleGiveDamage = new();
 
+    [FormerlySerializedAs("scaleTakeDamage")]
     [EndColumnArea]
     [Header("������")]
     [BeginColumnArea(1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelBlue)]
     [SerializeField]
-    public DamageTypeDictionary scaleTakeDamage = new();
+    public DamageTypeDictionary ScaleTakeDamage = new();
 
-    public DamageTypeDictionary shield = new();
+    [FormerlySerializedAs("shield")] public DamageTypeDictionary Shield = new();
 
+    [FormerlySerializedAs("skills")]
     [EndColumnArea]
     [Header("������")]
     [BeginColumnArea(1f, areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.Bevel)]
-    public Skill[] skills;
+    public Skill[] Skills;
 
-    public Melee melee;
+    [FormerlySerializedAs("melee")] public Melee Melee;
 
-    [EndColumnArea] [Min(0)] public float maxSpeed = 3.5f;
+    [FormerlySerializedAs("maxSpeed")] [EndColumnArea] [Min(0)] public float MaxSpeed = 3.5f;
 
-    public Dictionary<Skill, float> timersSkillReload = new();
+    public Dictionary<Skill, float> TimersSkillReload = new();
     public Skill waitCastSkill;
 
-    [HideInInspector] public float timerSkillCast;
+    [FormerlySerializedAs("timerSkillCast")] [HideInInspector] public float TimerSkillCast;
 
     #endregion Fields
 
@@ -85,70 +89,70 @@ public class Status : MonoBehaviour
 
     private IEnumerator ITimerSkillCast(Skill skill)
     {
-        timerSkillCast = skill.timeCast;
-        while (timerSkillCast > 0)
+        TimerSkillCast = skill.TimeCast;
+        while (TimerSkillCast > 0)
         {
             yield return new WaitForFixedUpdate();
-            timerSkillCast -= Time.fixedDeltaTime;
+            TimerSkillCast -= Time.fixedDeltaTime;
         }
 
-        timerSkillCast = 0;
+        TimerSkillCast = 0;
     }
 
     private IEnumerator ITimerSkillReload(Skill skill, Person target)
     {
-        timersSkillReload.Add(skill, skill.timeCooldown);
-        Army army = target?.army;
-        while (timersSkillReload[skill] > 0)
+        TimersSkillReload.Add(skill, skill.TimeCooldown);
+        Army army = target?.Army;
+        while (TimersSkillReload[skill] > 0)
         {
             yield return new WaitForFixedUpdate();
-            timersSkillReload[skill] -= Time.fixedDeltaTime;
+            TimersSkillReload[skill] -= Time.fixedDeltaTime;
         }
 
-        _ = timersSkillReload.Remove(skill);
+        _ = TimersSkillReload.Remove(skill);
 
-        if (target != null || (army != null && army.persons.Count != 0))
-            OnRepeatUseSkillOnPersons?.Invoke(skill, army ? army.persons.ToArray() : new Person[1] { target });
+        if (target != null || (army != null && army.Persons.Count != 0))
+            OnRepeatUseSkillOnPersons?.Invoke(skill, army ? army.Persons.ToArray() : new Person[1] { target });
         //else
         //OnPatrol?.Invoke(skill);
     }
 
     private IEnumerator ITimerSkillReload(Skill skill, Vector3 target)
     {
-        timersSkillReload.Add(skill, skill.timeCooldown);
-        while (timersSkillReload[skill] > 0)
+        TimersSkillReload.Add(skill, skill.TimeCooldown);
+        while (TimersSkillReload[skill] > 0)
         {
             yield return new WaitForFixedUpdate();
-            timersSkillReload[skill] -= Time.fixedDeltaTime;
+            TimersSkillReload[skill] -= Time.fixedDeltaTime;
         }
 
-        _ = timersSkillReload.Remove(skill);
+        _ = TimersSkillReload.Remove(skill);
 
         OnRepeatUseSkillOnPoint?.Invoke(skill, target);
     }
 
     public void TimerSkillReload(Skill skill, Person target)
     {
-        if (timersSkillReload.ContainsKey(skill))
+        if (TimersSkillReload.ContainsKey(skill))
         {
-            timersSkillReload[skill] = skill.timeCooldown;
+            TimersSkillReload[skill] = skill.TimeCooldown;
             return;
         }
 
-        if (skill.timeCast > 0)
+        if (skill.TimeCast > 0)
             _ = StartCoroutine(ITimerSkillCast(skill));
         _ = StartCoroutine(ITimerSkillReload(skill, target));
     }
 
     public void TimerSkillReload(Skill skill, Vector3 target)
     {
-        if (timersSkillReload.ContainsKey(skill))
+        if (TimersSkillReload.ContainsKey(skill))
         {
-            timersSkillReload[skill] = skill.timeCooldown;
+            TimersSkillReload[skill] = skill.TimeCooldown;
             return;
         }
 
-        if (skill.timeCast > 0)
+        if (skill.TimeCast > 0)
             _ = StartCoroutine(ITimerSkillCast(skill));
         _ = StartCoroutine(ITimerSkillReload(skill, target));
     }

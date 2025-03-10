@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2391ee02af1d94447bddb5f3aba74d46, type: 3}
+  m_Name: Warrior
+  m_EditorClassIdentifier: 
+  <Person>k__BackingField: {fileID: 3093523138672888202, guid: 26ef84ac3592854489f5ae1c29cd4ff8, type: 3}
+  <ArmyUI>k__BackingField: {fileID: 4920820055314000306, guid: 0df1dc33199d9f347bb5b8f6b79a7e10, type: 3}
+  <ArmyGlobalUI>k__BackingField: {fileID: 9175176088408067285, guid: 095e1a268e2a288449dae50006718340, type: 3}
+  <Army>k__BackingField: {fileID: 6334720530155516995, guid: fe39761c856b8ba4bbd9f5056ce0c53b, type: 3}
+  <ButtonArmy>k__BackingField: {fileID: 1550087511545386617, guid: 6f6607c5f3e828a44b87ba5ca0f60e30, type: 3}

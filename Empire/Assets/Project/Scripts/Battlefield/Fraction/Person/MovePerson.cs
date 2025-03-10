@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using AdvancedEditorTools.Attributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #endregion
 
@@ -46,14 +47,14 @@ public partial class Person : MonoBehaviour // �����������
 
     private const float CAMERA_VISIBLE_DISTANCE = 1230f;
     private const float UPDATE_MOVE = 0.1f, UPDATE_STOP_STATUS = 0.05f;
-    private bool isStoped, rightDirection;
-    private Vector3 scaleDefault;
+    private bool _isStoped, _rightDirection;
+    private Vector3 _scaleDefault;
 
     //public Dictionary<Transform, TargetType> targets = new();
-    public Coroutine armyPursuit;
-    public Army armyTarget;
+    public Coroutine ArmyPursuit;
+    [FormerlySerializedAs("armyTarget")] public Army ArmyTarget;
 
-    public AgentMove agentMove;
+    [FormerlySerializedAs("agentMove")] public AgentMove AgentMove;
 
     #endregion Fields
 
@@ -82,33 +83,28 @@ public partial class Person : MonoBehaviour // �����������
 
     private IEnumerator IPursuit(Vector3 target, Func<bool> funcTarget)
     {
-        if (target == null)
-            yield break;
         SetTarget(target);
         yield return new WaitUntil(funcTarget);
-        agentMove.tempPointTarget = null;
+        AgentMove.TempPointTarget = null;
         MoveUpdate();
     }
 
     private IEnumerator IPursuit(Vector3 target, IEnumerator coroutineTarget)
     {
-        if (target == null)
-            yield break;
-
         SetTarget(target);
         yield return StartCoroutine(coroutineTarget);
-        agentMove.tempPointTarget = null;
+        AgentMove.TempPointTarget = null;
         MoveUpdate();
     }
 
     private IEnumerator IPursuit(Person target, Func<bool> funcTarget)
     {
-        if (target == null)
+        if (!target)
             yield break;
         LastPursuitTarget = target;
         SetTarget(target.transform);
         yield return new WaitUntil(funcTarget);
-        agentMove.tempTarget = null;
+        AgentMove.TempTarget = null;
         MoveUpdate();
     }
 
@@ -120,7 +116,7 @@ public partial class Person : MonoBehaviour // �����������
         LastPursuitTarget = target;
         SetTarget(target.transform);
         yield return StartCoroutine(coroutineTarget);
-        agentMove.tempTarget = null;
+        AgentMove.TempTarget = null;
         MoveUpdate();
     }
 
@@ -130,20 +126,18 @@ public partial class Person : MonoBehaviour // �����������
         {
             yield return new WaitForSeconds(UPDATE_STOP_STATUS);
 
-            isStoped = (!agentMove.agent.isOnNavMesh || agentMove.agent.remainingDistance <= AgentMove.MIN_DISTANCE) &&
+            _isStoped = (!AgentMove.Agent.isOnNavMesh || AgentMove.Agent.remainingDistance <= AgentMove.MIN_DISTANCE) &&
                        stunCount == 0;
-            ChangeStateAnimation(isStoped ? idleState : walkState);
+            ChangeStateAnimation(_isStoped ? idleState : walkState);
 
-            if (!isStoped)
-            {
-                if (agentMove.agent.path.corners.Length >= 2)
-                    //agentMove.UpdateLine();
-                    rightDirection = agentMove.agent.path.corners[1].x - transform.position.x > 0;
+            if (_isStoped) continue;
+            if (AgentMove.Agent.path.corners.Length >= 2)
+                //agentMove.UpdateLine();
+                _rightDirection = AgentMove.Agent.path.corners[1].x - transform.position.x > 0;
 
-                transform.localScale = scaleDefault.X(scaleDefault.x * (rightDirection ? 1 : -1));
-                animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y,
-                    -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
-            }
+            transform.localScale = _scaleDefault.X(_scaleDefault.x * (_rightDirection ? 1 : -1));
+            animator.transform.position = animator.transform.position.Z(Mathf.Clamp(transform.position.y,
+                -CAMERA_VISIBLE_DISTANCE, CAMERA_VISIBLE_DISTANCE));
         }
     }
 
@@ -152,11 +146,11 @@ public partial class Person : MonoBehaviour // �����������
         do
         {
             yield return new WaitForSeconds(UPDATE_MOVE);
-            if (agentMove.tempTarget == null)
-                agentMove.tempTarget = armyTarget != null ? Army.GetRandomPerson(armyTarget)?.transform : null;
+            if (!AgentMove.TempTarget && !Army.Stand)
+                AgentMove.TempTarget = ArmyTarget ? Army.GetRandomPerson(ArmyTarget)?.transform : null;
 
-            agentMove.UpdateAgent(stunCount > 0, speedScale * status.maxSpeed * (stamina / status.maxStamina));
-        } while (agentMove.tempTarget != null);
+            AgentMove.UpdateAgent(stunCount > 0, speedScale * Status.MaxSpeed * (stamina / Status.MaxStamina));
+        } while (AgentMove.TempTarget);
     }
 
     [Button("MoveUpdate")]
@@ -167,13 +161,13 @@ public partial class Person : MonoBehaviour // �����������
 
     public void SetTarget(Transform target)
     {
-        agentMove.tempTarget = target;
+        AgentMove.TempTarget = target;
         MoveUpdate();
     }
 
     public void SetTarget(Vector3 target)
     {
-        agentMove.tempPointTarget = target;
+        AgentMove.TempPointTarget = target;
         MoveUpdate();
     }
 
@@ -251,9 +245,9 @@ public partial class Person : MonoBehaviour // �����������
 
     public void StopPursuit()
     {
-        if (armyPursuit == null)
+        if (ArmyPursuit == null)
             return;
-        StopCoroutine(armyPursuit);
+        StopCoroutine(ArmyPursuit);
     }
 
     #endregion Methods

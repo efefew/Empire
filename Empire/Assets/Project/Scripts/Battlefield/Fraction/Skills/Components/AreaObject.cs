@@ -41,14 +41,14 @@ public class AreaObject : MonoBehaviour
                 if (target.health <= 0)
                     continue;
                 // ������� ���� � ��������� ������� ������
-                if (Skill.OnTrigger(skill.triggerTarget, initiator, target))
+                if (Skill.OnTrigger(skill.TriggerTarget, initiator, target))
                 {
                     countCatch++;
                     skill.SetEffectsAndBuffs(initiator, target);
                 }
 
                 // ���� ���������� ���������� ����� �������� ������������� �������� � ��� �������� �� ����� 0, �� ���������� ���� �� ����������
-                if (countCatch >= skill.maxCountCatch && skill.maxCountCatch != 0)
+                if (countCatch >= skill.MaxCountCatch && skill.MaxCountCatch != 0)
                     yield break;
             }
 

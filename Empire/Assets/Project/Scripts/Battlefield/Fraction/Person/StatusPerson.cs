@@ -44,8 +44,6 @@ public partial class Person : MonoBehaviour // �����������
 
     #endregion Properties
 
-    #region Fields
-
     private const float MIN_PRECENT_WALK_STAMINA = 80f;
     private const float UPDATE_REGEN = 1.5f;
 
@@ -57,8 +55,6 @@ public partial class Person : MonoBehaviour // �����������
     public Dictionary<Skill, float> amountSkill = new();
 
     [ReadOnly] public Melee tempMelee;
-
-    #endregion Fields
 
     #region Methods
 
@@ -75,25 +71,25 @@ public partial class Person : MonoBehaviour // �����������
                 yield break;
             }
 
-            health += status.regenHealth;
-            health = Mathf.Clamp(health, 0, status.maxHealth);
+            health += Status.RegenHealth;
+            health = Mathf.Clamp(health, 0, Status.MaxHealth);
 
-            mana += status.regenMana;
-            mana = Mathf.Clamp(mana, 0, status.maxMana);
-            if (!isStoped && stamina >= status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f)
+            mana += Status.RegenMana;
+            mana = Mathf.Clamp(mana, 0, Status.MaxMana);
+            if (!_isStoped && stamina >= Status.MaxStamina * MIN_PRECENT_WALK_STAMINA / 100f)
             {
-                stamina -= status.regenStamina / 10;
-                stamina = Mathf.Clamp(stamina, status.maxStamina * MIN_PRECENT_WALK_STAMINA / 100f,
-                    stamina + status.regenStamina / 10);
+                stamina -= Status.RegenStamina / 10;
+                stamina = Mathf.Clamp(stamina, Status.MaxStamina * MIN_PRECENT_WALK_STAMINA / 100f,
+                    stamina + Status.RegenStamina / 10);
             }
             else
             {
-                stamina += status.regenStamina;
-                stamina = Mathf.Clamp(stamina, 0, status.maxStamina);
+                stamina += Status.RegenStamina;
+                stamina = Mathf.Clamp(stamina, 0, Status.MaxStamina);
             }
 
-            morality += status.regenMorality;
-            morality = Mathf.Clamp(morality, 0, status.maxMorality);
+            morality += Status.RegenMorality;
+            morality = Mathf.Clamp(morality, 0, Status.MaxMorality);
         }
     }
 
@@ -102,27 +98,19 @@ public partial class Person : MonoBehaviour // �����������
     /// </summary>
     /// <param name="enemy">���, ��� ������� ����</param>
     /// <param name="type">��� �����</param>
+    /// <param name="attackType"></param>
     /// <param name="damage">����</param>
     public void TakeDamage(Person enemy, DamageType type, Skill attackType, float damage)
     {
-        // ���������, ���� �� � ����� ��������������� ����� ��� ������� ���� �����
-        if (status.scaleTakeDamage.ContainsKey(type))
-            damage *= status.scaleTakeDamage[type];
-
-        // ���������, ���� �� � ����� ��� ��� ������� ���� �����
-        if (status.shield.ContainsKey(type) && status.shield[type] + damage != 0)
-            damage = damage * damage / (status.shield[type] + damage);
-
-        // �������� ������� OnDamageTaken, ����� ��������� � ���������� �����
+        if (Status.ScaleTakeDamage.TryGetValue(type, out float value))
+            damage *= value;
+        
+        if (Status.Shield.ContainsKey(type) && Status.Shield[type] + damage != 0)
+            damage = damage * damage / (Status.Shield[type] + damage);
+        
         OnDamageTaken?.Invoke(this, enemy, type, attackType, damage);
-
-        // �������� �������� ������� �� ������ ���� �����
         health += type == DamageType.Healing ? damage : -damage;
-
-        // ������������ �������� ������� ������������ ���������
-        health = Mathf.Clamp(health, 0, status.maxHealth);
-
-        // ���� �������� ������� ����� ������ 0, �������� ������� OnDeadArmy
+        health = Mathf.Clamp(health, 0, Status.MaxHealth);
         if (health == 0)
             OnDeadPerson?.Invoke(this);
     }
@@ -141,11 +129,11 @@ public partial class Person : MonoBehaviour // �����������
             float damage = Mathf.Abs(attack.Value);
 
             // ���������, ���� �� � ����� ��������������� ����� ��� ������� ���� �����
-            if (status.scaleGiveDamage.ContainsKey(attack.Key))
-                damage *= status.scaleGiveDamage[attack.Key];
+            if (Status.ScaleGiveDamage.TryGetValue(attack.Key, out float value))
+                damage *= value;
 
             // ���������, �������� �� ����� ����������� ������ �� ������ ����� ������������ ����� �����
-            damage = Random.Range(0, 100f) <= status.critChance ? damage * status.crit : damage;
+            damage = Random.Range(0, 100f) <= Status.CreteChance ? damage * Status.Crit : damage;
 
             // �������� ������� OnDamageGiven, ����� ��������� ��� � ��������� �����
             OnDamageGiven?.Invoke(this, enemy, attack.Key, skill, damage);
@@ -158,25 +146,25 @@ public partial class Person : MonoBehaviour // �����������
     public bool CanUseSkill(Skill skill)
     {
         // ���������, ���������� �� � ��� ������� � ���� ��� �����
-        if (stamina < skill.stamina || mana < skill.mana)
+        if (stamina < skill.Stamina || mana < skill.Mana)
             return false;
 
         // �������� ��������� ������� � ���� ��� ���������� ������
-        stamina -= skill.stamina;
-        mana -= skill.mana;
+        stamina -= skill.Stamina;
+        mana -= skill.Mana;
         return true;
     }
 
     public void ReturnUseSkill(Skill skill)
     {
-        stamina += skill.stamina;
-        mana += skill.mana;
+        stamina += skill.Stamina;
+        mana += skill.Mana;
     }
 
     [Button("Kill", 15)]
     public void Kill()
     {
-        TakeDamage(null, DamageType.Absolute, new Melee(), status.maxHealth);
+        TakeDamage(null, DamageType.Absolute, new Melee(), Status.MaxHealth);
     }
 
     #endregion Methods

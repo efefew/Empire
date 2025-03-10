@@ -79,7 +79,7 @@ public abstract class Buff : MonoBehaviour
     {
         if (!LimitRun(caster, target))
             return;
-        caster.temporaryBuff.Do(condition, StartBuff, EndBuff, new object[2] { caster, target });
+        caster.TemporaryBuff.Do(condition, StartBuff, EndBuff, new object[2] { caster, target });
     }
 
     protected virtual bool LimitRun(Person initiator, Person target)

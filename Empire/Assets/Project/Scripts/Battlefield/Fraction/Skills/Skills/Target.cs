@@ -14,10 +14,10 @@ public class Target : Skill
         if (!LimitRun(initiator, target.transform.position))
             return;
 
-        if (consumable)
+        if (Consumable)
             initiator.amountSkill[this]--;
 
-        if (OnTrigger(triggerTarget, initiator, target))
+        if (OnTrigger(TriggerTarget, initiator, target))
             SetEffectsAndBuffs(initiator, target);
     }
 

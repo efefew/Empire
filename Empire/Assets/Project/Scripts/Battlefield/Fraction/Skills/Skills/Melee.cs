@@ -24,7 +24,7 @@ public class Melee : Skill
         //if (target != null && !LimitRun(initiator, target))
         //    return;
         // ������� ��� ���������� � ������� �������� ������
-        var colliders2D = Physics2D.OverlapCircleAll(initiator.transform.position, range, LayerMask.GetMask("Person"));
+        var colliders2D = Physics2D.OverlapCircleAll(initiator.transform.position, Range, LayerMask.GetMask("Person"));
 
         // ������� �����, ���������� �������
         int countCatch = 0;
@@ -37,16 +37,16 @@ public class Melee : Skill
             if (target.health <= 0)
                 continue;
             // ������� ���� � ��������� ������� ������
-            if (OnTrigger(triggerTarget, initiator, target))
+            if (OnTrigger(TriggerTarget, initiator, target))
             {
                 countCatch++;
                 SetEffectsAndBuffs(initiator, target);
             }
 
             // ���� ������ ����� ��������� ���� ��������� � ���� ���� ��������, �������� ������ �������� ��������� �� ���� ����� �� ��������� �����
-            if (targetMove && countCatch > 0) _ = initiator.Pursuit(target, ITargetMove(initiator, timeTargetMove));
+            if (TargetMove && countCatch > 0) _ = initiator.Pursuit(target, ITargetMove(initiator, TimeTargetMove));
             // ���� ���������� ���������� ����� �������� ������������� �������� � ��� �������� �� ����� 0, �� ���������� ���� �� ����������
-            if (countCatch >= maxCountCatch && maxCountCatch != 0)
+            if (countCatch >= MaxCountCatch && MaxCountCatch != 0)
                 break;
         }
 
@@ -54,14 +54,14 @@ public class Melee : Skill
         if (countCatch == 0 && canMiss)
         {
             initiator.ReturnUseSkill(this);
-            initiator.RemoveStateAnimation(nameAnimation);
+            initiator.RemoveStateAnimation(NameAnimation);
         }
         else
         {
-            if (consumable)
+            if (Consumable)
                 initiator.amountSkill[this]--;
             if (countCatch != 0)
-                initiator.ChangeStateAnimation(nameAnimation, 1);
+                initiator.ChangeStateAnimation(NameAnimation, 1);
         }
     }
 

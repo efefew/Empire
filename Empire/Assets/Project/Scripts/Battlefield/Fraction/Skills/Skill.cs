@@ -2,6 +2,7 @@
 
 using AdvancedEditorTools.Attributes;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #endregion
 
@@ -10,8 +11,6 @@ using UnityEngine;
 /// </summary>
 public abstract class Skill : MonoBehaviour
 {
-    #region Enums
-
     public enum TriggerType
     {
         Enemy,
@@ -23,86 +22,70 @@ public abstract class Skill : MonoBehaviour
         All
     }
 
-    #endregion Enums
+    [FormerlySerializedAs("buttonSkillPrefab")] public ButtonSkill ButtonSkillPrefab;
 
-    ///// <summary>
-    ///// Ограничение на расспростронение моментальных и временных эффектов
-    ///// </summary>
-    //public enum ZoneType
-    //{
-    //    Fraction,
-    //    Army,
-    //    Person
-    //}
-
-    #region Fields
-
-    public ButtonSkill buttonSkillPrefab;
-
+    [FormerlySerializedAs("timeCooldown")]
     [Header("Время")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.Bevel)]
-    /// <summary>
-    /// время перезарядки
-    /// </summary>
     [Min(0)]
     [Tooltip("время перезарядки")]
-    public float timeCooldown;
+    public float TimeCooldown;
 
     /// <summary>
-    ///     время преследования
+    ///     Время преследования
     /// </summary>
-    [Min(0)] [Tooltip("время преследования")]
-    public float timeTargetMove;
+    [FormerlySerializedAs("timeTargetMove")] [Min(0)] [Tooltip("время преследования")]
+    public float TimeTargetMove;
 
     /// <summary>
     ///     время заряда навыка
     /// </summary>
-    [Min(0)] [Tooltip("время заряда навыка")]
-    public float timeCast;
+    [FormerlySerializedAs("timeCast")] [Min(0)] [Tooltip("время заряда навыка")]
+    public float TimeCast;
 
+    [FormerlySerializedAs("mana")]
     [EndColumnArea]
     [Header("Условия для использования навыка")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelGreen)]
     [Min(0)]
-    public float mana;
+    public float Mana;
 
-    [Min(0)] public float stamina;
+    [FormerlySerializedAs("stamina")] [Min(0)] public float Stamina;
 
-    [Min(0)] public float range;
+    [FormerlySerializedAs("range")] [Min(0)] public float Range;
 
-    [Min(0)] public float maxAmountSkill;
+    [FormerlySerializedAs("maxAmountSkill")] [Min(0)] public float MaxAmountSkill;
 
-    public bool pointCanBeTarget;
-    public bool сanBePatrol;
-    public TriggerType triggerTarget;
+    [FormerlySerializedAs("pointCanBeTarget")] public bool PointCanBeTarget;
+    [FormerlySerializedAs("сanBePatrol")] public bool СanBePatrol;
+    [FormerlySerializedAs("triggerTarget")] public TriggerType TriggerTarget;
 
+    [FormerlySerializedAs("consumable")]
     [EndColumnArea]
     [Header("Основные параметры навыка")]
     [BeginColumnArea(areaStyle = LayoutStyle.None, columnStyle = LayoutStyle.BevelBlue)]
-    public bool consumable;
+    public bool Consumable;
 
     /// <summary>
-    ///     Преследовать припопадании
+    ///     Преследовать при попадании
     /// </summary>
-    public bool targetMove;
+    [FormerlySerializedAs("targetMove")] public bool TargetMove;
 
     /// <summary>
     ///     Коллективный навык
     /// </summary>
-    public bool collective;
+    [FormerlySerializedAs("collective")] public bool Collective;
 
-    [Min(1)] public int maxCountCatch;
+    [FormerlySerializedAs("maxCountCatch")] [Min(1)] public int MaxCountCatch;
 
-    [SerializeField] public TriggerType triggerDanger;
+    [FormerlySerializedAs("triggerDanger")] [SerializeField] public TriggerType TriggerDanger;
 
-    public Buff[] buffs;
-    public Effect[] effects;
+    [FormerlySerializedAs("buffs")] public Buff[] Buffs;
+    [FormerlySerializedAs("effects")] public Effect[] Effects;
 
-    [EndColumnArea] public string nameAnimation;
+    [FormerlySerializedAs("nameAnimation")] [EndColumnArea] public string NameAnimation;
 
-    public const float LIMIT_CLOSE_RANGE = 0.7f;
-
-    #endregion Fields
+    private const float LIMIT_CLOSE_RANGE = 0.7f;
 
     #region Methods
 
@@ -136,34 +119,34 @@ public abstract class Skill : MonoBehaviour
         };
     }
 
-    public static bool IsMe(Person initiator, Person target)
+    private static bool IsMe(Person initiator, Person target)
     {
         return initiator == target;
     }
 
-    public static bool IsEnemy(Person initiator, Person target)
+    private static bool IsEnemy(Person initiator, Person target)
     {
-        return target.status.sideID != initiator.status.sideID;
+        return target.Status.SideID != initiator.Status.SideID;
     }
 
-    public static bool IsFriend(Person initiator, Person target)
+    private static bool IsFriend(Person initiator, Person target)
     {
-        return target.status.sideID == initiator.status.sideID && target != initiator;
+        return target.Status.SideID == initiator.Status.SideID && target != initiator;
     }
 
-    public static bool IsMe(Army initiator, Army target)
+    private static bool IsMe(Army initiator, Army target)
     {
         return initiator == target;
     }
 
-    public static bool IsEnemy(Army initiator, Army target)
+    private static bool IsEnemy(Army initiator, Army target)
     {
-        return target.status.sideID != initiator.status.sideID;
+        return target.status.SideID != initiator.status.SideID;
     }
 
-    public static bool IsFriend(Army initiator, Army target)
+    private static bool IsFriend(Army initiator, Army target)
     {
-        return target.status.sideID == initiator.status.sideID && target != initiator;
+        return target.status.SideID == initiator.status.SideID && target != initiator;
     }
 
     public static (bool, bool, bool) GetTrigger(TriggerType trigger)
@@ -213,42 +196,40 @@ public abstract class Skill : MonoBehaviour
 
     public void SetEffectsAndBuffs(Person initiator, Person target)
     {
-        foreach (Effect effect in effects) effect.Run(initiator, target, this);
+        foreach (Effect effect in Effects) effect.Run(initiator, target, this);
 
-        foreach (Buff buff in buffs) buff.Run(initiator, target);
+        foreach (Buff buff in Buffs) buff.Run(initiator, target);
     }
 
     /// <summary>
     ///     Реализация навыка
     /// </summary>
-    /// <param name="initiator">реализующий навык</param>
-    /// <param name="target">цель навыка</param>
+    /// <param name="initiator">Реализующий навык</param>
+    /// <param name="target">Цель навыка</param>
     public abstract void Run(Person initiator, Person target = null);
 
     /// <summary>
     ///     Реализация навыка
     /// </summary>
-    /// <param name="initiator">реализующий навык</param>
+    /// <param name="initiator">Реализующий навык</param>
     /// <param name="target">цель навыка</param>
     public abstract void Run(Person initiator, Vector3 target);
 
     /// <summary>
     ///     Проверяет возможность реализации навыка
     /// </summary>
-    /// <param name="initiator">реализующий навык</param>
+    /// <param name="initiator">Реализующий навык</param>
     /// <param name="target">цель навыка</param>
     public virtual bool LimitRun(Person initiator, Vector3 target)
     {
-        if (initiator == null)
+        if (!initiator)
             return false;
         // Проверяем, может ли персонаж использовать это умение
-        if ((consumable && initiator.amountSkill[this] - 1 < 0) || !initiator.CanUseSkill(this))
-        {
-            initiator.RemoveStateAnimation(nameAnimation);
-            return false;
-        }
+        if ((!Consumable || !(initiator.amountSkill[this] - 1 < 0)) && initiator.CanUseSkill(this))
+            return LimitRangeRun(initiator, target);
+        initiator.RemoveStateAnimation(NameAnimation);
+        return false;
 
-        return LimitRangeRun(initiator, target);
     }
 
     /// <summary>
@@ -256,13 +237,14 @@ public abstract class Skill : MonoBehaviour
     /// </summary>
     /// <param name="initiator">персонаж</param>
     /// <param name="target">врага</param>
+    /// <param name="close"></param>
     /// <returns></returns>
     public virtual bool LimitRangeRun(Person initiator, Vector3 target, bool close = false)
     {
         float distance = Vector2.Distance(initiator.transform.position, target);
-        if (target == null || (distance > range * (close ? LIMIT_CLOSE_RANGE : 1) && range != 0))
+        if ((distance > Range * (close ? LIMIT_CLOSE_RANGE : 1) && Range != 0))
         {
-            initiator.RemoveStateAnimation(nameAnimation);
+            initiator.RemoveStateAnimation(NameAnimation);
             return false;
         }
 

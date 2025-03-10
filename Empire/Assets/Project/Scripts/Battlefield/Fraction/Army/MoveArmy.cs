@@ -4,7 +4,7 @@ using UnityEngine;
 
 #endregion
 
-[RequireComponent(typeof(PointsAB))]
+[RequireComponent(typeof(PointsAb))]
 public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 {
     #region Fields
@@ -13,9 +13,9 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï
     {
         get
         {
-            if (targetButtonPersonId >= persons.Count)
+            if (targetButtonPersonId >= Persons.Count)
             {
-                MovePoints(anchors.a, anchors.b);
+                MovePoints(anchors.A, anchors.B);
                 TargetButtonPersonId = newTargetButtonPersonId;
             }
 
@@ -28,7 +28,7 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï
     private bool firstMinDistance;
     private int targetButtonPersonId;
     private int newTargetButtonPersonId;
-    public PointsAB anchors;
+    public PointsAb anchors;
     public float offsetX, offsetY;
 
     #endregion Fields
@@ -37,32 +37,32 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï
 
     private void Update()
     {
-        if (persons.Count == 0)
+        if (Persons.Count == 0)
             return;
-        if (TargetButtonPersonId >= persons.Count)
+        if (TargetButtonPersonId >= Persons.Count)
         {
-            MovePoints(anchors.a, anchors.b);
+            MovePoints(anchors.A, anchors.B);
             TargetButtonPersonId = newTargetButtonPersonId;
         }
 
-        if (buttonArmy.gameObject.activeInHierarchy)
-            buttonArmy.transform.position = persons[TargetButtonPersonId].transform.position;
-        if (!status.fraction.bot)
-            armyGlobalUI.transform.position = persons[TargetButtonPersonId].transform.position;
+        if (ButtonArmy.gameObject.activeInHierarchy)
+            ButtonArmy.transform.position = Persons[TargetButtonPersonId].transform.position;
+        if (!status.Fraction.Bot)
+            ArmyGlobalUI.transform.position = Persons[TargetButtonPersonId].transform.position;
     }
 
     private void MovePoints(Transform a, Transform b)
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0) || status.fraction.bot)
+        if (Input.GetKeyDown(KeyCode.Mouse0) || status.Fraction.Bot)
             firstMinDistance = true;
         float distance = Vector2.Distance(a.position, b.position);
         if (distance < (firstMinDistance ? FIRST_MIN_DISTANCE : MIN_DISTANCE))
             return;
 
         int countX = (int)(distance / offsetX + 1), x = 0, y = 0;
-        for (int id = 0; id < persons.Count; id++)
+        for (int id = 0; id < Persons.Count; id++)
         {
-            persons[id].target.position = a.position - a.up * offsetY * y + a.right * offsetX * x;
+            Persons[id].Target.position = a.position - a.up * offsetY * y + a.right * offsetX * x;
             x++;
             if (x == countX)
             {
@@ -71,7 +71,7 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï
             }
         }
 
-        int widhArmy = persons.Count < countX ? persons.Count : countX;
+        int widhArmy = Persons.Count < countX ? Persons.Count : countX;
         int heightArmy = x == 0 ? y : y - 1;
         newTargetButtonPersonId = widhArmy * (heightArmy / 2) + widhArmy / 2;
         firstMinDistance = false;
@@ -79,8 +79,8 @@ public partial class Army : MonoBehaviour // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï
 
     private void MoveArmy(Transform a, Transform b)
     {
-        for (int id = 0; id < persons.Count; id++)
-            persons[id].MoveUpdate();
+        for (int id = 0; id < Persons.Count; id++)
+            Persons[id].MoveUpdate();
     }
 
     #endregion Methods

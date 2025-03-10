@@ -4,129 +4,111 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 #endregion
 
-public class PointsAB : MonoBehaviour
+public class PointsAb : MonoBehaviour
 {
-    #region Fields
-
     private const float MIN_DISTANCE_AB = 1f;
-
-    #endregion Fields
-
-    #region Events
-
     public event Action<Transform, Transform> OnChangePositions, OnChangedPositions;
+    private bool GroupAb { get; set; }
+    public ToggleGroup ContainerToggle { private get; set; }
+    public PointsAb ParentAb { get; set; }
+    public List<PointsAb> ChildrenAb { get; set; } = new();
 
-    #endregion Events
+    [FormerlySerializedAs("battlefield")] public Battlefield Battlefield;
+    [FormerlySerializedAs("a")] public Transform A;
+    [FormerlySerializedAs("b")] public Transform B;
+    private bool _wasOverUI;
 
-    #region Properties
-
-    public bool groupAB { get; private set; }
-    public ToggleGroup conteinerToggle { private get; set; }
-    public PointsAB parentAB { get; set; }
-    public List<PointsAB> childrensAB { get; set; } = new();
-
-    #endregion Properties
-
-    #region Fields
-
-    public Battlefield battlefield;
-    public Transform a, b;
-    private bool wasOverUI;
-
-    #endregion Fields
-
-    #region Methods
 
     private void Start()
     {
-        if (Battlefield.Singleton != null) battlefield = Battlefield.Singleton;
+        if (Battlefield.Instance != null) Battlefield = Battlefield.Instance;
     }
 
     private void Update()
     {
-        if (parentAB && parentAB.groupAB) return;
+        if (ParentAb && ParentAb.GroupAb) return;
 
-        wasOverUI = MyExtentions.IsPointerOverUI();
-        ChangePointsAB(KeyCode.Mouse0);
+        _wasOverUI = MyExtentions.IsPointerOverUI();
+        ChangePointsAb(KeyCode.Mouse0);
     }
 
-    private void ChangePointsAB(KeyCode key)
+    private void ChangePointsAb(KeyCode key)
     {
-        if (wasOverUI) return;
+        if (_wasOverUI) return;
 
-        if (Input.GetKeyDown(key)) ChangePositionA(battlefield.WorldPosition);
+        if (Input.GetKeyDown(key)) ChangePositionA(Battlefield.WorldPosition);
 
-        if (Input.GetKey(key)) ChangePositionB(battlefield.WorldPosition);
+        if (Input.GetKey(key)) ChangePositionB(Battlefield.WorldPosition);
 
         if (Input.GetKeyUp(key))
         {
-            battlefield.DeactiveAllArmies();
+            Battlefield.DeactiveAllArmies();
             ChangedPositions();
         }
     }
 
     private void SetGroupPoints()
     {
-        if (!groupAB) return;
+        if (!GroupAb) return;
 
-        int countActiveAB = childrensAB.Where(points => { return points.enabled; }).Count();
+        int countActiveAb = ChildrenAb.Count(points => points.enabled);
         float distance = Mathf.Max(0,
-            (Vector2.Distance(a.position, b.position) - Army.OFFSET_BETWEEN_ARMIES * (countActiveAB - 1)) /
-            countActiveAB);
-        Vector3 position = a.position;
-        for (int id = 0; id < childrensAB.Count; id++)
+            (Vector2.Distance(A.position, B.position) - Army.OFFSET_BETWEEN_ARMIES * (countActiveAb - 1)) /
+            countActiveAb);
+        Vector3 position = A.position;
+        for (int id = 0; id < ChildrenAb.Count; id++)
         {
-            if (!childrensAB[id].enabled) continue;
+            if (!ChildrenAb[id].enabled) continue;
 
-            childrensAB[id].ChangePositionA(position);
-            position += a.right * distance;
-            childrensAB[id].ChangePositionB(position);
-            position += a.right * Army.OFFSET_BETWEEN_ARMIES;
+            ChildrenAb[id].ChangePositionA(position);
+            position += A.right * distance;
+            ChildrenAb[id].ChangePositionB(position);
+            position += A.right * Army.OFFSET_BETWEEN_ARMIES;
         }
     }
 
     public void SetActive(bool on)
     {
-        a.gameObject.SetActive(on);
-        b.gameObject.SetActive(on);
+        A.gameObject.SetActive(on);
+        B.gameObject.SetActive(on);
         enabled = on;
     }
 
     public void ChangePositionA(Vector2 vector)
     {
-        a.position = vector;
+        A.position = vector;
     }
 
     public void ChangePositionB(Vector2 vector, bool firstCall = false)
     {
-        b.position = vector;
-        a.LookAt2D(b.position);
-        if (firstCall) OnChangedPositions?.Invoke(a, b);
+        B.position = vector;
+        A.LookAt2D(B.position);
+        if (firstCall) OnChangedPositions?.Invoke(A, B);
 
-        if (Vector2.Distance(a.position, b.position) >= MIN_DISTANCE_AB) OnChangePositions?.Invoke(a, b);
+        if (Vector2.Distance(A.position, B.position) >= MIN_DISTANCE_AB) OnChangePositions?.Invoke(A, B);
 
         SetGroupPoints();
     }
 
     public void ChangedPositions()
     {
-        if (Vector2.Distance(a.position, b.position) >= MIN_DISTANCE_AB) OnChangedPositions?.Invoke(a, b);
+        if (Vector2.Distance(A.position, B.position) >= MIN_DISTANCE_AB) OnChangedPositions?.Invoke(A, B);
 
-        if (!groupAB) return;
+        if (!GroupAb) return;
 
-        for (int id = 0; id < childrensAB.Count; id++) childrensAB[id].ChangedPositions();
+        for (int id = 0; id < ChildrenAb.Count; id++) ChildrenAb[id].ChangedPositions();
     }
 
     public void Group(bool on)
     {
-        groupAB = on;
-        conteinerToggle.enabled = !on;
+        GroupAb = on;
+        ContainerToggle.enabled = !on;
         SetActive(on);
     }
 
-    #endregion Methods
 }

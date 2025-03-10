@@ -24,17 +24,19 @@ public static class MyExtentions
 
     #region Methods
 
-    private static Random random = new((int)DateTime.Now.Ticks & 0x0000FFFF);
+    private static Random _random = new((int)DateTime.Now.Ticks & 0x0000FFFF);
 
     /// <summary>
     ///     Нормализовать массив
     /// </summary>
     /// <param name="array">массив</param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
     public static void Normalize(this double[] array, double min = 0, double max = 1)
     {
         double minInArray = array.Min();
         double maxInArray = array.Max();
-        if (minInArray == maxInArray)
+        if (Math.Abs(minInArray - maxInArray) < TOLERANCE)
         {
             double value = maxInArray > 0 ? 1 : 0;
             for (int id = 0; id < array.Length; id++) array[id] = value;
@@ -42,13 +44,14 @@ public static class MyExtentions
             return;
         }
 
-        double relativeValue;
         for (int id = 0; id < array.Length; id++)
         {
-            relativeValue = (array[id] - minInArray) / (maxInArray - minInArray); //от 0 до 1
+            double relativeValue = (array[id] - minInArray) / (maxInArray - minInArray);
             array[id] = relativeValue * (max - min) + min;
         }
     }
+
+    private const double TOLERANCE = 0.01;
 
     /// <summary>
     ///     Перемешивание списка
@@ -61,7 +64,7 @@ public static class MyExtentions
         while (n > 1)
         {
             n--;
-            int k = random.Next(n + 1);
+            int k = _random.Next(n + 1);
             (list[n], list[k]) = (list[k], list[n]);
         }
     }
@@ -77,17 +80,17 @@ public static class MyExtentions
         while (n > 1)
         {
             n--;
-            int k = random.Next(n + 1);
+            int k = _random.Next(n + 1);
             (array[n], array[k]) = (array[k], array[n]);
         }
     }
 
     /// <summary>
-    ///     Перемешивание двух списков однаково
+    ///     Перемешивание двух списков
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="list1">список 1</param>
-    /// <param name="list2">список 2</param>
+    /// <param name="list1">Список 1</param>
+    /// <param name="list2">Список 2</param>
     public static void MixingTwoLists<T>(IList<T> list1, IList<T> list2)
     {
         if (list1.Count != list2.Count) throw new Exception("списки должны иметь одинаковый размер");
@@ -96,7 +99,7 @@ public static class MyExtentions
         while (n > 1)
         {
             n--;
-            int k = random.Next(n + 1);
+            int k = _random.Next(n + 1);
             (list1[n], list1[k]) = (list1[k], list1[n]);
             (list2[n], list2[k]) = (list2[k], list2[n]);
         }
@@ -186,22 +189,17 @@ public static class MyExtentions
 
     public static Texture2D LoadBmpTexture(string filePath)
     {
-        Texture2D tex = null;
-        byte[] fileData;
+        if (!File.Exists(filePath)) return null;
+        byte[] fileData = File.ReadAllBytes(filePath);
 
-        if (File.Exists(filePath))
-        {
-            fileData = File.ReadAllBytes(filePath);
+        BMPLoader bmpLoader = new();
+        //bmpLoader.ForceAlphaReadWhenPossible = true; //Uncomment to read alpha too
 
-            BMPLoader bmpLoader = new();
-            //bmpLoader.ForceAlphaReadWhenPossible = true; //Uncomment to read alpha too
+        //Load the BMP data
+        BMPImage bmpImg = bmpLoader.LoadBMP(fileData);
 
-            //Load the BMP data
-            BMPImage bmpImg = bmpLoader.LoadBMP(fileData);
-
-            //Convert the Color32 array into a Texture2D
-            tex = bmpImg.ToTexture2D();
-        }
+        //Convert the Color32 array into a Texture2D
+        Texture2D tex = bmpImg.ToTexture2D();
 
         return tex;
     }
@@ -256,7 +254,7 @@ public static class MyExtentions
     /// <summary>
     ///     Проверяет, находится ли указатель мыши над объектом UI.
     /// </summary>
-    /// <returns>находится ли указатель мыши над объектом UI</returns>
+    /// <returns>Находится ли указатель мыши над объектом UI</returns>
     public static bool IsPointerOverUI()
     {
         // Создаем экземпляр PointerEventData с текущим положением указателя мыши.
@@ -279,7 +277,7 @@ public static class MyExtentions
     ///     Проверяет, находится ли указатель мыши над конкретным объектом UI.
     /// </summary>
     /// <param name="targetUI">цель</param>
-    /// <returns>находится ли указатель мыши над объектом UI</returns>
+    /// <returns>Находится ли указатель мыши над объектом UI</returns>
     public static bool IsPointerOverUI(GameObject targetUI)
     {
         // Создаем экземпляр PointerEventData с текущим положением указателя мыши.
@@ -308,7 +306,7 @@ public static class MyExtentions
     /// </summary>
     /// <param name="arr">массив</param>
     /// <param name="value">значение</param>
-    /// <returns>массив с наращенными границами</returns>
+    /// <returns>Массив с наращенными границами</returns>
     public static bool[,] AddBorders(this bool[,] arr, bool value = true)
     {
         bool[,] newArr = new bool[arr.GetLength(0) + 2, arr.GetLength(1) + 2];
@@ -334,8 +332,8 @@ public static class MyExtentions
     /// <summary>
     ///     Таймер
     /// </summary>
-    /// <param name="timer">значение таймера</param>
-    /// <returns>значение таймера равно нулю и не изменилось?</returns>
+    /// <param name="timer">Значение таймера</param>
+    /// <returns>Значение таймера равно нулю и не изменилось?</returns>
     public static bool Timer(this ref float timer)
     {
         if (timer == 0) return true;
@@ -349,8 +347,8 @@ public static class MyExtentions
     /// <summary>
     ///     Попробовать получить значение другого типа
     /// </summary>
-    /// <typeparam name="T">другой тип</typeparam>
-    /// <param name="obj">исходное значение</param>
+    /// <typeparam name="T">Другой тип</typeparam>
+    /// <param name="obj">Исходное значение</param>
     /// <param name="valueOtherType">значение другого типа</param>
     /// <returns>Получилось ли получить значение другого типа</returns>
     public static bool TryGetValueOtherType<T>(this object obj, out T valueOtherType)

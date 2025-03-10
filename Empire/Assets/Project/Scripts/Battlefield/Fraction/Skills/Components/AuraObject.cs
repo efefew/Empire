@@ -44,14 +44,14 @@ public class AuraObject : MonoBehaviour
                 if (targetInAura.health <= 0)
                     continue;
                 // ������� ���� � ��������� ������� ������
-                if (Skill.OnTrigger(skill.triggerTarget, initiator, targetInAura))
+                if (Skill.OnTrigger(skill.TriggerTarget, initiator, targetInAura))
                 {
                     countCatch++;
                     skill.SetEffectsAndBuffs(initiator, targetInAura);
                 }
 
                 // ���� ���������� ���������� ����� �������� ������������� �������� � ��� �������� �� ����� 0, �� ���������� ���� �� ����������
-                if (countCatch >= skill.maxCountCatch && skill.maxCountCatch != 0)
+                if (countCatch >= skill.MaxCountCatch && skill.MaxCountCatch != 0)
                     yield break;
             }
 

@@ -55,19 +55,19 @@ public class ProjectileObject : MonoBehaviour
 
         if (col.transform.TryGetComponent(out Person target))
         {
-            if (initiator.army && target.army)
+            if (initiator.Army && target.Army)
             {
-                if (!OnTrigger(skill.triggerDanger, initiator.army, target.army))
+                if (!OnTrigger(skill.TriggerDanger, initiator.Army, target.Army))
                     return;
             }
             else
             {
-                if (!OnTrigger(skill.triggerDanger, initiator, target))
+                if (!OnTrigger(skill.TriggerDanger, initiator, target))
                     return;
             }
 
             skill.SetEffectsAndBuffs(initiator, target);
-            if (skill.maxCountCatch > 0)
+            if (skill.MaxCountCatch > 0)
                 countCatch--;
             if (countCatch <= 0)
                 _ = StartCoroutine(DestroySelf());
@@ -87,7 +87,7 @@ public class ProjectileObject : MonoBehaviour
         this.targetPerson = targetPerson;
         this.initiator = initiator;
         this.skill = skill;
-        countCatch = skill.maxCountCatch;
+        countCatch = skill.MaxCountCatch;
     }
 
     #endregion Methods

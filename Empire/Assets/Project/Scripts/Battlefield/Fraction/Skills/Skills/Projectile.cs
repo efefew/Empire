@@ -61,7 +61,7 @@ public class Projectile : Skill
         if (target == null || !LimitRun(initiator, target.transform.position))
             return;
 
-        if (consumable)
+        if (Consumable)
             initiator.amountSkill[this]--;
 
         for (int i = 0; i < Random.Range(minCountProjectile, maxCountProjectile); i++)
@@ -70,12 +70,12 @@ public class Projectile : Skill
 
     public override void Run(Person initiator, Vector3 target)
     {
-        if (targetPerson || !pointCanBeTarget)
+        if (targetPerson || !PointCanBeTarget)
             return;
         if (!LimitRun(initiator, target))
             return;
 
-        if (consumable)
+        if (Consumable)
             initiator.amountSkill[this]--;
 
         for (int i = 0; i < Random.Range(minCountProjectile, maxCountProjectile); i++)

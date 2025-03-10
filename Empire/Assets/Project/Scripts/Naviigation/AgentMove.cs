@@ -3,6 +3,7 @@
 using NavMeshPlus.Extensions;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Serialization;
 
 #endregion
 
@@ -10,61 +11,54 @@ using UnityEngine.AI;
 [RequireComponent(typeof(AgentOverride2d))]
 public class AgentMove : MonoBehaviour
 {
-    #region Fields
-
     public const float
-        MIN_DISTANCE = 0.1f,
+        MIN_DISTANCE = 0.1f;
+
+    private const float
         MIN_DISTANCE_ENEMY_CONTACT = 1f;
 
-    [SerializeField] private Transform target;
+    [FormerlySerializedAs("target")] [SerializeField] private Transform _target;
 
-    public Transform tempTarget;
-    private LineRenderer line;
-    public Vector3? tempPointTarget;
+    [FormerlySerializedAs("tempTarget")] public Transform TempTarget;
+    private LineRenderer _line;
+    public Vector3? TempPointTarget;
 
-    [HideInInspector] public NavMeshAgent agent;
+    [FormerlySerializedAs("agent")] [HideInInspector] public NavMeshAgent Agent;
 
-    #endregion Fields
-
-    #region Methods
 
     private void Awake()
     {
-        tempPointTarget = null;
-        agent = GetComponent<NavMeshAgent>();
-        line = target.GetChild(0).GetComponent<LineRenderer>();
+        TempPointTarget = null;
+        Agent = GetComponent<NavMeshAgent>();
+        _line = _target.GetChild(0).GetComponent<LineRenderer>();
     }
 
-    /// <summary>
-    ///     ���������� ���� ��������
-    /// </summary>
     public void UpdateAgent(bool stun, float speed)
     {
-        agent.speed = speed;
-        if (!agent.isOnNavMesh)
+        Agent.speed = speed;
+        if (!Agent.isOnNavMesh)
         {
-            transform.position = target.position;
+            transform.position = _target.position;
             return;
         }
 
-        agent.isStopped = stun;
-        Vector3 point = tempPointTarget == null ? target.position : (Vector3)tempPointTarget;
-        point = tempTarget ? tempTarget.position : point;
+        Agent.isStopped = stun;
+        Vector3 point = TempPointTarget ?? _target.position;
+        point = TempTarget ? TempTarget.position : point;
 
-        _ = agent.SetDestination(point);
-        agent.stoppingDistance = tempTarget ? MIN_DISTANCE_ENEMY_CONTACT : MIN_DISTANCE;
+        _ = Agent.SetDestination(point);
+        Agent.stoppingDistance = TempTarget ? MIN_DISTANCE_ENEMY_CONTACT : MIN_DISTANCE;
     }
 
     public void UpdateLine()
     {
-        if (!target.gameObject.activeSelf)
+        if (!_target.gameObject.activeSelf)
             return;
-        var corners = agent.path.corners;
+        var corners = Agent.path.corners;
         if (corners.Length < 2)
             return;
-        line.positionCount = corners.Length;
-        line.SetPositions(corners);
+        _line.positionCount = corners.Length;
+        _line.SetPositions(corners);
     }
 
-    #endregion Methods
 }

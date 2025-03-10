@@ -44,7 +44,7 @@ public class Aura : Skill
         if (!LimitRun(initiator, target.transform.position) || target == null)
             return;
 
-        if (consumable)
+        if (Consumable)
             initiator.amountSkill[this]--;
 
         for (int i = 0; i < Random.Range(minCountAura, maxCountAura); i++)

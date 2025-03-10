@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2391ee02af1d94447bddb5f3aba74d46, type: 3}
+  m_Name: IceWizard
+  m_EditorClassIdentifier: 
+  <Person>k__BackingField: {fileID: 2934716093508156845, guid: 30bab848851991c45ac97e66c6802d66, type: 3}
+  <ArmyUI>k__BackingField: {fileID: 2944766447363850965, guid: 0e8937235f5f8874587f6beae7bbbdd3, type: 3}
+  <ArmyGlobalUI>k__BackingField: {fileID: 8182101224815585036, guid: 6493af913b2498f40b251bdc1b5640f5, type: 3}
+  <Army>k__BackingField: {fileID: 803402120731885701, guid: d42ce878e831d3f4ea7760222799ba8c, type: 3}
+  <ButtonArmy>k__BackingField: {fileID: 2733142368336389385, guid: 5e455f28c5e3fd94d9b85f6121ee63be, type: 3}

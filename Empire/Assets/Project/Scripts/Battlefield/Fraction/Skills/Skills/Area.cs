@@ -45,7 +45,7 @@ public class Area : Skill
         if (!LimitRun(initiator, target.transform.position))
             return;
 
-        if (consumable)
+        if (Consumable)
             initiator.amountSkill[this]--;
 
         for (int i = 0; i < Random.Range(minCountArea, maxCountArea); i++)
@@ -62,12 +62,12 @@ public class Area : Skill
 
     public override void Run(Person initiator, Vector3 target)
     {
-        if (!pointCanBeTarget)
+        if (!PointCanBeTarget)
             return;
         if (!LimitRun(initiator, target))
             return;
 
-        if (consumable)
+        if (Consumable)
             initiator.amountSkill[this]--;
 
         for (int i = 0; i < Random.Range(minCountArea, maxCountArea); i++)

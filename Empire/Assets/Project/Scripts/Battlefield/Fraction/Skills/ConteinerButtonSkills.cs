@@ -46,7 +46,7 @@ public class ConteinerButtonSkills : MonoBehaviour
 
     private void AddTimerSkillCast(Army army)
     {
-        Silence(army, army.status.timerSkillCast > timerSkillCast ? army.status.timerSkillCast : timerSkillCast);
+        Silence(army, army.status.TimerSkillCast > timerSkillCast ? army.status.TimerSkillCast : timerSkillCast);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class ConteinerButtonSkills : MonoBehaviour
     {
         bool exist = false;
         for (int id = 0; id < buttonSkills.Count; id++)
-            if (buttonSkills[id].initiatorArmies.ContainsKey(initiator))
+            if (buttonSkills[id].InitiatorArmies.ContainsKey(initiator))
             {
                 exist = true;
                 break;
@@ -97,13 +97,13 @@ public class ConteinerButtonSkills : MonoBehaviour
 
     public void Add(Army army, Skill skill)
     {
-        int id = IndexOf(skill.buttonSkillPrefab);
+        int id = IndexOf(skill.ButtonSkillPrefab);
         if (id == -1)
         {
-            ButtonSkill buttonSkill = Instantiate(skill.buttonSkillPrefab, tr);
+            ButtonSkill buttonSkill = Instantiate(skill.ButtonSkillPrefab, tr);
             buttonSkill.Build(army, skill);
             buttonSkill.Add(army);
-            buttonSkill.button.onClick.AddListener(() => ClickAnyButtonSkills(buttonSkill));
+            buttonSkill.Button.onClick.AddListener(() => ClickAnyButtonSkills(buttonSkill));
             buttonSkills.Add(buttonSkill);
             AddTimerSkillCast(army);
             UpdatePatrolUI();
@@ -123,7 +123,7 @@ public class ConteinerButtonSkills : MonoBehaviour
     public void Remove(Army army, Skill skill)
     {
         // �������� ������ ������ � ������ ������ �������
-        int id = IndexOf(skill.buttonSkillPrefab);
+        int id = IndexOf(skill.ButtonSkillPrefab);
         // ���� ������ ����� -1, ������ ����� �� ������, ������������
         if (id == -1)
             return;
@@ -132,9 +132,9 @@ public class ConteinerButtonSkills : MonoBehaviour
         buttonSkills[id].Remove(army);
 
         // ���� ������ ����������� ������, ������� ������ ������ � ������� �� ������ ������
-        if (buttonSkills[id].initiatorArmies.Count == 0)
+        if (buttonSkills[id].InitiatorArmies.Count == 0)
         {
-            buttonSkills[id].button.onClick.RemoveListener(() => ClickAnyButtonSkills(buttonSkills[id]));
+            buttonSkills[id].Button.onClick.RemoveListener(() => ClickAnyButtonSkills(buttonSkills[id]));
             Destroy(buttonSkills[id].gameObject);
             _ = buttonSkills.Remove(buttonSkills[id]);
         }
@@ -145,7 +145,7 @@ public class ConteinerButtonSkills : MonoBehaviour
         // �������� ������ ����� � ������������� ��� ��� ���� ����������� �������
         timerSkillCast = 0;
         for (int idButtonSkill = 0; idButtonSkill < buttonSkills.Count; idButtonSkill++)
-            foreach (var initiatorArmy in buttonSkills[idButtonSkill].initiatorArmies)
+            foreach (var initiatorArmy in buttonSkills[idButtonSkill].InitiatorArmies)
                 AddTimerSkillCast(initiatorArmy.Key);
 
         UpdatePatrolUI();
@@ -167,9 +167,9 @@ public class ConteinerButtonSkills : MonoBehaviour
     {
         buttonSkill = null;
         for (int id = 0; id < buttonSkills.Count; id++)
-            if (buttonSkills[id].targetSkill == skill)
+            if (buttonSkills[id].TargetSkill == skill)
             {
-                if (buttonSkills[id].initiatorArmies.ContainsKey(army))
+                if (buttonSkills[id].InitiatorArmies.ContainsKey(army))
                 {
                     buttonSkill = buttonSkills[id];
                     return true;
@@ -184,7 +184,7 @@ public class ConteinerButtonSkills : MonoBehaviour
     public int IndexOf(ButtonSkill buttonSkill)
     {
         for (int id = 0; id < buttonSkills.Count; id++)
-            if (buttonSkills[id].prefabID == buttonSkill.prefabID)
+            if (buttonSkills[id].PrefabID == buttonSkill.PrefabID)
                 return id;
 
         return -1;
@@ -194,10 +194,10 @@ public class ConteinerButtonSkills : MonoBehaviour
     {
         if (Contains(army, skill, out ButtonSkill buttonSkill))
         {
-            if (skill.timeCast > 0)
+            if (skill.TimeCast > 0)
             {
                 Silence(true);
-                timerSkillCast = skill.timeCast;
+                timerSkillCast = skill.TimeCast;
                 coroutine ??= StartCoroutine(ITimerSkillCast());
             }
 
