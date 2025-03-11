@@ -82,3 +82,4 @@ crashlytics-build.properties
 
 #custom types
 *.cs~
+/Empire/Temp

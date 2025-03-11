@@ -1,7 +1,10 @@
 #region
 
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static Skill;
 
 #endregion
 
@@ -25,14 +28,7 @@ public class Bot : MonoBehaviour
     private IEnumerator IMoveArmy(Army army, Vector2 a, Vector2 b)
     {
         yield return new WaitUntil
-        (() =>
-        {
-            foreach (Person person in army.Persons)
-                if (!person.AgentMove.Agent.isOnNavMesh)
-                    return false;
-
-            return true;
-        });
+        (() => army.Persons.All(person => person.AgentMove.Agent.isOnNavMesh));
 
         if (!myFraction.Armies.Contains(army))
             yield break;
@@ -40,7 +36,20 @@ public class Bot : MonoBehaviour
         army.anchors.ChangePositionB(b);
         army.anchors.ChangedPositions();
     }
-
+    private void UseSkillArmy(Army bot, Army target, Skill skill)
+    {
+        if(!myFraction.Armies.Contains(bot)) return;
+        if(!bot.status.Skills.Contains(skill)) return;
+        bot.UseSkill(skill, target.Persons.ToArray());
+    }
+    private void UseSkillArmy(Army bot, Army target, SkillType skillType)
+    {
+        if(!myFraction.Armies.Contains(bot))
+            return;
+        List<Skill> skills = bot.status.Skills.Where(s => s.Type == skillType).ToList();
+        Skill skill = skills[Random.Range(0, skills.Count)];
+        UseSkillArmy(bot, target, skill);
+    }
     private void MoveArmy(Army army, Vector2 a, Vector2 b)
     {
         StartCoroutine(IMoveArmy(army, a, b));

@@ -1,5 +1,6 @@
 #region
 
+using System;
 using AdvancedEditorTools.Attributes;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -22,6 +23,15 @@ public abstract class Skill : MonoBehaviour
         All
     }
 
+    public enum SkillType
+    {
+        Attack,
+        Defend,
+        Move,
+        Heal,
+        Buff,
+        Debuff,
+    }
     [FormerlySerializedAs("buttonSkillPrefab")] public ButtonSkill ButtonSkillPrefab;
 
     [FormerlySerializedAs("timeCooldown")]
@@ -79,6 +89,7 @@ public abstract class Skill : MonoBehaviour
     [FormerlySerializedAs("maxCountCatch")] [Min(1)] public int MaxCountCatch;
 
     [FormerlySerializedAs("triggerDanger")] [SerializeField] public TriggerType TriggerDanger;
+    [SerializeField] public SkillType Type;
 
     [FormerlySerializedAs("buffs")] public Buff[] Buffs;
     [FormerlySerializedAs("effects")] public Effect[] Effects;
@@ -189,6 +200,8 @@ public abstract class Skill : MonoBehaviour
                 self = true;
                 friend = true;
                 break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(trigger), trigger, null);
         }
 
         return (enemy, self, friend);
@@ -242,13 +255,10 @@ public abstract class Skill : MonoBehaviour
     public virtual bool LimitRangeRun(Person initiator, Vector3 target, bool close = false)
     {
         float distance = Vector2.Distance(initiator.transform.position, target);
-        if ((distance > Range * (close ? LIMIT_CLOSE_RANGE : 1) && Range != 0))
-        {
-            initiator.RemoveStateAnimation(NameAnimation);
-            return false;
-        }
+        if ((!(distance > Range * (close ? LIMIT_CLOSE_RANGE : 1)) || Range == 0)) return true;
+        initiator.RemoveStateAnimation(NameAnimation);
+        return false;
 
-        return true;
     }
 
     #endregion Methods

@@ -154,13 +154,9 @@ public class ConteinerButtonSkills : MonoBehaviour
     public bool Reload(Army army, Skill skill)
     {
         Silence(army, skill);
-        if (Contains(army, skill, out ButtonSkill buttonSkill))
-        {
-            buttonSkill.Reload();
-            return true;
-        }
-
-        return false;
+        if (!Contains(army, skill, out ButtonSkill buttonSkill)) return false;
+        buttonSkill.Reload();
+        return true;
     }
 
     public bool Contains(Army army, Skill skill, out ButtonSkill buttonSkill)
