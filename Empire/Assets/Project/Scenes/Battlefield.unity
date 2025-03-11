@@ -633,11 +633,11 @@ MonoBehaviour:
   baseInspectorFoldout: 0
   layoutInfos: []
   buttonMethods:
-  - rid: 1860733432942821655
+  - rid: 406468825128108034
   references:
     version: 2
     RefIds:
-    - rid: 1860733432942821655
+    - rid: 406468825128108034
       type: {class: ButtonInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         methodName: Kill
@@ -1031,13 +1031,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseInspectorFoldout: 0
   layoutInfos:
-  - rid: 1860733432942821731
-  - rid: 1860733432942821732
+  - rid: 406468825128108032
+  - rid: 406468825128108033
   buttonMethods: []
   references:
     version: 2
     RefIds:
-    - rid: 1860733432942821731
+    - rid: 406468825128108032
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: specificityStack
@@ -1045,7 +1045,7 @@ MonoBehaviour:
           Culture=neutral, PublicKeyToken=null
         windowStyle: 0
         columnStyle: 8
-    - rid: 1860733432942821732
+    - rid: 406468825128108033
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: condition
@@ -1120,17 +1120,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseInspectorFoldout: 0
   layoutInfos:
-  - rid: 1860733432942821709
-  - rid: 1860733432942821710
-  - rid: 1860733432942821711
-  - rid: 1860733432942821712
-  - rid: 1860733432942821713
-  - rid: 1860733432942821714
+  - rid: 406468825128108151
+  - rid: 406468825128108152
+  - rid: 406468825128108153
+  - rid: 406468825128108154
+  - rid: 406468825128108155
+  - rid: 406468825128108156
   buttonMethods: []
   references:
     version: 2
     RefIds:
-    - rid: 1860733432942821709
+    - rid: 406468825128108151
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: TimeCooldown
@@ -1138,14 +1138,14 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089
         windowStyle: 0
         columnStyle: 3
-    - rid: 1860733432942821710
+    - rid: 406468825128108152
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Mana
         fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         includeLast: 0
-    - rid: 1860733432942821711
+    - rid: 406468825128108153
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Mana
@@ -1153,14 +1153,14 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089
         windowStyle: 0
         columnStyle: 6
-    - rid: 1860733432942821712
+    - rid: 406468825128108154
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Consumable
         fieldTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         includeLast: 0
-    - rid: 1860733432942821713
+    - rid: 406468825128108155
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Consumable
@@ -1168,7 +1168,7 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089
         windowStyle: 0
         columnStyle: 4
-    - rid: 1860733432942821714
+    - rid: 406468825128108156
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: NameAnimation
@@ -1592,17 +1592,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseInspectorFoldout: 0
   layoutInfos:
-  - rid: 1860733432942821733
-  - rid: 1860733432942821734
-  - rid: 1860733432942821735
-  - rid: 1860733432942821736
-  - rid: 1860733432942821737
-  - rid: 1860733432942821738
+  - rid: 406468825128108035
+  - rid: 406468825128108036
+  - rid: 406468825128108037
+  - rid: 406468825128108038
+  - rid: 406468825128108039
+  - rid: 406468825128108040
   buttonMethods: []
   references:
     version: 2
     RefIds:
-    - rid: 1860733432942821733
+    - rid: 406468825128108035
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: TimeCooldown
@@ -1610,14 +1610,14 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089
         windowStyle: 0
         columnStyle: 3
-    - rid: 1860733432942821734
+    - rid: 406468825128108036
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Mana
         fieldTypeName: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         includeLast: 0
-    - rid: 1860733432942821735
+    - rid: 406468825128108037
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Mana
@@ -1625,14 +1625,14 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089
         windowStyle: 0
         columnStyle: 6
-    - rid: 1860733432942821736
+    - rid: 406468825128108038
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Consumable
         fieldTypeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
         includeLast: 0
-    - rid: 1860733432942821737
+    - rid: 406468825128108039
       type: {class: BeginColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: Consumable
@@ -1640,7 +1640,7 @@ MonoBehaviour:
           PublicKeyToken=b77a5c561934e089
         windowStyle: 0
         columnStyle: 4
-    - rid: 1860733432942821738
+    - rid: 406468825128108040
       type: {class: EndColumnAreaInfo, ns: AdvancedEditorTools, asm: Assembly-CSharp}
       data:
         fieldName: NameAnimation
