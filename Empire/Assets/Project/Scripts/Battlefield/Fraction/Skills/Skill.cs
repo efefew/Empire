@@ -32,6 +32,7 @@ public abstract class Skill : MonoBehaviour
         Buff,
         Debuff,
     }
+    [SerializeField] public SkillType Type;
     [FormerlySerializedAs("buttonSkillPrefab")] public ButtonSkill ButtonSkillPrefab;
 
     [FormerlySerializedAs("timeCooldown")]
@@ -89,8 +90,7 @@ public abstract class Skill : MonoBehaviour
     [FormerlySerializedAs("maxCountCatch")] [Min(1)] public int MaxCountCatch;
 
     [FormerlySerializedAs("triggerDanger")] [SerializeField] public TriggerType TriggerDanger;
-    [SerializeField] public SkillType Type;
-
+    
     [FormerlySerializedAs("buffs")] public Buff[] Buffs;
     [FormerlySerializedAs("effects")] public Effect[] Effects;
 

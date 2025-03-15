@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98f42bcba9626d04b9275679b87e5f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 5
   ButtonSkillPrefab: {fileID: -7748445493791581925, guid: 270b46b8776a95c4990ddf58ee4ce880, type: 3}
   TimeCooldown: 5
   TimeTargetMove: 0
@@ -68,15 +69,15 @@ MonoBehaviour:
   Effects:
   - {fileID: 8028587140731590295}
   NameAnimation: ss
-  minCountProjectile: 1
-  maxCountProjectile: 1
-  projectile: {fileID: 2530829529707909989, guid: 9aaaf81d09ce92b4d83c13598260e85f, type: 3}
-  timeDanger: 0
-  timeDead: 10
-  speed: 0.3333333
-  offset: 0
-  scatter: 5
-  targetPerson: 0
+  MinCountProjectile: 1
+  MaxCountProjectile: 1
+  _projectilePrefab: {fileID: 2530829529707909989, guid: 9aaaf81d09ce92b4d83c13598260e85f, type: 3}
+  TimeDanger: 0
+  TimeDead: 10
+  Speed: 0.3333333
+  Offset: 0
+  Scatter: 5
+  TargetPerson: 0
 --- !u!114 &8028587140731590295
 MonoBehaviour:
   m_ObjectHideFlags: 0

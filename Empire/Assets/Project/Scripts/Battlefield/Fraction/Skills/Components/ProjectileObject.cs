@@ -35,9 +35,9 @@ public class ProjectileObject : MonoBehaviour
 
     private IEnumerator LifeProjectile()
     {
-        yield return new WaitForSeconds(skill.timeDanger);
+        yield return new WaitForSeconds(skill.TimeDanger);
         danger = true;
-        yield return new WaitForSeconds(Mathf.Max(skill.timeDead - timeAnimationDead, 0));
+        yield return new WaitForSeconds(Mathf.Max(skill.TimeDead - timeAnimationDead, 0));
         _ = StartCoroutine(DestroySelf());
     }
 
@@ -79,7 +79,7 @@ public class ProjectileObject : MonoBehaviour
 
     private void FixedUpdate()
     {
-        tr.position += tr.right * skill.speed;
+        tr.position += tr.right * skill.Speed;
     }
 
     public void Build(Person initiator, Projectile skill, Person targetPerson = null)

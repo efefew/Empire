@@ -1,6 +1,7 @@
 #region
 
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zelude;
 
 #endregion
@@ -8,69 +9,68 @@ using Zelude;
 [AddComponentMenu("Skill/Projectile")]
 public class Projectile : Skill
 {
-    #region Fields
+    [MinMaxSlider(1, 100, "MaxCountProjectile", "Count Projectile")]
+    [SerializeField]
+    public int MinCountProjectile;
 
-    [MinMaxSlider(1, 100, "maxCountProjectile", "Count Projectile")] [SerializeField]
-    public int minCountProjectile;
+    [HideInInspector]
+    public int MaxCountProjectile;
+    
+    [FormerlySerializedAs("projectile")] 
+    [SerializeField]
+    private ProjectileObject _projectilePrefab;
 
-    [HideInInspector] public int maxCountProjectile;
+    [FormerlySerializedAs("timeDanger")] [Min(0)] public float TimeDanger;
+    [FormerlySerializedAs("timeDead")] [Min(0)] public float TimeDead;
 
-    public ProjectileObject projectile;
+    [FormerlySerializedAs("speed")] [Min(0)] public float Speed;
 
-    [Min(0)] public float timeDanger, timeDead;
-
-    [Min(0)] public float speed;
-
-    public float offset;
+    [FormerlySerializedAs("offset")] public float Offset;
 
     /// <summary>
     ///     �������
     /// </summary>
-    [Range(0f, 360f)] public float scatter;
+    [FormerlySerializedAs("scatter")] [Range(0f, 360f)] public float Scatter;
 
-    public bool targetPerson;
+    [FormerlySerializedAs("targetPerson")] public bool TargetPerson;
 
-    #endregion Fields
-
-    #region Methods
-
-    private void SpawnPrjectile(Person initiator, Person target)
+    private void SpawnProjectile(Person initiator, Person target)
     {
-        ProjectileObject projectile = Instantiate(this.projectile, initiator.transform.parent);
+        ProjectileObject projectile = Instantiate(_projectilePrefab, initiator.transform.parent);
 
-        projectile.transform.position = initiator.transform.position + initiator.transform.up * offset;
+        projectile.transform.position = initiator.transform.position + initiator.transform.up * Offset;
         projectile.transform.LookAt2D(target.transform.position);
         projectile.transform.eulerAngles =
-            projectile.transform.eulerAngles.Z(projectile.transform.eulerAngles.z + Random.Range(-scatter, scatter));
+            projectile.transform.eulerAngles.Z(projectile.transform.eulerAngles.z + Random.Range(-Scatter, Scatter));
         projectile.Build(initiator, this, target);
     }
 
-    private void SpawnPrjectile(Person initiator, Vector3 target)
+    private void SpawnProjectile(Person initiator, Vector3 target)
     {
-        ProjectileObject projectile = Instantiate(this.projectile, initiator.transform.parent);
+        ProjectileObject projectileObject = Instantiate(_projectilePrefab, initiator.transform.parent);
 
-        projectile.transform.position = initiator.transform.position + initiator.transform.up * offset;
-        projectile.transform.LookAt2D(target);
-        projectile.transform.eulerAngles =
-            projectile.transform.eulerAngles.Z(projectile.transform.eulerAngles.z + Random.Range(-scatter, scatter));
-        projectile.Build(initiator, this);
+        projectileObject.transform.position = initiator.transform.position + initiator.transform.up * Offset;
+        projectileObject.transform.LookAt2D(target);
+        projectileObject.transform.eulerAngles =
+            projectileObject.transform.eulerAngles.Z(projectileObject.transform.eulerAngles.z + Random.Range(-Scatter, Scatter));
+        projectileObject.Build(initiator, this);
     }
 
     public override void Run(Person initiator, Person target = null)
     {
-        if (target == null || !LimitRun(initiator, target.transform.position))
+        if (!target || !LimitRun(initiator, target.transform.position))
             return;
 
         if (Consumable)
             initiator.amountSkill[this]--;
 
-        for (int i = 0; i < Random.Range(minCountProjectile, maxCountProjectile); i++)
-            SpawnPrjectile(initiator, target);
+        for (int i = 0; i < Random.Range(MinCountProjectile, MaxCountProjectile); i++)
+            SpawnProjectile(initiator, target);
     }
 
     public override void Run(Person initiator, Vector3 target)
     {
-        if (targetPerson || !PointCanBeTarget)
+        if (TargetPerson || !PointCanBeTarget)
             return;
         if (!LimitRun(initiator, target))
             return;
@@ -78,9 +78,7 @@ public class Projectile : Skill
         if (Consumable)
             initiator.amountSkill[this]--;
 
-        for (int i = 0; i < Random.Range(minCountProjectile, maxCountProjectile); i++)
-            SpawnPrjectile(initiator, target);
+        for (int i = 0; i < Random.Range(MinCountProjectile, MaxCountProjectile); i++)
+            SpawnProjectile(initiator, target);
     }
-
-    #endregion Methods
 }
